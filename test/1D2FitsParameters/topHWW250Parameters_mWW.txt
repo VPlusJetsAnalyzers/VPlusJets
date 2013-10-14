@@ -1,5 +1,5 @@
-offset_top_fit_mlvjj = 196.32 +/- 5.6190 C L(140.13 - 252.511)
-power2_top_fit_mlvjj = 2.5639 +/- 1.0515 C L(-7.95079 - 13.0785)
-power_top_fit_mlvjj = -4.36951 +/- 2.5582 C L(-29.9512 - 21.2122)
-width_top_fit_mlvjj = 19.828 +/- 14.392 C L(-124.093 - 163.749)
-n_top = 1436.6 +/- 37.9 C
+offset_top_fit_mlvjj = 195.23 +/- 6.1163 C L(134.063 - 256.388)
+power2_top_fit_mlvjj = 2.1752 +/- 0.096578 C L(1.2094 - 3.14095)
+power_top_fit_mlvjj = -3.74144 +/- 0.22395 C L(-5.98094 - -1.50193)
+width_top_fit_mlvjj = 18.442 +/- 0.15942 C L(16.8474 - 20.0357)
+n_top = 3005.0 +/- 54.8 C

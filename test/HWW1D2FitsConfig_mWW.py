@@ -7,6 +7,7 @@ from HWW1D2FitsConfig import mu2Pars, el2Pars
 def theConfig(**kwargs):
     # (Nj, mH, isElectron = False, initFile = [], includeSignal = True,
     #           MVACutOverride = None):
+    print 'mWW',kwargs
     pars_mjj = HWW1D2FitsConfig.theConfig(**kwargs)
     pars = Wjj2DFitterPars()
 

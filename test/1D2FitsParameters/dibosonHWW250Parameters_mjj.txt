@@ -1,8 +1,8 @@
-c_diboson_Mass2j_PFCor = -0.0171030 +/- 0.0025211 C L(-0.0423136 - 0.00810768)
-f_W_diboson_Mass2j_PFCor = 0.44985 +/- 0.054672 C L(-0.0968672 - 0.996572)
-f_Z_diboson_Mass2j_PFCor = 0.046731 +/- 0.043998 C L(-0.393247 - 0.486708)
-mean_diboson_Mass2j_PFCor_W = 83.552 +/- 0.76834 C L(75.8682 - 91.2351)
-offset_diboson_Mass2j_PFCor = 45.359 +/- 4.1047 C L(4.31201 - 86.4061)
-resolution_diboson_Mass2j_PFCor = 0.11406 +/- 0.0077478 C L(0.0365786 - 0.191535)
-width_diboson_Mass2j_PFCor = 15.817 +/- 8.1696 C L(-65.8791 - 97.5138)
-n_diboson = 1109.0 +/- 33.3 C
+c_diboson_Mass2j_PFCor = -0.0171318 +/- 0.0018139 C L(-0.0352708 - 0.00100729)
+f_W_diboson_Mass2j_PFCor = 0.36281 +/- 0.041877 C L(-0.0559553 - 0.781582)
+f_Z_diboson_Mass2j_PFCor = 0.11780 +/- 0.036001 C L(-0.242215 - 0.477813)
+mean_diboson_Mass2j_PFCor_W = 82.095 +/- 0.70196 C L(75.0757 - 89.115)
+offset_diboson_Mass2j_PFCor = 49.846 +/- 3.3121 C L(16.7243 - 82.9669)
+resolution_diboson_Mass2j_PFCor = 0.10794 +/- 0.0057432 C L(0.0505065 - 0.165371)
+width_diboson_Mass2j_PFCor = 23.327 +/- 5.6582 C L(-33.2549 - 79.9087)
+n_diboson = 3183.9 +/- 56.4 C

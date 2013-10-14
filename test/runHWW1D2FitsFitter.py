@@ -242,7 +242,7 @@ print 'W+jets yield in the signal region:',n_WpJ_sig
 import HWW1D2FitsConfig_mWW
 print mWWArgs
 pars_mWW = HWW1D2FitsConfig_mWW.theConfig(Nj = opts.Nj, mH = opts.mH, 
-                                          isElectrons = opts.isElectron, 
+                                          isElectron = opts.isElectron, 
                                           initFile = mWWArgs,
                                           includeSignal = True,
                                           MVACutOverride = mvaCutOverride)

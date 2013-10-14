@@ -28,6 +28,8 @@ alphaFunction.cxx
 alphaFunction.h
 RooATGCFunction.cxx
 RooATGCFunction.h
+RooExpPoly.cxx
+RooExpPoly.h
 EffLookupTable.py
 RooWjj2DFitter.py
 RooWjj2DFitterPars.py

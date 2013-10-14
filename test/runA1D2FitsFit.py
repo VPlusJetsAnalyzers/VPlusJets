@@ -48,7 +48,7 @@ searchString = '*HWW%iParameters' % opts.mH
 if opts.sb:
     searchString += '_sideband%i' % opts.sb
 if opts.isElectron:
-    searchString += '_el' % opts.mH
+    searchString += '_el'
     commonCmd += [ '--electrons' ]
 searchString += '_m??.txt'
 if opts.sig:

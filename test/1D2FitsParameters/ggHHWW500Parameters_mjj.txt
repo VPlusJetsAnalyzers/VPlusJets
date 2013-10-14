@@ -1,7 +1,7 @@
-c_ggH_Mass2j_PFCor = -0.0229498 +/- 0.0045507 C L(-0.0684565 - 0.0225568)
-f_ggH_Mass2j_PFCor_core = 0.75845 +/- 0.022467 C L(0.533781 - 0.983115)
-mean_ggH_Mass2j_PFCor_core = 86.526 +/- 0.16843 C L(84.8419 - 88.2105)
-offset_ggH_Mass2j_PFCor = 69.312 +/- 3.2803 C L(36.5091 - 102.115)
-sigma_ggH_Mass2j_PFCor_core = 7.7035 +/- 0.17984 C L(5.90512 - 9.50193)
-width_ggH_Mass2j_PFCor = 15.728 +/- 2.4751 C L(-9.02292 - 40.4787)
-n_ggH = 217.4 +/- 14.7 C
+c_ggH_Mass2j_PFCor = -0.0206038 +/- 0.0030441 C L(-0.0510452 - 0.00983767)
+f_ggH_Mass2j_PFCor_core = 0.74920 +/- 0.017909 C L(0.570113 - 0.928296)
+mean_ggH_Mass2j_PFCor_core = 86.291 +/- 0.14447 C L(84.8458 - 87.7352)
+offset_ggH_Mass2j_PFCor = 67.624 +/- 2.3813 C L(43.8114 - 91.4371)
+sigma_ggH_Mass2j_PFCor_core = 7.8014 +/- 0.15590 C L(6.24245 - 9.3604)
+width_ggH_Mass2j_PFCor = 15.265 +/- 2.0858 C L(-5.59323 - 36.1234)
+n_ggH = 290.1 +/- 17.0 C
