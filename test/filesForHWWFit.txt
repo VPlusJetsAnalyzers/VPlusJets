@@ -53,3 +53,4 @@ runHiggsNewFitEl.csh
 plotHWWplots.py
 checkFits.py
 fixErfParams.py
+runHiggsNew.py

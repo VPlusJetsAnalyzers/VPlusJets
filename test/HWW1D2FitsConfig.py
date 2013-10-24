@@ -104,12 +104,14 @@ def theConfig(**kwargs):
     print kwargs
     pars = Wjj2DFitterPars()
 
-    pars.MCDirectory = '/uscms_data/d2/andersj/Wjj/2012/data/Moriond2013/ReducedTrees/'
+    # pars.MCDirectory = '/uscms_data/d2/andersj/Wjj/2012/data/Moriond2013/ReducedTrees/'
+    pars.MCDirectory = 'root://cmseos:1094//eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA/Higgs_22Oct/'
     pars.QCDDirectory = "/uscms_data/d3/ilyao/QCD8TeV/Moriond13/"
     # pars.MCDirectory = "root://cmseos:1094//eos/uscms/store/user/lnujj/Moriond2013/RD_includingDiboson/"
     # pars.MCDirectory = "root://cmseos:1094//eos/uscms/store/user/lnujj/HCP2012METfix/ReducedTrees/"
 
-    pars.DataDirectory = '/uscms_data/d2/andersj/Wjj/2012/data/Moriond2013/HWWTrees/'
+    # pars.DataDirectory = '/uscms_data/d2/andersj/Wjj/2012/data/Moriond2013/HWWTrees/'
+    pars.DataDirectory = pars.MCDirectory
     pars.isElectron = kwargs['isElectron']
     if ('initFile' in kwargs):
         pars.initialParametersFile = kwargs['initFile']
@@ -193,8 +195,10 @@ def theConfig(**kwargs):
          33004921, 1750.0*wpj_kfactor),
         (pars.MCDirectory + 'RD_%s_W3Jets_CMSSW532.root' % (flavorString),
          15059503, 519.0*wpj_kfactor),
-        (pars.MCDirectory + 'RD_%s_W4Jets_CMSSW532.root' % (flavorString),
-         12842803, 214.0*wpj_kfactor),
+        # (pars.MCDirectory + 'RD_%s_W4Jets_CMSSW532.root' % (flavorString),
+        #  12842803, 214.0*wpj_kfactor),
+        (pars.MCDirectory + 'RD_%s_W4Jets_CMSSW532_old.root' % (flavorString),
+         4369420, 214.0*wpj_kfactor),
         ]
     pars.WpJModels = [ modePars[pars.mHiggs][5]['WpJ'][0] ]
     if (len(modePars[pars.mHiggs][5]['WpJ']) > 2):
