@@ -338,7 +338,7 @@ class Wjj2DFitter:
                           RooFit.Warnings(False),
                           constraintCmd,
                           rangeCmd)
-        fr.Print()
+        fr.Print('v')
 
         
 

@@ -23,6 +23,8 @@ parser.add_option('--doShapes', dest='doShape', action='store_true',
                   default=False, help='do the shapes fits')
 parser.add_option('--doFit', dest='doFit', action='store_true',
                   default=False, help='do the spectrum fit')
+parser.add_option('--expLimit', type='int', dest='limit',
+                  help='number of toys for expected limit')
 
 (opts, args) = parser.parse_args()
 
@@ -49,4 +51,6 @@ for mH in masspts:
             cmd.append('--electrons')
         if opts.mvaCut:
             cmd.extend(['--mva', str(opts.mvaCut)])
+        if opts.limit:
+            cmd.extend(['--expLimit', str(opts.limit)])
         runCommand(cmd, 'HWW%s_%s_fit.txt' % (mH, flavStr))

@@ -338,11 +338,11 @@ fitter_mWW.ws.var('r_signal').setError(0.1)
 fitter_mWW.ws.var('r_signal').setRange(-0.5, 5.)
 
 fr_mWW = None
-fr_mWW = fitter_mWW.fit()
+#fr_mWW = fitter_mWW.fit()
 
-if fr_mWW.statusCodeHistory(0) != 0:
-    print fr_mWW.statusLabelHistory(0), 'failed'
-    fr_mWW = fitter_mWW.fit(True)
+# if fr_mWW.statusCodeHistory(0) != 0:
+#     print fr_mWW.statusLabelHistory(0), 'failed'
+#     fr_mWW = fitter_mWW.fit(True)
 
 plot_mWW = fitter_mWW.stackedPlot(pars_mWW.var[0])
 plot_mWW.SetName('%s_plot_stacked' % (pars_mWW.var[0]))
@@ -363,17 +363,18 @@ leg_mWW = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot_mWW)
 plot_mWW_withErrs = fitter_mWW.stackedPlot(pars_mWW.var[0])
 plot_mWW_withErrs.SetName('%s_plot_with_errors' % (pars_mWW.var[0]))
 nexp = totalPdf_mWW.expectedEvents(fitter_mWW.ws.set('obsSet'))
-totalPdf_mWW.plotOn(plot_mWW_withErrs, 
-                    RooFit.VisualizeError(fr_mWW, 1, True),
-                    RooFit.Range('plotRange'),
-                    RooFit.NormRange('plotRange'),
-                    RooFit.Normalization(nexp, RooAbsReal.NumEvent),
-                    RooFit.Name('fitErrors'),
-                    RooFit.FillColor(kOrange+1),
-                    RooFit.FillStyle(3001))
-plot_mWW_withErrs.getCurve().SetTitle('Fit errors')
-errs = plot_mWW_withErrs.getCurve('fitErrors')
-(upper, lower) = pulls.splitErrCurve(errs)
+if fr_mWW:
+    totalPdf_mWW.plotOn(plot_mWW_withErrs, 
+                        RooFit.VisualizeError(fr_mWW, 1, True),
+                        RooFit.Range('plotRange'),
+                        RooFit.NormRange('plotRange'),
+                        RooFit.Normalization(nexp, RooAbsReal.NumEvent),
+                        RooFit.Name('fitErrors'),
+                        RooFit.FillColor(kOrange+1),
+                        RooFit.FillStyle(3001))
+    plot_mWW_withErrs.getCurve().SetTitle('Fit errors')
+    errs = plot_mWW_withErrs.getCurve('fitErrors')
+    (upper, lower) = pulls.splitErrCurve(errs)
 
 sigPdf.plotOn(plot_mWW_withErrs, RooFit.Range('plotRange'),
               RooFit.NormRange('plotRange'),
@@ -402,11 +403,12 @@ c_mWW_err.Update()
 
 (chi2_mWW, ndf_mWW) = pulls.computeChi2(plot_mWW.getHist('theData'), 
                                         plot_mWW.getObject(1))
-ndf_mWW -= fr_mWW.floatParsFinal().getSize() - \
-    fitter_mWW.ws.set('constraintSet').getSize()
+if fr_mWW:
+    ndf_mWW -= fr_mWW.floatParsFinal().getSize() - \
+        fitter_mWW.ws.set('constraintSet').getSize()
 pull_mWW = pulls.createPull(plot_mWW.getHist('theData'), 
                             plot_mWW.getObject(1))
-cp_mWW = TCanvas('cp_mWW', pars.var[0] + ' mWW pull')
+cp_mWW = TCanvas('cp_mWW', pars_mWW.var[0] + ' mWW pull')
 pull_mWW.SetName('mWW_pull')
 pull_mWW.Draw('ap')
 cp_mWW.SetGridy()
@@ -437,25 +439,27 @@ bkgHisto.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto.Int
 bkgHisto.Print()
 bkgHisto.SetName("HWW%snujj_bkg" % mode)
 # c_debug = TCanvas('c_debug', 'debug')
-bkgHisto_up = fitter_mWW.utils.newEmptyHist(
-    'HWW%snujj_bkg_%sbkgshapeUp' % (mode, mode), 1)
-bkgHisto_up = pulls.curveToHist(upper, bkgHisto_up)
-bkgHisto_up.Print()
-bkgHisto_up.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_up.Integral())
-bkgHisto_up.SetLineColor(kOrange+2)
-bkgHisto_up.SetLineStyle(kDashed)
-bkgHisto_dwn = fitter_mWW.utils.newEmptyHist(
-    'HWW%snujj_bkg_%sbkgshapeDown' % (mode, mode), 1)
-bkgHisto_dwn = pulls.curveToHist(lower, bkgHisto_dwn)
-bkgHisto_dwn.Print()
-bkgHisto_dwn.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_dwn.Integral())
-bkgHisto_dwn.SetLineColor(kOrange+4)
-bkgHisto_dwn.SetLineStyle(kDashed)
 c_bkg = TCanvas('c_bkg', 'histograms')
 c_bkg.cd()
 bkgHisto.Draw()
-bkgHisto_up.Draw('same')
-bkgHisto_dwn.Draw('same')
+if fr_mWW:
+    bkgHisto_up = fitter_mWW.utils.newEmptyHist(
+        'HWW%snujj_bkg_%sbkgshapeUp' % (mode, mode), 1)
+    bkgHisto_up = pulls.curveToHist(upper, bkgHisto_up)
+    bkgHisto_up.Print()
+    bkgHisto_up.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_up.Integral())
+    bkgHisto_up.SetLineColor(kOrange+2)
+    bkgHisto_up.SetLineStyle(kDashed)
+    bkgHisto_dwn = fitter_mWW.utils.newEmptyHist(
+        'HWW%snujj_bkg_%sbkgshapeDown' % (mode, mode), 1)
+    bkgHisto_dwn = pulls.curveToHist(lower, bkgHisto_dwn)
+    bkgHisto_dwn.Print()
+    bkgHisto_dwn.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_dwn.Integral())
+    bkgHisto_dwn.SetLineColor(kOrange+4)
+    bkgHisto_dwn.SetLineStyle(kDashed)
+    bkgHisto_up.Draw('same')
+    bkgHisto_dwn.Draw('same')
+
 c_bkg.Update()
 ggHPdf = fitter_mWW.ws.pdf('ggH')
 ggHHisto = ggHPdf.createHistogram("HWW%snujj_ggH" % mode,
@@ -555,16 +559,19 @@ output = TFile("HWW%ilnujj_%s_%ijets_1D2Fit%s_output.root" % \
 
 fr.SetName('fit_result')
 fr.Write()
-fr_mWW.SetName('fit_result_mWW')
-fr_mWW.Write()
+if fr_mWW:
+    fr_mWW.SetName('fit_result_mWW')
+    fr_mWW.Write()
+
 plot1.Write()
 pull1.Write()
 plot_mWW.Write()
 pull_mWW.Write()
 plot_mWW_withErrs.Write()
 bkgHisto.Write()
-bkgHisto_up.Write()
-bkgHisto_dwn.Write()
+if fr_mWW:
+    bkgHisto_up.Write()
+    bkgHisto_dwn.Write()
 qqHHisto.Write()
 ggHHisto.Write()
 for histo in interf:
@@ -601,7 +608,8 @@ print 'chi2 probability: %.4g' % (TMath.Prob(chi2, ndf))
 # print 'chi2 probability: %.4g' % (TMath.Prob(chi2_high, ndf_high))
 
 print '*** mWW fit ***'
-print 'minimum NLL:', fr_mWW.minNll()
+if fr_mWW:
+    print 'minimum NLL:', fr_mWW.minNll()
 print '%i degrees of freedom' % ndf_mWW
 print 'chi2: %.2f / %i = %.2f' % (chi2_mWW, ndf_mWW, 
                                   (chi2_mWW/ndf_mWW))

@@ -29,7 +29,8 @@ import os
 import fnmatch
 
 commonCmd = [ 'python', 'runHWW1D2FitsFitter.py', '-b', '-j', str(2), 
-              '--mH', str(opts.mH) , '--obsLimit']
+              '--mH', str(opts.mH)] #, '--obsLimit']
+
 if opts.limit:
     commonCmd += ['--limit', str(opts.limit)]
 

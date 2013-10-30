@@ -115,10 +115,13 @@ def expectedPlcLimit(obs_, poi_, model, ws, ntoys = 30, CL = 0.95,
 
         toyData.IsA().Destructor(toyData)
 
+    mPars.assignFast(genPars)
+
     upperLimits.sort()
     upperArray = array('d', upperLimits)
-    TMath.Quantiles(len(upperLimits), len(probs), upperArray, upperQs,
-                    probs)
+    if len(upperLimits) > 4:
+        TMath.Quantiles(len(upperLimits), len(probs), upperArray, upperQs,
+                        probs)
     # upperLimits.GetQuantiles(len(probs), upperQs, probs)
     # upperLimits.Print()
     print 'expected upper limit quantiles using %i toys: [' % len(upperLimits),
@@ -128,7 +131,9 @@ def expectedPlcLimit(obs_, poi_, model, ws, ntoys = 30, CL = 0.95,
 
     lowerLimits.sort()
     lowerArray = array('d', lowerLimits)
-    TMath.Quantiles(len(lowerLimits), len(probs), lowerArray, lowerQs, probs)
+    if len(lowerLimits) > 4:
+        TMath.Quantiles(len(lowerLimits), len(probs), lowerArray, lowerQs, 
+                        probs)
     # lowerLimits.GetQuantiles(len(probs), lowerQs, probs)
     # lowerLimits.Print()
     print 'expected lower limit quantiles using %i toys: [' % len(lowerLimits),
