@@ -1,14 +1,23 @@
 
 void makeTreeFromText() {
 
-   makeTreeFromText("params-ww-kappa-lambda-cteq6l1-001-fitted-new-1TeV.list", 
-   "root_kappa-lambda.root", "lambda", "dkappa");
+   makeTreeFromText("params-ww-kappa-lambda-cteq6l1-fitted-withCuts.list", 
+   "ww_root_kappa-lambda.root", "lambda", "dkappa");
 
-   makeTreeFromText("params-ww-lambda-g1z-cteq6l1-001-fitted-new-1TeV.list", 
-   "root_lambda-g1.root", "lambda", "dg1");
+   makeTreeFromText("params-ww-lambda-g1z-cteq6l1-fitted-withCuts.list", 
+   "ww_root_lambda-g1.root", "lambda", "dg1");
 
-   makeTreeFromText("params-ww-kappa-g1z-cteq6l1-001-fitted-new-1TeV.list",
-   "root_kappa-g1.root", "dkappa", "dg1");
+   makeTreeFromText("params-ww-kappa-g1z-cteq6l1-fitted-withCuts.list",
+   "ww_root_kappa-g1.root", "dkappa", "dg1");
+
+   makeTreeFromText("params-wz-kappa-lambda-cteq6l1-fitted-withCuts.list", 
+   "wz_root_kappa-lambda.root", "lambda", "dkappa");
+
+   makeTreeFromText("params-wz-lambda-g1z-cteq6l1-fitted-withCuts.list", 
+   "wz_root_lambda-g1.root", "lambda", "dg1");
+
+   makeTreeFromText("params-wz-kappa-g1z-cteq6l1-fitted-withCuts.list",
+   "wz_root_kappa-g1.root", "dkappa", "dg1");
 }
 
 void makeTreeFromText(char* inputFile, char* outputFile, char* first, char* second) {
