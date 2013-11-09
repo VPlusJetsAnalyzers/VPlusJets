@@ -26,7 +26,7 @@
 #
 # 5. Let 'er rip: "condor_submit submit.txt"
 #
-MYSRCDIR=/uscms/home/${USER}/nobackup/${LOCALRT}/src/ElectroWeakAnalysis/VPlusJets/
+MYSRCDIR=${LOCALRT}/src/ElectroWeakAnalysis/VPlusJets/
 IFTABLEDIR=${MYSRCDIR}/test/InterferenceTable2012
 EFFTABLEDIR=${MYSRCDIR}/test/EffTable2012
 CLASSDIR=${MYSRCDIR}/test/ClassifierOut
