@@ -460,10 +460,10 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
 		}
 
 		if (myflag == 20121037 || myflag == -200){
-			InitCounters( inDataDir + "mu_WW_amcnlo_CMSSW532.root", h_events, h_events_weighted);
+			InitCounters( inDataDir + "mu_WW_amcnlo_CMSSW532_v2.root", h_events, h_events_weighted);
 			myChain = new TChain("WJet");
-			myChain->Add(                    inDataDir + "mu_WW_amcnlo_CMSSW532.root");
-			Init(myChain);Loop( h_events, h_events_weighted, 20121037,runflag, outDataDir + "RD_mu_WW_amcnlo_CMSSW532");
+			myChain->Add(                    inDataDir + "mu_WW_amcnlo_CMSSW532_v2.root");
+			Init(myChain);Loop( h_events, h_events_weighted, 20121037,runflag, outDataDir + "RD_mu_WW_amcnlo_CMSSW532_v2");
 		}
 
 		if (myflag == 20111016 || myflag == -200){
@@ -478,6 +478,14 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
 			myChain->Add(                    inDataDir + "mu_WZ_CMSSW532.root"); 
 			Init(myChain);Loop( h_events, h_events_weighted, 20121016,runflag, outDataDir + "RD_mu_WZ_CMSSW532");
 		}
+                if (myflag == 201210161 || myflag == -200){
+                        InitCounters( inDataDir + "mu_WZ_amcnlo_CMSSW532.root", h_events, h_events_weighted);
+                        myChain = new TChain("WJet");
+                        myChain->Add(                    inDataDir + "mu_WZ_amcnlo_CMSSW532.root");
+                        Init(myChain);Loop( h_events, h_events_weighted, 201210161,runflag, outDataDir + "RD_mu_WZ_amcnlo_CMSSW532");
+                }
+
+
 		if (myflag == 20111017 || myflag == -200){
 			InitCounters( inDataDir + "mu_ZpJ_CMSSW428.root", h_events, h_events_weighted);             
 			myChain = new TChain("WJet");  
@@ -533,15 +541,13 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
 			myChain->Add(                    inDataDir + "mu_W4Jets_CMSSW532_old.root"); 
 			Init(myChain);Loop( h_events, h_events_weighted, 20121023,runflag, outDataDir + "RD_mu_W4Jets_CMSSW532_old");
 		}
-		/*
-		   if (myflag == 20121023 || myflag == -200){
-		   InitCounters( inDataDir + "mu_W4Jets_CMSSW532.root", h_events, h_events_weighted);
+		
+		   if (myflag == 201210231 || myflag == -200){
+		   InitCounters( inDataDir + "mu_W4Jets_CMSSW532_new.root", h_events, h_events_weighted);
 		   myChain = new TChain("WJet");
-		   myChain->Add(                    inDataDir + "mu_W4Jets_CMSSW532.root");
-		   Init(myChain);Loop( h_events, h_events_weighted, 20121023,runflag, outDataDir + "RD_mu_W4Jets_CMSSW532");
+		   myChain->Add(                    inDataDir + "mu_W4Jets_CMSSW532_new.root");
+		   Init(myChain);Loop( h_events, h_events_weighted, 201210231,runflag, outDataDir + "RD_mu_W4Jets_CMSSW532_new");
 		   }
-		 */
-
 
 
 		if (myflag == 20121024 || myflag == -200){

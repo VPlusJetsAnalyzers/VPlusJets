@@ -164,7 +164,7 @@ const TString inQCDDir  = "/eos/uscms/store/user/lnujj/Moriond2013/MergedNtuples
 //const TString outDataDir = "/uscmst1b_scratch/lpc1/3DayLifetime/weizou/EWKW2jetsSample_2013_3_23/";
 
 //const TString outDataDir   = "/uscmst1b_scratch/lpc1/3DayLifetime/ajay/VBF_Higgs_5Aug_v1/";
-const TString outDataDir   = "/uscmst1b_scratch/lpc1/3DayLifetime/ajay/Higgs_22Oct/";
+const TString outDataDir   = "/uscmst1b_scratch/lpc1/3DayLifetime/ajay/Higgs_29Oct/";
 
 
 //const TString outDataDir   = "/uscmst1b_scratch/lpc1/3DayLifetime/ajay/VBF_Higgs_5Aug_v1/";
@@ -465,10 +465,10 @@ void kanaelec::myana(double myflag, bool isQCD, int runflag)
 		}
 
 		if (myflag == 201210151 || myflag == -200){
-			InitCounters( inDataDir + "el_WW_amcnlo_CMSSW532.root", h_events, h_events_weighted);
+			InitCounters( inDataDir + "el_WW_amcnlo_CMSSW532_v2.root", h_events, h_events_weighted);
 			myChain = new TChain("WJet");
-			myChain->Add(                    inDataDir + "el_WW_amcnlo_CMSSW532.root");
-			Init(myChain);Loop( h_events, h_events_weighted, 201210151,runflag, outDataDir + "RD_el_WW_amcnlo_CMSSW532");
+			myChain->Add(                    inDataDir + "el_WW_amcnlo_CMSSW532_v2.root");
+			Init(myChain);Loop( h_events, h_events_weighted, 201210151,runflag, outDataDir + "RD_el_WW_amcnlo_CMSSW532_v2");
 		}
 
 		if (myflag == 20111016 || myflag == -200){
@@ -483,6 +483,14 @@ void kanaelec::myana(double myflag, bool isQCD, int runflag)
 			myChain->Add(                    inDataDir + "el_WZ_CMSSW532.root"); 
 			Init(myChain);Loop( h_events, h_events_weighted, 20121016,runflag, outDataDir + "RD_el_WZ_CMSSW532");
 		}
+
+               if (myflag == 201210161 || myflag == -200){
+                        InitCounters( inDataDir + "el_WZ_amcnlo_CMSSW532.root", h_events, h_events_weighted);
+                        myChain = new TChain("WJet");
+                        myChain->Add(                    inDataDir + "el_WZ_amcnlo_CMSSW532.root");
+                        Init(myChain);Loop( h_events, h_events_weighted, 201210161,runflag, outDataDir + "RD_el_WZ_amcnlo_CMSSW532");
+                }
+
 		if (myflag == 20111017 || myflag == -200){
 			InitCounters( inDataDir + "el_ZpJ_CMSSW428.root", h_events, h_events_weighted);
 			myChain = new TChain("WJet");  
@@ -3140,7 +3148,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		TMap jetsQGd;//Quark-Gluon Discriminator Map
 		TMap jetsbtagCSV; //B-tag Discriminator Map
 
-		for(unsigned int i = 0; i < numPFCorJets; ++i)
+		for(int i = 0; i < numPFCorJets; ++i)
 		{
 			if(JetPFCor_Pt[i] > 20.0)
 			{
@@ -3155,7 +3163,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			}
 		}
 
-		for(unsigned int j = 0; j < numFwdJets; ++j)
+		for( int j = 0; j < numFwdJets; ++j)
 		{
 			if(JetPFCorVBFTag_Pt[j] > 20.0)
 			{
@@ -3170,7 +3178,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		}
 
 		sort (jets.begin (), jets.end (), mysortPt);  //Sort the jet according to Jet Pt
-		for (int i=0;i<jets.size();i++)
+		for (unsigned int i=0;i<jets.size();i++)
 		{
 			//      cout<<"  i   "<<i<<"    "<<jets.at(i)->Pt()<<endl;
 		}
@@ -3332,14 +3340,14 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			//        cout<<hvbf_lvjj_m<<endl;
 		}
 		//}
-		double a_costheta1, a_costheta2, a_phi, a_costhetastar, a_phistar1, a_phistar2;
+		double ah_costheta1, ah_costheta2, ah_phi, ah_costhetastar, ah_phistar1, ah_phistar2;
 		if (W_electron_charge < 0){
-			calculateAngles(lepton, nutrino, hwjj_ajp, hwjj_bjp, a_costheta1, a_costheta2, a_phi, a_costhetastar, a_phistar1, a_phistar2);
+			calculateAngles(lepton, nutrino, hwjj_ajp, hwjj_bjp, ah_costheta1, ah_costheta2, ah_phi, ah_costhetastar, ah_phistar1, ah_phistar2);
 		}
 		else{
-			calculateAngles(nutrino, lepton, hwjj_ajp, hwjj_bjp, a_costheta1, a_costheta2, a_phi, a_costhetastar, a_phistar1, a_phistar2);
+			calculateAngles(nutrino, lepton, hwjj_ajp, hwjj_bjp, ah_costheta1, ah_costheta2, ah_phi, ah_costhetastar, ah_phistar1, ah_phistar2);
 		}
-		hvbf_wjj_ang_ha = a_costheta1; hvbf_wjj_ang_hb = fabs(a_costheta2); hvbf_wjj_ang_hs = a_costhetastar;  hvbf_wjj_ang_phi = a_phi; hvbf_wjj_ang_phia = a_phistar1; hvbf_wjj_ang_phib = a_phistar2;
+		hvbf_wjj_ang_ha = ah_costheta1; hvbf_wjj_ang_hb = fabs(ah_costheta2); hvbf_wjj_ang_hs = ah_costhetastar;  hvbf_wjj_ang_phi = ah_phi; hvbf_wjj_ang_phia = ah_phistar1; hvbf_wjj_ang_phib = ah_phistar2;
 
 		//Tag jet pair Q-G information
 		if (htag_i_id!=-1&& htag_j_id!=-1)
