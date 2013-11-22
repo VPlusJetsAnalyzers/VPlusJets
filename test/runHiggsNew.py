@@ -25,6 +25,11 @@ parser.add_option('--doFit', dest='doFit', action='store_true',
                   default=False, help='do the spectrum fit')
 parser.add_option('--expLimit', type='int', dest='limit',
                   help='number of toys for expected limit')
+parser.add_option('--xrootd', dest='xrootd', action='store_true',
+                  help='use xrootd file opening.')
+parser.add_option('--obsLimit', dest='obsLimit', action='store_true',
+                  default=False,
+                  help='calculate observed limit too')
 
 (opts, args) = parser.parse_args()
 
@@ -42,15 +47,21 @@ for mH in masspts:
         flavStr = 'el'
     if opts.mvaCut:
         cmd.extend(['--mva', str(opts.mvaCut)])
+    if opts.xrootd:
+        cmd.append('--xrootd')
     if opts.doShape:
         runCommand(cmd, 'HWW%s_%s_shapes.txt' % (mH, flavStr))
-        runCommand(['python', 'fixErfParams.py', '1D2FitsParameters/WpJHWW%sParameters_%smWW.txt' % (mH, 'el_' if opts.isElectron else '')])
+        # runCommand(['python', 'fixErfParams.py', '1D2FitsParameters/WpJHWW%sParameters_%smWW.txt' % (mH, 'el_' if opts.isElectron else '')])
     if opts.doFit:
         cmd = ['python', 'runA1D2FitsFit.py', '--mH', str(mH)]
         if opts.isElectron:
             cmd.append('--electrons')
         if opts.mvaCut:
             cmd.extend(['--mva', str(opts.mvaCut)])
+        if opts.xrootd:
+            cmd.append('--xrootd')
         if opts.limit:
             cmd.extend(['--expLimit', str(opts.limit)])
+        if opts.obsLimit:
+            cmd.append('--obsLimit')
         runCommand(cmd, 'HWW%s_%s_fit.txt' % (mH, flavStr))

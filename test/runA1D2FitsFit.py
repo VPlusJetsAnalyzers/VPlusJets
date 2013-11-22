@@ -23,6 +23,11 @@ parser.add_option('--mva', dest='mvaCut', type='float',
                   help='override cut value for mva')
 parser.add_option('--sideband', dest='sb', type='int',
                   help='use sideband dataset and model instead')
+parser.add_option('--xrootd', dest='xrootd', action='store_true',
+                  help='use xrootd file opening.')
+parser.add_option('--obsLimit', dest='obsLimit', action='store_true',
+                  default=False,
+                  help='calculate observed limit too')
 (opts, args) = parser.parse_args()
 
 import os
@@ -34,12 +39,18 @@ commonCmd = [ 'python', 'runHWW1D2FitsFitter.py', '-b', '-j', str(2),
 if opts.limit:
     commonCmd += ['--limit', str(opts.limit)]
 
-if hasattr(opts, "mvaCut") and opts.mvaCut:
+if opts.mvaCut:
     commonCmd.extend(['--mva', str(opts.mvaCut)])
 
-if hasattr(opts, 'sb') and opts.sb:
+if opts.sb:
     commonCmd.extend(['--sideband', str(opts.sb)])
     commonCmd[1] = 'runHWW1D2FitsSideband.py'
+
+if opts.xrootd:
+    commonCmd.append('--xrootd')
+
+if opts.obsLimit:
+    commonCmd.append('--obsLimit')
 
 if opts.reuse:
     flavor = 'electron' if opts.isElectron else 'muon'

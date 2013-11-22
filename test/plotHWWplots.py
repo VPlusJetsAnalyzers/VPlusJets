@@ -36,13 +36,19 @@ for fname in args:
 
     mWW_plot = f.Get('fit_mlvjj_plot_stacked')
     cs.cd()
-    if mH > 400:
-        cs.SetLogy(True)
-        mWW_plot.SetAxisRange(0.1, 1e5, 'Y')
     mWW_plot.Draw()
     gPad.Update()
     gPad.Print('%s_%s_mWW_stacked.pdf' % (fname_parts[0], fname_parts[1]))
     gPad.Print('%s_%s_mWW_stacked.png' % (fname_parts[0], fname_parts[1]))
+    if mH > 400:
+        cs.SetLogy(True)
+        mWW_plot.SetAxisRange(0.1, 1e5, 'Y')
+        gPad.Update()
+        gPad.Print('%s_%s_mWW_stacked_log.pdf' % \
+                       (fname_parts[0], fname_parts[1]))
+        gPad.Print('%s_%s_mWW_stacked_log.png' % \
+                       (fname_parts[0], fname_parts[1]))
+
 
     mWW_pull = f.Get('mWW_pull')
     cp.cd()

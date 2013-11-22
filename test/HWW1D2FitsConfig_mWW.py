@@ -33,7 +33,8 @@ def theConfig(**kwargs):
     pars.signals = pars_mjj.signals
     pars.yieldConstraints = pars_mjj.yieldConstraints
     #pars.yieldConstraints = {}
-    pars.constrainShapes = []
+    # pars.constrainShapes = []
+    pars.constrainShapes = ['WpJ']
 
     pars.Njets = kwargs['Nj']
     pars.mHiggs = kwargs['mH']

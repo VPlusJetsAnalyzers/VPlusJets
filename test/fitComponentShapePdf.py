@@ -41,6 +41,8 @@ parser.add_option('--mva', dest='mvaCut', type='float',
                   help='override cut value for mva')
 parser.add_option('--rateSyst', dest='RateSyst', type='int', 
                   help='do a rate systematic in region of +/- 10% of mH')
+parser.add_option('--xrootd', dest='xrootd', action='store_true',
+                  help='use xrootd file opening.')
 
 (opts, args) = parser.parse_args()
 
@@ -91,6 +93,9 @@ if opts.btag:
 #     pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
 #                             isElectron = opts.isElectron, initFile = args,
 #                             MVACutOverride = mvaCutOverride)
+if opts.xrootd:
+    configArgs['xrootd'] = opts.xrootd
+
 pars = config.theConfig(**configArgs)
 
 
@@ -288,6 +293,9 @@ fr = None
 if models[0] >= 0:
     fr = sigPdf.fitTo(data, RooFit.Save(), 
                       RooFit.SumW2Error(False),
+                      RooFit.Hesse(False),
+                      RooFit.Minimizer("Minuit2", "minimize"),
+                      # RooFit.Minos(True),
                       # RooFit.InitialHesse(True)
                       )
 

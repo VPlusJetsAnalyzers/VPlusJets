@@ -33,6 +33,8 @@ parser.add_option('--mva', dest='mvaCut', type='float',
                   help='override cut value for mva')
 parser.add_option('--sideband', dest='sb', type='int',
                   help='use sideband dataset and model instead')
+parser.add_option('--xrootd', dest='xrootd', action='store_true',
+                  help='use xrootd file opening.')
 (opts, args) = parser.parse_args()
 
 components = [ 'ggH', 'qqH', 'diboson', 'top', 'WpJ' ]
@@ -44,11 +46,14 @@ cmdBase = [ 'python', 'fitComponentShapePdf.py', '-b', '-j', '2',
 if opts.isElectron:
     cmdBase.append('--electrons')
 
-if hasattr(opts, "mvaCut") and opts.mvaCut:
+if opts.mvaCut:
     cmdBase.extend(['--mva', str(opts.mvaCut)])
 
-if hasattr(opts, 'sb') and opts.sb:
+if opts.sb:
     cmdBase.extend(['--sideband', str(opts.sb)])
+
+if opts.xrootd:
+    cmdBase.append('--xrootd')
 
 for component in components:
     cmd = list(cmdBase) + [ '--comp', component, ]

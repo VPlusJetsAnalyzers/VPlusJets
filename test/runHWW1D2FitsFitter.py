@@ -33,6 +33,8 @@ parser.add_option('--obsLimit', dest='obsLimit', action='store_true',
                   help='calculate observed limit too')
 parser.add_option('--mva', dest='mvaCut', type='float',
                   help='override cut value for mva')
+parser.add_option('--xrootd', dest='xrootd', action='store_true',
+                  help='use xrootd file opening.')
 
 (opts, args) = parser.parse_args()
 
@@ -78,7 +80,8 @@ for arg in args:
 print mjjArgs
 pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
                         isElectron = opts.isElectron, initFile = mjjArgs,
-                        includeSignal = False, MVACutOverride = mvaCutOverride)
+                        includeSignal = False, MVACutOverride = mvaCutOverride,
+                        xrootd = opts.xrootd)
 
 fitter = RooWjj2DFitter.Wjj2DFitter(pars)
 fitter.ws.SetName("w_mjj")
@@ -125,7 +128,7 @@ fitter.ws.var('top_nrm').setConstant()
 fitter.ws.var('r_signal').setVal(1.0)
 fitter.ws.var('r_signal').setError(0.04)
 fr = None
-fr = fitter.fit()
+fr = fitter.fit(overrideRangeCmd=True)
 
 plot1 = fitter.stackedPlot(pars.var[0])
 
@@ -245,7 +248,8 @@ pars_mWW = HWW1D2FitsConfig_mWW.theConfig(Nj = opts.Nj, mH = opts.mH,
                                           isElectron = opts.isElectron, 
                                           initFile = mWWArgs,
                                           includeSignal = True,
-                                          MVACutOverride = mvaCutOverride)
+                                          MVACutOverride = mvaCutOverride,
+                                          xrootd = opts.xrootd)
 pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
 
 # add systematic errors multipliers to ggH signals
@@ -338,7 +342,7 @@ fitter_mWW.ws.var('r_signal').setError(0.1)
 fitter_mWW.ws.var('r_signal').setRange(-0.5, 5.)
 
 fr_mWW = None
-#fr_mWW = fitter_mWW.fit()
+fr_mWW = fitter_mWW.fit()
 
 # if fr_mWW.statusCodeHistory(0) != 0:
 #     print fr_mWW.statusLabelHistory(0), 'failed'

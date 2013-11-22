@@ -442,7 +442,9 @@ class Wjj2DFitterUtils:
         elif model== 8:
             # erf * exponential pdf
             ws.factory("c_%s[-0.015, -10, 10]" % idString)
-            offset = ws.factory("offset_%s[70, -100, 1000]" % idString)
+            offset = ws.factory("offset_%s[70, %f, %f]" % \
+                                    (idString, ws.var(var).getMin()*0.5,
+                                     ws.var(var).getMax()))
             width = ws.factory("width_%s[20, 0, 1000]" % idString)
             offset.setVal(ws.var(var).getMin())
             offset.setError(offset.getVal()*0.2)
@@ -612,7 +614,9 @@ class Wjj2DFitterUtils:
                                             pdfErf.GetName()))
         elif model == 25:
             # erf model
-            offset = ws.factory("offset_%s[50, -100, 1000]" % idString)
+            offset = ws.factory("offset_%s[50, %f, %f]" % \
+                                    (idString, ws.var(var).getMin()*0.5,
+                                     ws.var(var).getMax()))
             offset.setVal(ws.var(var).getMin())
             offset.setError(offset.getVal()*0.2)
             width = ws.factory("width_%s[5, 0, 1000]" % idString)
@@ -631,7 +635,7 @@ class Wjj2DFitterUtils:
                        (pdfName, idString, pdfGaus.GetName(), pdfErf.GetName()))
         elif model == 27:
             # gaussian model with optional mean passed as auxModel
-            mean = ws.factory('mean_%s[-1000.,1000.]' % idString)
+            mean = ws.factory('mean_%s[-10000.,1000.]' % idString)
             sigma = ws.factory('sigma_%s[0.,5000.]' % idString)
             if auxModel:
                 mean.setVal(auxModel)
@@ -720,7 +724,10 @@ class Wjj2DFitterUtils:
             ws.factory(factoryString)
         elif model == 33:
             # erf model turning off
-            offset = ws.factory("offset_%s[500, -100, 1000]" % idString)
+            theShift = 0.2
+            offset = ws.factory("offset_%s[500, %f, %f]" % \
+                                    (idString, ws.var(var).getMax()*theShift+ws.var(var).getMin()*(1-theShift), 
+                                     ws.var(var).getMax()*2))
             offset.setVal(ws.var(var).getMax())
             offset.setError(offset.getVal()*0.2)
             width = ws.factory("width_%s[50, 0, 1000]" % idString)
@@ -748,7 +755,9 @@ class Wjj2DFitterUtils:
         elif model== 36:
             # erf (turn off) * exponential pdf
             ws.factory("c_%s[-0.015, -10, 10]" % idString)
-            offset = ws.factory("offset_%s[70, -100, 1000]" % idString)
+            offset = ws.factory("offset_%s[500, %f, %f]" % \
+                                    (idString, ws.var(var).getMin(), 
+                                     ws.var(var).getMax()*2))
             width = ws.factory("width_%s[20, 0, 10000]" % idString)
             offset.setVal(ws.var(var).getMax())
             offset.setError(offset.getVal()*0.2)

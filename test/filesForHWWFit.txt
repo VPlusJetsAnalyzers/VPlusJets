@@ -44,12 +44,6 @@ HWW1D2FitsConfig_mWW.py
 runHWW1D2FitsFitter.py
 runA1D2FitsFit.py
 run1D2FitsShapeFits.py
-runHiggsNewMu.csh
-runHiggsNewEl.csh
-runHiggsNewShapesMu.csh
-runHiggsNewShapesEl.csh
-runHiggsNewFitMu.csh
-runHiggsNewFitEl.csh
 plotHWWplots.py
 checkFits.py
 fixErfParams.py

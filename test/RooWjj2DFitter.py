@@ -295,7 +295,7 @@ class Wjj2DFitter:
         return fitter
 
     # fit the data using the pdf
-    def fit(self, keepParameterValues = False):
+    def fit(self, keepParameterValues = False, overrideRangeCmd = False):
         print 'construct fit pdf ...'
         fitter = self.makeFitter()
 
@@ -327,20 +327,29 @@ class Wjj2DFitter:
         # print
 
         rangeCmd = RooCmdArg.none()
-        if self.rangeString and self.pars.doExclude:
+        if self.rangeString and self.pars.doExclude and not overrideRangeCmd:
             rangeCmd = RooFit.Range(self.rangeString)
+
+        print 'scanning parameter values...'
+        fitter.fitTo(data, RooFit.Minos(False),
+                     RooFit.PrintEvalErrors(-1),
+                     RooFit.Warnings(False),
+                     RooFit.Minimizer("Minuit2", "scan"),
+                     RooFit.PrintLevel(0),
+                     constraintCmd,
+                     rangeCmd)
 
         print 'fitting ...'
         fr = fitter.fitTo(data, RooFit.Save(True),
-                          RooFit.Extended(True),
+                          # RooFit.Extended(True),
                           RooFit.Minos(False),
                           RooFit.PrintEvalErrors(-1),
                           RooFit.Warnings(False),
+                          RooFit.Minimizer("Minuit2", "minimize"),
                           constraintCmd,
-                          rangeCmd)
+                          rangeCmd
+                          )
         fr.Print('v')
-
-        
 
         return fr
 
