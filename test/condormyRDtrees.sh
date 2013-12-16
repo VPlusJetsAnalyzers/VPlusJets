@@ -18,22 +18,82 @@
 # 3. Edit the list of tree codes in the loop at bottom for the trees you want processed. The codes are interpreted
 #    by kana*.C.
 #
-# 4. 'cd' to a directory that has the disk/quota space to receive all the output once it's done. I suggest 3DayLifetime
+# 4. Run this script, generate 'submit.txt'
+#
+# 5. 'cp submit.txt' to a directory that has the disk/quota space to receive all the output once it's done. I suggest 3DayLifetime
 #    scratch space. Condor will deliver your output to this directory. You can copy from there to eos or dcache
 #    once you've verified the output.
 # 
-# 4. Run this script, generate 'submit.txt'
+# 6. 'cd' to the directory with the submit.txt file.
 #
-# 5. Let 'er rip: "condor_submit submit.txt"
+# 7. Let 'er rip: "condor_submit submit.txt"
 #
 MYSRCDIR=${LOCALRT}/src/ElectroWeakAnalysis/VPlusJets/
 IFTABLEDIR=${MYSRCDIR}/test/InterferenceTable2012
 EFFTABLEDIR=${MYSRCDIR}/test/EffTable2012
 CLASSDIR=${MYSRCDIR}/test/ClassifierOut
 executable=${MYSRCDIR}/test/Limits/batchit.sh
-KANA=kanaelec
-MYRUN=MyRunElecBatch
+
+if [ $# -ne 1 ]
+then
+    echo "Usage: $0 [el|mu]"
+    exit
+fi
+
+FLAV=$1
+#FLAV=mu
+#FLAV=el
+
 submit=submit.txt
+#
+# Construct long list of TMVA libraries to load
+#
+CLASSLIST=""
+for nJ in nJ2 nJ3 VBF; do
+  for MASS in 170 180 190 200 250 300 350 400 450 500 550 600; do
+    CLASSLIST=$CLASSLIST,${CLASSDIR}/TMVAClassification_${MASS}_${nJ}_${FLAV}_Likelihood.class_C.so
+  done
+done
+
+CLASSLIST=$CLASSLIST,${CLASSDIR}/TMVAClassification_126_VBF_${FLAV}_Likelihood.class_C.so
+
+for nJ in nJ2 nJ3; do
+  for MASS in 400 450 500 550 600 700 800 900 1000; do
+    for TYPE in interferencedown interferencenominal interferenceup; do
+      CLASSLIST=$CLASSLIST,${CLASSDIR}/TMVAClassification_${MASS}_${nJ}_${FLAV}_${TYPE}_Likelihood.class_C.so
+    done
+  done
+done
+for nJ in nJ2 nJ3; do
+  for QG in noqg withqg; do
+    CLASSLIST=$CLASSLIST,${CLASSDIR}/TMVAClassification_${QG}_${nJ}_${FLAV}_BDT.class_C.so
+  done
+done
+
+TABLES=""
+for MASS in 400 450 500 550 600 700 800 900 1000; do
+    TABLES=$IFTABLEDIR/ratio${MASS}.txt
+done
+
+if [ "$FLAV" == "mu" ]
+then
+    KANA=kanamuon
+    MYRUN=MyRunMuonBatch
+    TABLES=${TABLES},$EFFTABLEDIR/scaleFactor-Run2012ABCD-RecoToIso.txt,$EFFTABLEDIR/efficiency-Run2012ABCD-IsoToIsoMuHLT.txt
+elif [ "$FLAV" == "el" ]
+then
+    KANA=kanaelec
+    MYRUN=MyRunElecBatch
+    TABLES=${TABLES},$EFFTABLEDIR/scaleFactor-Run2012ABCD-GsfElectronToId.txt,$EFFTABLEDIR/scaleFactor-Run2012ABCD-SCToElectron.txt,$EFFTABLEDIR/efficiency-Run2012ABCD-WP80ToHLTEle.txt,$EFFTABLEDIR/FullyEfficient.txt,$EFFTABLEDIR/FullyEfficient_Jet2NoJet1.txt,$EFFTABLEDIR/FullyEfficient_MHT.txt
+else
+    echo "Unknown lepton flavor $FLAV"
+    echo "Usage: $0 [el|mu]"
+    exit
+fi
+
+TABLES=${TABLES},$MYSRCDIR/test/Data190456-208686_PileupHistogram.root,$MYSRCDIR/test/sampledb2012.txt
+
+COMMONSRC=${MYSRCDIR}/test/${MYRUN}.C,${MYSRCDIR}/test/${KANA}_C.so,${MYSRCDIR}/test/Resolution_cc.so,${MYSRCDIR}/src/METzCalculator_cc.so,${MYSRCDIR}/src/QGLikelihoodCalculator_C.so,${MYSRCDIR}/test/EffTableReader_cc.so,${MYSRCDIR}/test/EffTableLoader_cc.so
 
 printheader() {
 cat >$submit <<EOF
@@ -42,7 +102,7 @@ Universe = vanilla
 Requirements = Memory > 250 && FileSystemDomain=="fnal.gov" && Disk > 500000 && Arch=="X86_64"
 Notification = ERROR
 Should_Transfer_Files = YES
-transfer_input_files =${MYSRCDIR}/test/${MYRUN}.C,${MYSRCDIR}/test/${KANA}_C.so,${MYSRCDIR}/test/Resolution_cc.so,${MYSRCDIR}/src/METzCalculator_cc.so,${MYSRCDIR}/src/QGLikelihoodCalculator_C.so,${MYSRCDIR}/test/EffTableReader_cc.so,${MYSRCDIR}/test/EffTableLoader_cc.so,${CLASSDIR}/TMVAClassification_1000_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_1000_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_126_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_126_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_170_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_170_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_170_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_170_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_170_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_170_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_180_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_180_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_180_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_180_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_180_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_180_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_190_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_190_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_190_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_190_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_190_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_190_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_200_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_200_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_200_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_200_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_200_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_200_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_250_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_250_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_250_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_250_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_250_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_250_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_300_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_300_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_300_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_300_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_300_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_300_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_350_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_350_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_350_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_350_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_350_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_350_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_400_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_450_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_500_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_550_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_VBF_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_VBF_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ2_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ2_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ3_el_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ3_mu_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_600_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_700_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_800_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ2_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ2_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ2_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ2_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ2_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ2_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ3_el_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ3_el_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ3_el_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ3_mu_interferencedown_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ3_mu_interferencenominal_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_900_nJ3_mu_interferenceup_Likelihood.class_C.so,${CLASSDIR}/TMVAClassification_noqg_nJ2_el_BDT.class_C.so,${CLASSDIR}/TMVAClassification_noqg_nJ2_mu_BDT.class_C.so,${CLASSDIR}/TMVAClassification_noqg_nJ3_el_BDT.class_C.so,${CLASSDIR}/TMVAClassification_noqg_nJ3_mu_BDT.class_C.so,${CLASSDIR}/TMVAClassification_withqg_nJ2_el_BDT.class_C.so,${CLASSDIR}/TMVAClassification_withqg_nJ2_mu_BDT.class_C.so,${CLASSDIR}/TMVAClassification_withqg_nJ3_el_BDT.class_C.so,${CLASSDIR}/TMVAClassification_withqg_nJ3_mu_BDT.class_C.so,$IFTABLEDIR/ratio400.txt,$IFTABLEDIR/ratio450.txt,$IFTABLEDIR/ratio500.txt,$IFTABLEDIR/ratio550.txt,$IFTABLEDIR/ratio600.txt,$IFTABLEDIR/ratio700.txt,$IFTABLEDIR/ratio800.txt,$IFTABLEDIR/ratio900.txt,$IFTABLEDIR/ratio1000.txt,$EFFTABLEDIR/scaleFactor-Run2012ABCD-GsfElectronToId.txt,$EFFTABLEDIR/scaleFactor-Run2012ABCD-SCToElectron.txt,$EFFTABLEDIR/efficiency-Run2012ABCD-WP80ToHLTEle.txt,$EFFTABLEDIR/FullyEfficient.txt,$EFFTABLEDIR/FullyEfficient_Jet2NoJet1.txt,$EFFTABLEDIR/FullyEfficient_MHT.txt,$MYSRCDIR/test/Data190456-208686_PileupHistogram.root
+transfer_input_files =${COMMONSRC},${CLASSLIST},${TABLES}
 WhenToTransferOutput = ON_EXIT
 EOF
 }
@@ -57,8 +117,9 @@ EOF
 }
 
 printheader
-#for treecode in 00001 1015 1016 1022 1037 1038 1039 1040 1002 1003 1004 1005 1006
-for treecode in 1040
+#for treecode in 0001 1003 1004 1005 1006 1007 10111 1012 1013 10281 1030 10301 1031 10311 1033 1034
+for treecode in 0001
+#for treecode in 1002
 do
   printargs
 done
