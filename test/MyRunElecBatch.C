@@ -1,5 +1,8 @@
-void MyRunElecBatch(double myflag=20112250, bool isQCD=false, int runflag)
+void MyRunElecBatch(double myflag=20112250, bool isQCD=false, int runflag=0)
 {
+  gSystem->Exec("ln -s /eos/uscms/store/user/lnujj/Moriond2013/MergedNtuples_v2_nojetnum InData");
+  gSystem->Exec("ln -s . InQCD");
+  gSystem->Exec("ln -s . OutData");
   gSystem->Exec("ln -s . EffTable2012");
   gSystem->Exec("ln -s . InterferenceTable2012");
   gSystem->Load("libFWCoreFWLite.so");
