@@ -15,7 +15,11 @@ void drawCoeffProfiles1pair(char *infile,
   TTree* tr = (TTree*) fin->Get("tree"); 
   for (int i=0; i<=6; i++) {
     TString hname(Form("%s_p%d_%s_%s",proc,i,varx,vary));
+
+    if (!tr->GetLeaf(Form("p%d",i))) continue;
+
     cout << "Drawing " << TString(hname)<<endl;
+
     TProfile2D* prof2d = new TProfile2D(hname,"",nptsx,xmin,xmax,nptsy,ymin,ymax);
     prof2d->SetTitle(Form("%s;%s;%s;p%d",hname.Data(),varx,vary,i));
     tr->Draw(Form("p%d:%s:%s>>%s",i,trvary,trvarx,hname.Data()),"","goff");
