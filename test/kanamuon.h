@@ -2244,7 +2244,16 @@ class kanamuon {
             Float_t            & fit_chi2,
             Int_t              & fit_NDF,
             Int_t              & fit_status);
-      virtual void     calculateAngles( TLorentzVector& thep4M11, TLorentzVector& thep4M12, TLorentzVector& thep4M21, TLorentzVector& thep4M22, double& costheta1, double& costheta2, double& phi, double& costhetastar, double& phistar1, double& phistar2);
+      virtual void     calculateAngles( TLorentzVector& thep4M11,
+					TLorentzVector& thep4M12,
+					TLorentzVector& thep4M21,
+					TLorentzVector& thep4M22,
+					double& costheta1,
+					double& costheta2,
+					double& phi,
+					double& costhetastar,
+					double& phistar1,
+					double& phistar2);
       virtual void     InitCounters(const char* input_file_name, TH1F* h_events, TH1F* h_events_weighted);
 
  private:
@@ -2296,7 +2305,7 @@ kanamuon::kanamuon(TTree *tree)
    // if parameter tree is not specified (or zero), connect the file
    // used to generate this class and read the Tree.
    if (tree == 0) {
-     TString inittreepath=inDataDir+TString("/mu_WJets_CMSSW532_pt1_v2.root");
+     TString inittreepath=inDataDir+TString("/mu_WW_CMSSW532.root");
      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(inittreepath);
       if (!f) {
 	f = new TFile(inittreepath);
@@ -2308,11 +2317,15 @@ kanamuon::kanamuon(TTree *tree)
    readSampleDBfile(sampledbfile,m_samplecodes_);
 }
 
+//============================================================
+
 kanamuon::~kanamuon()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 }
+
+//============================================================
 
 Int_t kanamuon::GetEntry(Long64_t entry)
 {

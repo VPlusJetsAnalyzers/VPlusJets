@@ -2248,7 +2248,16 @@ public :
                                        Float_t            & fit_chi2,
                                        Int_t              & fit_NDF,
                                        Int_t              & fit_status);
-   virtual void     calculateAngles( TLorentzVector& thep4M11, TLorentzVector& thep4M12, TLorentzVector& thep4M21, TLorentzVector& thep4M22, double& costheta1, double& costheta2, double& phi, double& costhetastar, double& phistar1, double& phistar2);
+   virtual void     calculateAngles( TLorentzVector& thep4M11,
+				     TLorentzVector& thep4M12,
+				     TLorentzVector& thep4M21,
+				     TLorentzVector& thep4M22,
+				     double& costheta1,
+				     double& costheta2,
+				     double& phi,
+				     double& costhetastar,
+				     double& phistar1,
+				     double& phistar2);
    virtual void     InitCounters(const char* input_file_name, TH1F* h_events, TH1F* h_events_weighted);
 
  private:
@@ -2297,10 +2306,10 @@ void readSampleDBfile(const TString& sampledbfilename,
 
 kanaelec::kanaelec(TTree *tree)
 {
-// if parameter tree is not specified (or zero), connect the file
-// used to generate this class and read the Tree.
+   // if parameter tree is not specified (or zero), connect the file
+   // used to generate this class and read the Tree.
    if (tree == 0) {
-     TString inittreepath=inDataDir+TString("/el_WJets_CMSSW532_pt1_v2.root");
+     TString inittreepath=inDataDir+TString("/el_WW_CMSSW532.root");
      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(inittreepath);
       if (!f) {
 	f = new TFile(inittreepath);
@@ -2324,13 +2333,13 @@ kanaelec::~kanaelec()
 
 Int_t kanaelec::GetEntry(Long64_t entry)
 {
-// Read contents of entry.
+   // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
 Long64_t kanaelec::LoadTree(Long64_t entry)
 {
-// Set the environment to read one entry
+   // Set the environment to read one entry
    if (!fChain) return -5;
    Long64_t centry = fChain->LoadTree(entry);
    if (centry < 0) return centry;

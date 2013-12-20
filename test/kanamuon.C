@@ -88,7 +88,7 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
   cout << "isQCD=" << isQCD << endl;
 
   // 2012 data
-  if (myflag == 20120001 || myflag == -100){
+  if (myflag == 20120000 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
       InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root", h_events, h_events_weighted);
@@ -97,36 +97,36 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
     } else {
       InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
       myChain->Add( inQCDDir + "QCDmu.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
+      Init(myChain);Loop( h_events, h_events_weighted, 20120000,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
     }
   }
-  else if (myflag == 201200001 || myflag == -100){
+  else if (myflag == 20120001 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
       InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
       myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 201200001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
 
     } else {
       InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
       myChain->Add( inQCDDir + "QCDmu.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 201200001,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
+      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
     }
   }
-  else if (myflag == 201200002 || myflag == -100){
+  else if (myflag == 20120002 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
       // InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root", h_events, h_events_weighted);
       // myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root");
-      // Init(myChain);Loop( h_events, h_events_weighted, 20120000,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_19p3invfb");
+      // Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_19p3invfb");
       InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root", h_events, h_events_weighted);
       myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 201200002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
       
     } else  {        
       // InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
       // myChain->Add( inQCDDir + "QCDmu.root");
-      // Init(myChain);Loop( h_events, h_events_weighted, 201100002,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
+      // Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
     }
   }
   else if (!isQCD) {
@@ -2319,16 +2319,18 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			//CA8 Jet And we also need to check the AK7 Jet
 			for (int i=0; i<6; i++) {
 			  TLorentzVector ca8jetp4;
-			  ca8jetp4.SetPtEtaPhiE(GroomedJet_CA8_pt[i], GroomedJet_CA8_eta[i], GroomedJet_CA8_phi[i], GroomedJet_CA8_e[i]);
-			  double deltaR_lca8jet = mup.DeltaR(ca8jetp4);
-			  //double deltaphi_METca8jet = b_nvp.DeltaPhi(ca8jetp4);
-			  double deltaphi_METca8jet = getDeltaPhi(b_nvp.Phi(),ca8jetp4.Phi());
-			  //double deltaphi_Vca8jet = wbosonp.DeltaPhi(ca8jetp4);
-			  double deltaphi_Vca8jet = getDeltaPhi(wbosonp.Phi(),ca8jetp4.Phi());
+			  if (GroomedJet_CA8_pt[i]>boostedWJpt ) {
+			    ca8jetp4.SetPtEtaPhiE(GroomedJet_CA8_pt[i], GroomedJet_CA8_eta[i], GroomedJet_CA8_phi[i], GroomedJet_CA8_e[i]);
+			    double deltaR_lca8jet = mup.DeltaR(ca8jetp4);
+			    //double deltaphi_METca8jet = b_nvp.DeltaPhi(ca8jetp4);
+			    double deltaphi_METca8jet = getDeltaPhi(b_nvp.Phi(),ca8jetp4.Phi());
+			    //double deltaphi_Vca8jet = wbosonp.DeltaPhi(ca8jetp4);
+			    double deltaphi_Vca8jet = getDeltaPhi(wbosonp.Phi(),ca8jetp4.Phi());
 
-			  GroomedJet_CA8_deltaR_lca8jet[i]     = deltaR_lca8jet;
-			  GroomedJet_CA8_deltaphi_METca8jet[i] = deltaphi_METca8jet;
-			  GroomedJet_CA8_deltaphi_Vca8jet[i]   = deltaphi_Vca8jet;
+			    GroomedJet_CA8_deltaR_lca8jet[i]     = deltaR_lca8jet;
+			    GroomedJet_CA8_deltaphi_METca8jet[i] = deltaphi_METca8jet;
+			    GroomedJet_CA8_deltaphi_Vca8jet[i]   = deltaphi_Vca8jet;
+			  }
 			}
 
 			TLorentzVector leadingjetca8p4;
