@@ -1,27 +1,34 @@
 #!/bin/bash
 #
-# This script generates a text file that can be read by a "condor_submit" command, submitting jobs to the condor queue
-# for processing. The jobs are dedicated to 'reducing' lnujj ntuples using the kana*.C scripts. The beauty of this
-# setup is that it does not require you to have a working area yourself; you can copy someone else's working area
-# entirely (assuming you have read permissions) and run these scripts in batch to create a set of reduced trees that
-# end up in whatever destination you choose, or mix and match; take the code from one area and the tables from another.
-# Caveat emptor; this script cannot compensate for dumb choices.
-#
+# This script generates a text file that can be read by a
+# "condor_submit" command, submitting jobs to the condor queue for
+# processing. The jobs are dedicated to 'reducing' lnujj ntuples using
+# the kana*.C scripts. The beauty of this setup is that it does not
+# require you to have a working area yourself; you can copy someone
+# else's working area entirely (assuming you have read permissions) and
+# run these scripts in batch to create a set of reduced trees that end
+# up in whatever destination you choose, or mix and match; take the
+# code from one area and the tables from another.Caveat emptor; this
+# script cannot compensate for dumb choices.
+# 
 # Instructions for use:
 #
-# 1. Create/Locate a ElectroWeakAnalysis/VplusJets/test working area. The regular MyRunElec.C and MyRunMuon.C scripts
-#    should have been used to compile the complete set of code necessary to run the associated kana*.C scripts.
+# 1. Create/Locate a ElectroWeakAnalysis/VplusJets/test working area. The regular
+#    MyRunElec.C and MyRunMuon.C scripts should have been used to compile the
+#    complete set of code necessary to run the associated kana*.C scripts.
 #
-# 2. Edit the environment variables below to tell the script where to find things. The "transfer_input_files" field
-#    is a comma-separated list that tells condor what files to transfer to the worker node before starting processing.
+# 2. Edit the environment variables below to tell the script where to find things.
+#    The "transfer_input_files" field is a comma-separated list that tells condor
+#    what files to transfer to the worker node before starting processing.
 #
-# 3. Edit the list of tree codes in the loop at bottom for the trees you want processed. The codes are interpreted
-#    by kana*.C.
+# 3. Edit the list of tree codes in the loop at bottom for the trees you want
+#    processed. The codes are interpreted by kana*.C.
 #
 # 4. Run this script, generate 'submit.txt'
 #
-# 5. 'cp submit.txt' to a directory that has the disk/quota space to receive all the output once it's done. I suggest 3DayLifetime
-#    scratch space. Condor will deliver your output to this directory. You can copy from there to eos or dcache
+# 5. 'cp submit.txt' to a directory that has the disk/quota space to receive all
+#    the output once it's done. I suggest 3DayLifetime scratch space. Condor will
+#    deliver your output to this directory. You can copy from there to eos or dcache
 #    once you've verified the output.
 # 
 # 6. 'cd' to the directory with the submit.txt file.
@@ -44,7 +51,7 @@ FLAV=$1
 #FLAV=mu
 #FLAV=el
 
-submit=submit.txt
+submit=submit${FLAV}.txt
 #
 # Construct long list of TMVA libraries to load
 #
@@ -118,8 +125,7 @@ EOF
 
 printheader
 #for treecode in 0001 1003 1004 1005 1006 1007 10111 1012 1013 10281 1030 10301 1031 10311 1033 1034
-for treecode in 0001
-#for treecode in 1002
+for treecode in 10301
 do
   printargs
 done
