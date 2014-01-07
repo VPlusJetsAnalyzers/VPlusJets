@@ -35,6 +35,10 @@ parser.add_option('--mva', dest='mvaCut', type='float',
                   help='override cut value for mva')
 parser.add_option('--xrootd', dest='xrootd', action='store_true',
                   help='use xrootd file opening.')
+parser.add_option('--datafile', dest='datafile', 
+                  help='use this datafile for the fit')
+parser.add_option('--injectS', type='float', dest='sigInject',
+                  help='amount of signal to inject')
 
 (opts, args) = parser.parse_args()
 
@@ -82,6 +86,12 @@ pars = config.theConfig(Nj = opts.Nj, mH = opts.mH,
                         isElectron = opts.isElectron, initFile = mjjArgs,
                         includeSignal = False, MVACutOverride = mvaCutOverride,
                         xrootd = opts.xrootd)
+
+if opts.datafile:
+    pars.DataFile = opts.datafile
+
+if opts.toy:
+    pars.blind = False
 
 fitter = RooWjj2DFitter.Wjj2DFitter(pars)
 fitter.ws.SetName("w_mjj")
@@ -198,29 +208,6 @@ if blinder2:
 
 cp1.Update()
 
-if opts.toyOut:
-    outFile = open(opts.toyOut, 'a', 1)
-    fitter.ws.loadSnapshot("genPars")
-
-    line = '%s %.6g %.6g %.6g '
-    outFile.write('nll %f covQual %i edm %.4g ' % (fr.minNll(), fr.covQual(),
-                                                   fr.edm())
-                  )
-    outFile.write('chi2Prob %f ' % (TMath.Prob(chi2, ndf)))
-    for cycle in range(0, fr.numStatusHistory()):
-        outFile.write('%s %i ' % (fr.statusLabelHistory(cycle),
-                                  fr.statusCodeHistory(cycle))
-                      )
-    for i in range(0, fr.floatParsFinal().getSize()):
-        outFile.write(line % (fr.floatParsFinal().at(i).GetName(),
-                              fr.floatParsFinal().at(i).getVal(),
-                              fr.floatParsFinal().at(i).getError(),
-                              fitter.ws.var(fr.floatParsFinal().at(i).GetName()).getVal()
-                              )
-                      )
-    outFile.write('\n')
-    outFile.close()
-
 mode = 'muon'
 if opts.isElectron:
     mode = 'electron'
@@ -252,6 +239,9 @@ pars_mWW = HWW1D2FitsConfig_mWW.theConfig(Nj = opts.Nj, mH = opts.mH,
                                           xrootd = opts.xrootd)
 pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
 
+if opts.toy:
+    pars_mWW.blind = False
+
 # add systematic errors multipliers to ggH signals
 if (opts.mH >= 400):
     pars_mWW.ggHdoSystMult = True
@@ -268,14 +258,37 @@ mWWCut = '((%s>%.0f)&&(%s<%.0f))' % \
     (pars.var[0], pars.exclude[pars.var[0]][0],
      pars.var[0], pars.exclude[pars.var[0]][1])
 print 'signal region cut:',mWWCut
-fitter_mWW.loadDataFromWorkspace(fitter.ws, mWWCut)
+
 fitter_mWW.resetYields()
 params_mWW = totalPdf_mWW.getParameters(fitter_mWW.ws.set('obsSet'))
 
 predictedPars = params_mWW.snapshot()
 
+if opts.sigInject:
+    fitter_mWW.ws.var('r_signal').setVal(opts.sigInject)
+fitter_mWW.ws.var('r_signal').setError(0.1)
+fitter_mWW.ws.var('r_signal').setRange(-3., 9.)
+fitter_mWW.ws.var('r_signal').setConstant(False)
+
 params_mWW.Print("v")
-#fitter_mWW.ws.Print()
+fitter_mWW.ws.defineSet("params", params_mWW)
+
+if opts.toy:
+    #generate toy dataset
+    print 'Generated parameters'
+    fitter_mWW.ws.set('params').Print('v')
+    fitter_mWW.ws.saveSnapshot("genPars", params_mWW)
+
+    data = totalPdf_mWW.generate(fitter_mWW.ws.set('obsSet'), 
+                                 RooFit.Name('data_obs'),
+                                 RooFit.Extended())
+    if fitter_mWW.pars.binData:
+        data = RooDataHist('data_obs', 'data_obs', fitter_mWW.ws.set('obsSet'),
+                           data)
+    data.Print('v')
+    getattr(fitter_mWW.ws, 'import')(data)
+else:    
+    fitter_mWW.loadDataFromWorkspace(fitter.ws, mWWCut)
 
 #compute limits
 import limits
@@ -283,8 +296,6 @@ from array import array
 
 upperHist = None
 
-fitter_mWW.ws.var('r_signal').setRange(-3., 9.)
-fitter_mWW.ws.var('r_signal').setConstant(False)
 full_pdf = fitter_mWW.makeConstrainedFitter()
 if not full_pdf:
     full_pdf = totalPdf_mWW
@@ -338,8 +349,10 @@ if opts.doLimit:
 
 fitter_mWW.ws.var('r_signal').setVal(0.0)
 fitter_mWW.ws.var('r_signal').setConstant(True)
+if opts.sigInject != None:
+    fitter_mWW.ws.var('r_signal').setConstant(False)
 fitter_mWW.ws.var('r_signal').setError(0.1)
-fitter_mWW.ws.var('r_signal').setRange(-0.5, 5.)
+# fitter_mWW.ws.var('r_signal').setRange(-0.5, 5.)
 
 fr_mWW = None
 fr_mWW = fitter_mWW.fit()
@@ -347,6 +360,30 @@ fr_mWW = fitter_mWW.fit()
 # if fr_mWW.statusCodeHistory(0) != 0:
 #     print fr_mWW.statusLabelHistory(0), 'failed'
 #     fr_mWW = fitter_mWW.fit(True)
+
+if opts.toyOut:
+    outFile = open(opts.toyOut, 'a', 1)
+    fitter_mWW.ws.loadSnapshot("genPars")
+
+    line = '%s %.6g %.6g %.6g '
+    outFile.write('nll %f covQual %i edm %.4g ' % (fr_mWW.minNll(), 
+                                                   fr_mWW.covQual(),
+                                                   fr_mWW.edm())
+                  )
+    # outFile.write('chi2Prob %f ' % (TMath.Prob(chi2, ndf)))
+    for cycle in range(0, fr_mWW.numStatusHistory()):
+        outFile.write('%s %i ' % (fr_mWW.statusLabelHistory(cycle),
+                                  fr_mWW.statusCodeHistory(cycle))
+                      )
+    for i in range(0, fr_mWW.floatParsFinal().getSize()):
+        outFile.write(line % (fr_mWW.floatParsFinal().at(i).GetName(),
+                              fr_mWW.floatParsFinal().at(i).getVal(),
+                              fr_mWW.floatParsFinal().at(i).getError(),
+                              fitter_mWW.ws.var(fr_mWW.floatParsFinal().at(i).GetName()).getVal()
+                              )
+                      )
+    outFile.write('\n')
+    outFile.close()
 
 plot_mWW = fitter_mWW.stackedPlot(pars_mWW.var[0])
 plot_mWW.SetName('%s_plot_stacked' % (pars_mWW.var[0]))
