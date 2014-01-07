@@ -46,9 +46,9 @@ TString par2latex(const TString& parname)
 
 float parmin(const TString& parname)
 {
-  if (parname.EqualTo("lZ") )  return -0.03;
-  if (parname.EqualTo("dkg") ) return -0.12;
-  if (parname.EqualTo("dg1") ) return -0.05;
+  if (parname.EqualTo("lZ") )  return -0.1;
+  if (parname.EqualTo("dkg") ) return -0.5;
+  if (parname.EqualTo("dg1") ) return -0.1;
 
   return -999;
 }
@@ -57,9 +57,9 @@ float parmin(const TString& parname)
 
 float parmax(const TString& parname)
 {
-  if (parname.EqualTo("lZ") )  return 0.03;
-  if (parname.EqualTo("dkg") ) return 0.2;
-  if (parname.EqualTo("dg1") ) return 0.07;
+  if (parname.EqualTo("lZ") )  return 0.1;
+  if (parname.EqualTo("dkg") ) return 0.5;
+  if (parname.EqualTo("dg1") ) return 0.1;
 
   return -999;
 }
@@ -478,36 +478,39 @@ void collectContours(map<string,TGraph2D *>& m_graphs,
   //process TGraph2Ds into contours at levels m_contourlevels
   for (size_t i=0; i<keys.size(); i++) {
     double clev = m_contourlevels[keys[i]];
-    m_graphs[keys[i]]->GetHistogram()->SetContour(1, &clev);
-    //canv->cd(i+1);
-    cout << "drawing... " << endl;
+    TGraph2D *gr2d = m_graphs[keys[i]];
+    if (gr2d && (gr2d->GetN() > 0)) {
+      gr2d->GetHistogram()->SetContour(1, &clev);
+      //canv->cd(i+1);
+      cout << "drawing... " << endl;
 
-    m_graphs[keys[i]]->Draw("CONT LIST"); // it's stupid, but only "CONT" will generate the list
-    gPad->Update();
+      gr2d->Draw("CONT LIST"); // it's stupid, but only "CONT" will generate the list
+      gPad->Update();
 
-    TObjArray *contours = (TObjArray *)gROOT->GetListOfSpecials()->FindObject("contours");
-    assert(contours);
+      TObjArray *contours = (TObjArray *)gROOT->GetListOfSpecials()->FindObject("contours");
+      assert(contours);
 
-    TList *newlist = 0;
-    for (int ci=0; ci<contours->GetEntriesFast(); ci++) {
-      TList *contLevel = (TList*)contours->At(ci);
-      printf("%s: Contour %d has %d Graphs\n", keys[i].c_str(), ci, contLevel->GetSize());
+      TList *newlist = 0;
+      for (int ci=0; ci<contours->GetEntriesFast(); ci++) {
+	TList *contLevel = (TList*)contours->At(ci);
+	printf("%s: Contour %d has %d Graphs\n", keys[i].c_str(), ci, contLevel->GetSize());
 
-      if (contLevel->GetSize()) {
-	assert(contLevel->First());
-	if (!newlist) newlist = new TList();
-	TGraph *curv = (TGraph*)(contLevel->First());
-
-	for (int j=0; j<contLevel->GetSize(); j++) {
-	  newlist->Add((TGraph *)(curv->Clone()));
-	  curv=(TGraph *)(contLevel->After(curv));
+	if (contLevel->GetSize()) {
+	  assert(contLevel->First());
+	  if (!newlist) newlist = new TList();
+	  TGraph *curv = (TGraph*)(contLevel->First());
+	  
+	  for (int j=0; j<contLevel->GetSize(); j++) {
+	    newlist->Add((TGraph *)(curv->Clone()));
+	    curv=(TGraph *)(contLevel->After(curv));
+	  }
 	}
-      }
-    } // contour loop
+      } // contour loop
 
-    cout << "Inserting contour list for "<< keys[i] << " newlist="<<newlist<<endl;
-    m_contours[keys[i]] = newlist;
+      cout << "Inserting contour list for "<< keys[i] << " newlist="<<newlist<<endl;
+      m_contours[keys[i]] = newlist;
 
+    } // if (gr2d)
   } // key loop
 
   //delete canv;
@@ -751,17 +754,20 @@ draw2DLimitContours(map<string,TList *>& m_contours,
     curv=(TGraph *)(contLevel->After(curv));
   }
 
-  cout << "Drawing obs95" << endl;
   
   contLevel = m_contours["obs95"];
 
-  curv = (TGraph*)(contLevel->First());
+  if (contLevel) {
+    cout << "Drawing obs95" << endl;
 
-  for (int i=0; i<contLevel->GetSize(); i++) {
-    curv->Draw("SAME C");
-    curv->SetLineWidth(2);
-    if (!i) legend->AddEntry(curv,"Observed 95% C.L.","L");
-    curv=(TGraph *)(contLevel->After(curv));
+    curv = (TGraph*)(contLevel->First());
+
+    for (int i=0; i<contLevel->GetSize(); i++) {
+      curv->Draw("SAME C");
+      curv->SetLineWidth(2);
+      if (!i) legend->AddEntry(curv,"Observed 95% C.L.","L");
+      curv=(TGraph *)(contLevel->After(curv));
+    }
   }
 
   
@@ -811,7 +817,7 @@ draw2DLimitContours(map<string,TList *>& m_contours,
   finalPlot->Update();
   finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
   finalPlot->Print(Form("%s.eps",plotprefix.Data()));
-  finalPlot->Print(Form("%s.png",plotprefix.Data()));
+  //finalPlot->Print(Form("%s.png",plotprefix.Data()));
 
 }                                                 // draw2DlimitContours
 
@@ -1008,6 +1014,8 @@ draw1DLimit(map<string,TGraph2D *> m_graphs,
 }                                                         // draw1Dlimit
 
 //======================================================================
+// to plot only expected limit, just omit the observed limit file from
+// the fileglob
 
 void atgcplotLimit(const string& fileglob)
 {

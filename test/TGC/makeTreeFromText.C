@@ -1,33 +1,40 @@
 
 void makeTreeFromText() {
+  const char *fmt = 
 
    makeTreeFromText("params-ww-kappa-lambda-cteq6l1-fitted-withCuts.list", 
-   "ww_root_kappa-lambda.root", "lambda", "dkappa");
+		    "ww_root_kappa-lambda.root",
+		    "lambda/F:dkappa:p0:p1:p2:p3:p4:p5:chi2");
 
    makeTreeFromText("params-ww-lambda-g1z-cteq6l1-fitted-withCuts.list", 
-   "ww_root_lambda-g1.root", "lambda", "dg1");
+		    "ww_root_lambda-g1.root",
+		    "lambda/F:dg1:p0:p1:p2:p3:p4:p5:chi2");
 
    makeTreeFromText("params-ww-kappa-g1z-cteq6l1-fitted-withCuts.list",
-   "ww_root_kappa-g1.root", "dkappa", "dg1");
+		    "ww_root_kappa-g1.root",
+		    "dkappa/F:dg1:p0:p1:p2:p3:p4:p5:chi2");
 
    makeTreeFromText("params-wz-kappa-lambda-cteq6l1-fitted-withCuts.list", 
-   "wz_root_kappa-lambda.root", "lambda", "dkappa");
+		    "wz_root_kappa-lambda.root",
+		    "lambda/F:dkappa:p0:p1:p2:p3:p5:p6:chi2");            // N.B.!!!
 
    makeTreeFromText("params-wz-lambda-g1z-cteq6l1-fitted-withCuts.list", 
-   "wz_root_lambda-g1.root", "lambda", "dg1");
+		    "wz_root_lambda-g1.root",
+		    "lambda/F:dg1:p0:p1:p2:p3:p4:p5:p6:chi2");
 
    makeTreeFromText("params-wz-kappa-g1z-cteq6l1-fitted-withCuts.list",
-   "wz_root_kappa-g1.root", "dkappa", "dg1");
+		    "wz_root_kappa-g1.root",
+		    "dkappa/F:dg1:p0:p1:p2:p3:p4:p5:p6:chi2");
 }
 
-void makeTreeFromText(char* inputFile, char* outputFile, char* first, char* second) {
+void makeTreeFromText(const char* inputFile,
+		      const char* outputFile,
+		      const char *fmt) {
    TFile fout( outputFile, "recreate");
    TTree tree("tree","tree");
-   char vars[1000];
-   sprintf(vars, "%s/F:%s:p0:p1:p2:p3:p4:p5:p6:chi2", first, second);
 
-   //char* branches = "first/F:second:p0:p1:p2:p3:p4:p5:p6:chi2";
-   tree.ReadFile( inputFile, vars);
+   //char* branches = "first/F:second:p0:p1:p2:p3:p4:chi2";
+   tree.ReadFile( inputFile, fmt);
 
    tree.Write();
    // fout.Close();
