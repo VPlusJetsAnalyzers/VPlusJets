@@ -21,6 +21,7 @@
 // CMS includes
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
 #include "TMath.h" 
 // Header file
@@ -72,6 +73,8 @@ void ewk::MCTreeFiller::SetBranches()
 			lept2 = "neutrino";
 		}
 	}
+
+	SetBranch( &mcWeight,    "genwt");
 
 	SetBranch( &Photon_pt_gen,      "Photon_pt_gen");
 	SetBranch( &H_mass,      "H_mass_gen");
@@ -423,6 +426,8 @@ void ewk::MCTreeFiller::SetBranches()
 
 void ewk::MCTreeFiller::init()   
 {
+        mcWeight = 0.;
+
 	// initialize private data members
 	Photon_pt_gen         = -1. ;
 	H_mass                  = -1.;
@@ -770,13 +775,15 @@ void ewk::MCTreeFiller::fill(const edm::Event& iEvent)
 	// first initialize to the default values
 	init();
 
+	edm::Handle<GenEventInfoProduct> geninfo;  
+	iEvent.getByLabel("generator",geninfo);
+	mcWeight = geninfo->weight();
 
 	edm::Handle<reco::GenParticleCollection> genParticles;
 	iEvent.getByLabel(mInputgenParticles, genParticles);
 
 	size_t nGen = genParticles->size();
 	if( nGen < 1 ) return; // Nothing to fill
-
 
 	// now iterate over the daughters  
 	const reco::Candidate *V=NULL;
