@@ -143,8 +143,10 @@ if (gSystem.DynamicPathName("libFWCoreFWLite.so",True)):
         gROOT.ProcessLine('.L RooATGCFunction.cxx+')
     if not TClass.GetClass('RooExpPoly'):
         gROOT.ProcessLine('.L RooExpPoly.cxx+')
+    if not TClass.GetClass('RooRelBWRunningWidth'):
+        gROOT.ProcessLine('.L RooRelBWRunningWidth.cxx+')
 
 print 'end of pyroot_logon'
 
 if __name__ == '__main__':
-    from ROOT import *
+    import ROOT as r

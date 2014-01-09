@@ -330,14 +330,14 @@ class Wjj2DFitter:
         if self.rangeString and self.pars.doExclude and not overrideRangeCmd:
             rangeCmd = RooFit.Range(self.rangeString)
 
-        print 'scanning parameter values...'
-        fitter.fitTo(data, RooFit.Minos(False),
-                     RooFit.PrintEvalErrors(-1),
-                     RooFit.Warnings(False),
-                     RooFit.Minimizer("Minuit2", "scan"),
-                     RooFit.PrintLevel(0),
-                     constraintCmd,
-                     rangeCmd)
+        # print 'scanning parameter values...'
+        # fitter.fitTo(data, RooFit.Minos(False),
+        #              RooFit.PrintEvalErrors(-1),
+        #              RooFit.Warnings(False),
+        #              RooFit.Minimizer("Minuit2", "scan"),
+        #              RooFit.PrintLevel(0),
+        #              constraintCmd,
+        #              rangeCmd)
 
         print 'fitting ...'
         fr = fitter.fitTo(data, RooFit.Save(True),
