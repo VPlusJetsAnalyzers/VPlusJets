@@ -72,6 +72,8 @@ namespace ewk {
 		private:
 			// private data members
 
+			float mcWeight;
+
 			float Photon_pt_gen;
 			float H_mass;
 			float H_px;
