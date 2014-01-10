@@ -125,7 +125,7 @@ def theConfig(**kwargs):
     else:
         pars.includeSignal = False
     pars.signals = ['ggH', 'qqH']
-    pars.yieldConstraints = { 'diboson' : 0.034, 'top' : 0.07 }
+    pars.yieldConstraints = { 'diboson' : 0.10, 'top' : 0.07 }
     #pars.yieldConstraints = {}
     pars.constrainShapes = ['WpJ']
     # if kwargs['mH'] > 200:

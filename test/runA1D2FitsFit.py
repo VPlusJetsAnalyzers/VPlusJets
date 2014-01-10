@@ -28,6 +28,12 @@ parser.add_option('--xrootd', dest='xrootd', action='store_true',
 parser.add_option('--obsLimit', dest='obsLimit', action='store_true',
                   default=False,
                   help='calculate observed limit too')
+parser.add_option('--toy', dest='toy', action='store_true',
+                  help='use pseudo-data instead of data file')
+parser.add_option('--toyOut', dest='toyOut', help='filename for toy output')
+parser.add_option('--injectS', type='float', dest='sigInject',
+                  help='amount of signal to inject')
+
 (opts, args) = parser.parse_args()
 
 import os
@@ -51,6 +57,17 @@ if opts.xrootd:
 
 if opts.obsLimit:
     commonCmd.append('--obsLimit')
+
+if opts.sigInject != None:
+    commonCmd.extend(['--injectS', str(opts.sigInject)])
+
+if opts.toy:
+    commonCmd.append('--toy')
+    commonCmd.extend(['--seed', '0'])
+
+if opts.toyOut:
+    print "toyOut:",opts.toyOut
+    commonCmd.extend(['--toyOut', opts.toyOut])
 
 if opts.reuse:
     flavor = 'electron' if opts.isElectron else 'muon'

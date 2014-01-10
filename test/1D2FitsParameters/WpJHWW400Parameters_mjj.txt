@@ -1,5 +1,5 @@
-offset_WpJ_Mass2j_PFCor = 45.216 +/- 4.7051 L(-1.83407 - 92.267)
-power2_WpJ_Mass2j_PFCor = -0.223478 +/- 0.34171 L(-3.64061 - 3.19366)
-power_WpJ_Mass2j_PFCor = 1.9215 +/- 0.15840 L(0.337522 - 3.50548)
-width_WpJ_Mass2j_PFCor = 22.309 +/- 4.2861 L(-20.5525 - 65.1699)
+offset_WpJ_Mass2j_PFCor = 45.216 +/- 7.3221 L(-28.0042 - 118.437)
+power2_WpJ_Mass2j_PFCor = -0.223433 +/- 0.52849 L(-5.50833 - 5.06146)
+power_WpJ_Mass2j_PFCor = 1.9215 +/- 0.24615 L(-0.540047 - 4.38304)
+width_WpJ_Mass2j_PFCor = 22.310 +/- 5.2881 L(-30.5708 - 75.1915)
 n_WpJ = 40784.5 +/- 202.0 C

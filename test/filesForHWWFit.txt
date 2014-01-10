@@ -48,3 +48,4 @@ plotHWWplots.py
 checkFits.py
 fixErfParams.py
 runHiggsNew.py
+runToyBatch.py
