@@ -11,19 +11,19 @@ Universe = vanilla
 Requirements = Memory > 250 && FileSystemDomain=="fnal.gov" && Disk > 500000 && Arch=="X86_64"
 Notification = ERROR
 Should_Transfer_Files = YES
-transfer_input_files = $JAKESRCDIR/HWWFitting.tar.gz,$MYSRCDIR/runScanBatch.sh
+transfer_input_files = $JAKESRCDIR/HWWFitting.tar.gz,$JAKESRCDIR/runScanBatch.sh
 WhenToTransferOutput = ON_EXIT
 EOF
 }
 
 printargs() {
-    echo "Error = fitToys_M${masspt}_Sig${cutval}.stderr" >>$submit
-    echo "Output = fitToys_M${masspt}_Sig${cutval}.stdout" >>$submit
+    echo "Error = fitToys_M${masspt}_Sig${cutval}_${start}_${end}.stderr" >>$submit
+    echo "Output = fitToys_M${masspt}_Sig${cutval}_${start}_${end}.stdout" >>$submit
     echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runToyBatch.py --mH ${masspt} -s ${start} -e ${end} --injectS ${cutval}" >>$submit
     echo "Queue" >>$submit
 }
 
-cutval=0.
+cutval=0.0
 cutdir=toyFit${cutval}Sig
 submit=submit_${cutdir}.txt
 mkdir -p $cutdir
@@ -39,7 +39,7 @@ do
     printargs
   done
 done
-# condor_submit $submit
+condor_submit $submit
 cd -
 
 

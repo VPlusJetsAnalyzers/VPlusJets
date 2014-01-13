@@ -7,6 +7,10 @@ parser.add_option('-m', '--mode', default="HWW2DConfig", dest='modeConfig',
                   help='which config to select look at HWW2DConfig.py for ' +\
                       'an example.  Use the file name minus the .py extension.'
                   )
+parser.add_option('--mjj', dest='mjj_config',
+                  help='which config to select for the mjj parameters' +\
+                      'an example.  Use the file name minus the .py extension.'
+                  )
 parser.add_option('-H', '--mH', dest='mH', default=350, type='int',
                   help='Higgs Mass Point')
 parser.add_option('-j', '--Njets', dest='Nj', default=2, type='int',
@@ -70,6 +74,9 @@ mvaCutOverride = None
 if hasattr(opts, "mvaCut") and (opts.mvaCut != None):
     mvaCutOverride = opts.mvaCut
     configArgs['MVACutOverride'] = opts.mvaCut
+
+if opts.mjj_config:
+    configArgs['mjj_config'] = opts.mjj_config
 
 sb = None
 if opts.sb > 0:

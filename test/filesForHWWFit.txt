@@ -30,6 +30,8 @@ RooATGCFunction.cxx
 RooATGCFunction.h
 RooExpPoly.cxx
 RooExpPoly.h
+RooRelBWRunningWidth.cxx
+RooRelBWRunningWidth.h
 EffLookupTable.py
 RooWjj2DFitter.py
 RooWjj2DFitterPars.py
@@ -49,3 +51,6 @@ checkFits.py
 fixErfParams.py
 runHiggsNew.py
 runToyBatch.py
+genA1D2FitsToy.py
+genHWW1D2FitsToy.py
+HWW1D2FitsConfigPoly.py

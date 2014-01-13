@@ -27,7 +27,8 @@ parser.add_option('--debug', dest='debug', action='store_true', default=False,
                   help='turn on extra debugging information')
 parser.add_option('--limit', dest='doLimit', type='int',
                   default=0,
-                  help='calculate expected limits using profile likelihood, number of toys to use.')
+                  help='calculate expected limits using profile likelihood, ' +\
+                      'number of toys to use.')
 parser.add_option('--obsLimit', dest='obsLimit', action='store_true',
                   default=False,
                   help='calculate observed limit too')
@@ -35,8 +36,6 @@ parser.add_option('--mva', dest='mvaCut', type='float',
                   help='override cut value for mva')
 parser.add_option('--xrootd', dest='xrootd', action='store_true',
                   help='use xrootd file opening.')
-parser.add_option('--datafile', dest='datafile', 
-                  help='use this datafile for the fit')
 parser.add_option('--injectS', type='float', dest='sigInject',
                   help='amount of signal to inject')
 
@@ -61,6 +60,11 @@ timer.Start()
 #RooAbsPdf.defaultIntegratorConfig().setEpsAbs(1e-9)
 if not opts.debug:
     RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
+    RooMsgService.instance().addStream(RooFit.ERROR,
+                                       RooFit.Prefix(True), 
+                                       RooFit.ClassName('RooExpPoly'),
+                                       RooFit.OutputFile('/dev/null'))
+    RooMsgService.instance().Print('v')
 
 if hasattr(opts, "seed") and (opts.seed >= 0):
     print "random seed:", opts.seed
@@ -87,9 +91,6 @@ pars = config.theConfig(Nj = opts.Nj, mH = opts.mH,
                         includeSignal = False, MVACutOverride = mvaCutOverride,
                         xrootd = opts.xrootd)
 
-if opts.datafile:
-    pars.DataFile = opts.datafile
-
 if opts.toy:
     pars.blind = False
 
@@ -110,7 +111,7 @@ startpars = totalPdf.getParameters(fitter.ws.set('obsSet'))
 fitter.ws.defineSet("params", startpars)
 fitter.ws.saveSnapshot("initPars", startpars)
 
-if opts.toy:
+if opts.toy and not opts.ws:
     #generate toy dataset
     print 'Generated parameters'
     fitter.ws.set('params').Print('v')
@@ -123,7 +124,7 @@ if opts.toy:
                            data)
         data.Print('v')
     getattr(fitter.ws, 'import')(data)
-else:    
+else:
     data = fitter.loadData()
 
 data.Print()
@@ -235,6 +236,7 @@ pars_mWW = HWW1D2FitsConfig_mWW.theConfig(Nj = opts.Nj, mH = opts.mH,
                                           isElectron = opts.isElectron, 
                                           initFile = mWWArgs,
                                           includeSignal = True,
+                                          mjj_config = opts.modeConfig,
                                           MVACutOverride = mvaCutOverride,
                                           xrootd = opts.xrootd)
 pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
@@ -273,11 +275,15 @@ fitter_mWW.ws.var('r_signal').setConstant(False)
 params_mWW.Print("v")
 fitter_mWW.ws.defineSet("params", params_mWW)
 
-if opts.toy:
+if opts.ws:
+    fitter_mWW.loadWorkspaceFromFile(opts.ws, getFloatPars = False,
+                                     wsname = 'w_mWW')
+
+fitter_mWW.ws.saveSnapshot("genPars", params_mWW)
+if opts.toy and not opts.ws:
     #generate toy dataset
     print 'Generated parameters'
     fitter_mWW.ws.set('params').Print('v')
-    fitter_mWW.ws.saveSnapshot("genPars", params_mWW)
 
     data = totalPdf_mWW.generate(fitter_mWW.ws.set('obsSet'), 
                                  RooFit.Name('data_obs'),
@@ -287,7 +293,7 @@ if opts.toy:
                            data)
     data.Print('v')
     getattr(fitter_mWW.ws, 'import')(data)
-else:    
+elif not opts.ws:    
     fitter_mWW.loadDataFromWorkspace(fitter.ws, mWWCut)
 
 #compute limits

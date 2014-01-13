@@ -117,11 +117,11 @@ def findFloatInTable(mH, lines):
                 return float(tokens[1])
 
 def crossSection(mH, mode):
-    lines = open('Limits/%stable8tev.txt' % mode).readlines()
+    lines = open('Limits/%stable8tev.txt' % mode) #.readlines()
     return findFloatInTable(mH, lines)
 
 def branchingRatio(mH):
-    lines = open('Limits/twikiBRtable.txt').readlines()
+    lines = open('Limits/twikiBRtable.txt') #.readlines()
     return findFloatInTable(mH, lines)*2*1.5
 
 def NgenHiggs(mH, mode):
