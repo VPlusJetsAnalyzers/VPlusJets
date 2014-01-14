@@ -2796,8 +2796,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			hvbf_bj_phi    = (hvbf_bjp).Phi();
 			hvbf_bj_Rapidity    = (hvbf_bjp).Rapidity();
 			// vbf_bj_m      = (j_p).M();
-			hvbf_jj_deta   =hvbf_aj_eta-hvbf_bj_eta;
-			hvbf_jj_dphi   = hvbf_aj_phi-hvbf_bj_phi;
+			hvbf_jj_deta   =fabs(hvbf_aj_eta-hvbf_bj_eta);
+			hvbf_jj_dphi   = getDeltaPhi(hvbf_aj_phi,hvbf_bj_phi);
 			//cout<<"  "<<vbf_jj_dphi<<endl;
 		} //loop  
 		// method1 B
@@ -2839,7 +2839,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			hvbf_wbj_pt     = (hwjj_bjp).Pt();
 			hvbf_wbj_eta    = (hwjj_bjp).Eta();
 			hvbf_wbj_phi    = (hwjj_bjp).Phi();
-			hvbf_wjj_deta= hvbf_waj_eta-hvbf_wbj_eta;
+			hvbf_wjj_deta= fabs(hvbf_waj_eta-hvbf_wbj_eta);
 			hvbf_wjj_dphi= getDeltaPhi(hvbf_waj_phi,hvbf_wbj_phi);
 		}
 

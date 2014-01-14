@@ -66,7 +66,7 @@ namespace ewk {
 
 
     /// Destructor, does nothing 
-      ~JetTreeFiller() {delete qglikeli;};
+     // ~JetTreeFiller() {delete qglikeli;};
 
 
 
@@ -150,7 +150,7 @@ namespace ewk {
 	std::string bTagger;
     // 'mutable' because we will fill it from a 'const' method
     mutable std::vector<std::string> bnames;
-    QGLikelihoodCalculator *qglikeli;
+    //QGLikelihoodCalculator *qglikeli;
 
 
   private:

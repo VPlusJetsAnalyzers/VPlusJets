@@ -50,7 +50,7 @@ struct sortPt
 void kanaelec::myana(double myflag, bool isQCD, int runflag)
 {
   //Prepare the histogram for the cut-flow control : 8 presel + 7 sel
-  const int n_step = 15;
+  const int n_step = 20;
   TH1F* h_events          = new TH1F("h_events", "h_events", n_step, 0, n_step);
   TH1F* h_events_weighted = new TH1F("h_events_weighted", "h_events_weighted", n_step, 0, n_step);
 
@@ -63,14 +63,21 @@ void kanaelec::myana(double myflag, bool isQCD, int runflag)
     "loose ele veto",
     "loose mu veto",
     "loose jets",
-    "P_{T}(WJ1) > 30", 
+    "fourJets",
+    "P_{T}(WJ1) > 30",
     "P_{T}(WJ2) > 30",
+    "P_{T}(TagJ1) > 30",
+    "P_{T}(TagJ2) > 30",
     "M_{T}(W^{lep}) > 30",
     "tighter lepton",
-    "#Delta#eta(W^{had}) < 1.5",
-    "#Delta#phi(WJ1,MET) > 0.4",
-    "P_{T}(W^{had}) > 40"
-  };
+    "M_{inv}(W^{had}) > 30",
+    "Pfmet > 25",
+    "W mass window 65-95",
+    "anti-btag on W jets",
+    "TMVA Liklihood"};
+    //"#Delta#eta(W^{had}) < 1.5",
+   // "#Delta#phi(WJ1,MET) > 0.4",
+  //  "P_{T}(W^{had}) > 40"
 
   for ( int istep = 0; istep < n_step; istep++ ) {
     h_events -> GetXaxis() -> SetBinLabel( istep + 1, step_names[istep].c_str() );
@@ -999,7 +1006,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t vbf_wjj_ang_ha   = 999, vbf_wjj_ang_hb = 999, vbf_wjj_ang_hs = 999, vbf_wjj_ang_phi = 999, vbf_wjj_ang_phia = 999, vbf_wjj_ang_phib = 999;
 	// VBF Higgs Analysis   
 
-	Int_t hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1;
+	Int_t hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1, fourJets=0;
 
 	Float_t hvbf_wjj_ang_ha   = 999, hvbf_wjj_ang_hb = 999, hvbf_wjj_ang_hs = 999,hvbf_wjj_ang_phi = 999, hvbf_wjj_ang_phia = 999, hvbf_wjj_ang_phib = 999;
 
@@ -1821,6 +1828,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		vbf_event = 0; vbf_aj_id = -1; vbf_bj_id = -1; vbf_waj_id = -1; vbf_wbj_id = -1;
 		vbf_wjj_ang_ha   = 999; vbf_wjj_ang_hb = 999; vbf_wjj_ang_hs = 999; vbf_wjj_ang_phi = 999; vbf_wjj_ang_phia = 999; vbf_wjj_ang_phib = 999;
 		hvbf_event = 0;
+                fourJets=0;
 
 		//VBF diboson event
 		vbf_diboson_event = 0;
@@ -2039,7 +2047,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		bool  isgengdevt = 0;
 		bool isgendevtnojetevt = 0;
 
-		if (JetPFCor_Pt[0]>Jpt ) {
+/*		if (JetPFCor_Pt[0]>Jpt ) {
 			h_events          -> Fill ( istep ); 
 			h_events_weighted -> Fill ( istep, effwt*puwt ); 
 			istep++;
@@ -2061,7 +2069,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				}
 			}
 		}
-
+*/
+                if( JetPFCor_Pt[0]>Jpt && JetPFCor_Pt[1]>Jpt  && W_mt>30. && W_electron_et>30.){isgengdevt=1;}
 		if(W_mt>30. && W_electron_et>30.){isgendevtnojetevt=1;}
 		bool goodlepton = 0;
 		if ( //W_mt>30. //Move to MVA MET Later
@@ -2267,7 +2276,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			hvbf_bj_eta    = (hvbf_bjp).Eta();
 			hvbf_bj_phi    = (hvbf_bjp).Phi();
 			// vbf_bj_m      = (j_p).M();
-			hvbf_jj_deta   =hvbf_aj_eta-hvbf_bj_eta;
+			hvbf_jj_deta   =fabs(hvbf_aj_eta-hvbf_bj_eta);
 			hvbf_jj_dphi   = getDeltaPhi(hvbf_aj_phi,hvbf_bj_phi);
 			//cout<<"  "<<hvbf_jj_Rapidity<<endl;
 		} //loop  
@@ -2311,8 +2320,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			hvbf_wbj_pt     = (hwjj_bjp).Pt();
 			hvbf_wbj_eta    = (hwjj_bjp).Eta();
 			hvbf_wbj_phi    = (hwjj_bjp).Phi();
-
-			hvbf_wjj_deta= hvbf_waj_eta-hvbf_wbj_eta;
+			hvbf_wjj_deta= fabs(hvbf_waj_eta-hvbf_wbj_eta);
 			hvbf_wjj_dphi= getDeltaPhi(hvbf_waj_phi,hvbf_wbj_phi);
 		}
 		TLorentzVector  lepton;
@@ -2350,6 +2358,12 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 		hvbf_l_MET_deltaphi = getDeltaPhi(hvbf_l_phi, hvbf_event_met_pfmetPhi);
 		hvbf_lW_hW_deltaphi = getDeltaPhi(hvbf_lv_phi, hvbf_wjj_phi);
+
+               if (htag_i_id!=-1 && htag_j_id!=-1 && hwjj_a_id!=-1 && hwjj_b_id!=-1)
+                {
+                        fourJets=1;
+                }
+
 
 		if (htag_i_id!=-1 && htag_j_id!=-1 && hwjj_a_id!=-1 && hwjj_b_id!=-1 && goodlepton==1 && hvbf_lv_mT >30. && hvbf_wjj_m >30.&& event_met_pfmet>25.)
 		{
@@ -2405,6 +2419,74 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		}
 
 
+                if (fourJets==1)
+                {
+                        h_events          -> Fill ( istep );
+                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                        istep++;
+                        if (hvbf_waj_pt>Jpt ) {
+                                h_events          -> Fill ( istep );
+                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                istep++;
+                                if ( hvbf_wbj_pt>Jpt ) {
+                                        h_events          -> Fill ( istep );
+                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                        istep++;
+                                        if (hvbf_aj_pt >Jpt ) {
+                                                h_events          -> Fill ( istep );
+                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                istep++;
+                                                if ( hvbf_bj_pt>Jpt ) {
+                                                        h_events          -> Fill ( istep );
+                                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                        istep++;
+                                                        if ( W_mt>30. ) {
+                                                                h_events          -> Fill ( istep );
+                                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                istep++;
+                                                                if ( W_electron_pt>30.
+                                                                                && fabs(W_electron_eta)<2.5
+                                                                   ) {
+                                                                        h_events          -> Fill ( istep );
+                                                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                        istep++;
+                                                                        if (hvbf_wjj_m >30.)
+                                                                        {
+                                                                                h_events          -> Fill ( istep );
+                                                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                istep++;
+                                                                                if (event_met_pfmet>25.)
+                                                                                {
+                                                                                        h_events          -> Fill ( istep );
+                                                                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                        istep++;
+                                                                                        if (hvbf_wjj_m>65. && hvbf_wjj_m<95.)
+                                                                                        {
+                                                                                                h_events          -> Fill ( istep );
+                                                                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                                istep++;
+											   if ( hvbf_wjet1_btagCSV<0.679 &&  hvbf_wjet2_btagCSV< 0.679)
+                                                                                                {
+                                                                                                        h_events          -> Fill ( istep );
+                                                                                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                                        istep++;
+                                                                                                        if ( mva126el > 0.6)
+                                                                                                        {
+                                                                                                                h_events          -> Fill ( istep );
+                                                                                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                                                istep++;
+
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }}}}
+
+
 		// Fill the trained MVA output 
 		//if(hvbf_event==1){
 		std::vector<double> hvbf_mvaInputVal;
@@ -2431,7 +2513,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 
 		// 2 and 3 jet event for Mjj
-		if (isgengdevt
+/*		if (isgengdevt
 				&& fabs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5 ) {
 			h_events          -> Fill ( istep ); 
 			h_events_weighted -> Fill ( istep, effwt*puwt ); 
@@ -2449,6 +2531,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				}
 			}
 		}
+*/
 		// 2 and 3 jet event for Hww
 		if (isgengdevt) { ggdevt = 4;// Do the kinematic fit for all event!!!
 			if ( JetPFCor_Pt[1] > Jpt && JetPFCor_Pt[2] < Jpt ) {ggdevt = 2;}
