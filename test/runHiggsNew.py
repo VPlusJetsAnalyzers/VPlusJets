@@ -30,6 +30,11 @@ parser.add_option('--xrootd', dest='xrootd', action='store_true',
 parser.add_option('--obsLimit', dest='obsLimit', action='store_true',
                   default=False,
                   help='calculate observed limit too')
+parser.add_option('--toy', dest='toy', action='store_true',
+                  help='use pseudo-data instead of data file')
+parser.add_option('--toyOut', dest='toyOut', help='filename for toy output')
+parser.add_option('--injectS', type='float', dest='sigInject',
+                  help='amount of signal to inject')
 
 (opts, args) = parser.parse_args()
 
