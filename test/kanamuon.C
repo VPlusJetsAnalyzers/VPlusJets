@@ -847,7 +847,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t hvbf_wjj_e =-999,   hvbf_wjj_pt =-999,   hvbf_wjj_eta =-999,   hvbf_wjj_phi =-999,   hvbf_wjj_m =-999, hvbf_wjj_Rapidity =-999;
 	Float_t hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999;
 	Float_t hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999;
-	Float_t hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999,   hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,hvbf_lvjj_Rapidity=-999, hvbf_lvjj_ZeppenField = -999,  hvbf_lvjj_y=-999;
+	Float_t hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999,   hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,hvbf_lvjj_Rapidity=-999, hvbf_lvjj_ZeppenField = -999,  hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999;
 	Float_t hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999;
 	Float_t hvbf_lv_e=-999,   hvbf_lv_pt=-999,   hvbf_lv_eta=-999,   hvbf_lv_phi=-999,  hvbf_lv_Rapidity=-999,  hvbf_lv_m=-999,   hvbf_lv_mT=-999;
 	Float_t hvbf_l_e=-999,   hvbf_l_pt=-999,   hvbf_l_eta=-999,   hvbf_l_phi=-999;
@@ -913,6 +913,13 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_hvbf_lvjj_ZeppenField    = newtree->Branch("hvbf_lvjj_ZeppenField",    &hvbf_lvjj_ZeppenField,     "hvbf_lvjj_ZeppenField/F");
 
 	TBranch *branch_hvbf_lvjj_y    = newtree->Branch("hvbf_lvjj_y",    &hvbf_lvjj_y,     "hvbf_lvjj_y/F");
+        TBranch *branch_hvbf_jjj_m    = newtree->Branch("hvbf_jjj_m",    &hvbf_jjj_m,     "hvbf_jjj_m/F");
+        TBranch *branch_hvbf_lvj_m    = newtree->Branch("hvbf_lvj_m",    &hvbf_lvj_m,     "hvbf_lvj_m/F");
+        TBranch *branch_hvbf_lW_tag1_deta  = newtree->Branch("hvbf_lW_tag1_deta",  &hvbf_lW_tag1_deta,"hvbf_lW_tag1_deta/F");
+        TBranch *branch_hvbf_lW_tag2_deta  = newtree->Branch("hvbf_lW_tag2_deta",  &hvbf_lW_tag2_deta,"hvbf_lW_tag2_deta/F");
+        TBranch *branch_hvbf_hW_tag1_deta  = newtree->Branch("hvbf_hW_tag1_deta",  &hvbf_hW_tag1_deta,"hvbf_hW_tag1_deta/F");
+        TBranch *branch_hvbf_hW_tag2_deta  = newtree->Branch("hvbf_hW_tag2_deta",  &hvbf_hW_tag2_deta,"hvbf_hW_tag2_deta/F");
+
 
 	TBranch *branch_hvbf_lv_e    = newtree->Branch("hvbf_lv_e",    &hvbf_lv_e,     "hvbf_lv_e/F");
 	TBranch *branch_hvbf_lv_pt   = newtree->Branch("hvbf_lv_pt",   &hvbf_lv_pt,    "hvbf_lv_pt/F");
@@ -2855,6 +2862,10 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		hvbf_lvjj_eta    = (lepton+nutrino+hwjj_ajp+hwjj_bjp).Eta();
 		hvbf_lvjj_phi    = (lepton+nutrino+hwjj_ajp+hwjj_bjp).Phi();
 		hvbf_lvjj_m      = (lepton+nutrino+hwjj_ajp+hwjj_bjp).M();
+
+                hvbf_jjj_m      = (hvbf_ajp+hwjj_ajp+hwjj_bjp).M();
+                hvbf_lvj_m      = (lepton+nutrino+hvbf_bjp).M();
+  
 		hvbf_lvjj_Rapidity      = (lepton+nutrino+hwjj_ajp+hwjj_bjp).Rapidity();
 		hvbf_lvjj_ZeppenField = fabs(hvbf_lvjj_Rapidity - 0.5*(hvbf_aj_Rapidity+hvbf_bj_Rapidity));
 
@@ -2872,10 +2883,19 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		hvbf_l_e = lepton.E();
 
 		hvbf_event_met_pfmet = event_met_pfmet;
+
 		hvbf_event_met_pfmetPhi = event_met_pfmetPhi;
 
 		hvbf_l_MET_deltaphi = getDeltaPhi(hvbf_l_phi, hvbf_event_met_pfmetPhi);
 		hvbf_lW_hW_deltaphi = getDeltaPhi(hvbf_lv_phi, hvbf_wjj_phi);
+
+		hvbf_lW_tag1_deta= fabs(hvbf_jj_eta-hvbf_aj_eta);
+                hvbf_lW_tag2_deta= fabs(hvbf_jj_eta-hvbf_bj_eta);
+                hvbf_hW_tag1_deta= fabs(hvbf_wjj_eta-hvbf_aj_eta);
+                hvbf_hW_tag2_deta= fabs(hvbf_wjj_eta-hvbf_bj_eta);
+
+
+
 		//	Int_t fourJets=0;
 		if (htag_i_id!=-1 && htag_j_id!=-1 && hwjj_a_id!=-1 && hwjj_b_id!=-1)
 		{
@@ -4205,6 +4225,12 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					branch_hvbf_lvjj_Rapidity->Fill();
 					branch_hvbf_lvjj_ZeppenField->Fill();
 
+                                        branch_hvbf_jjj_m->Fill();
+                                        branch_hvbf_lvj_m->Fill();
+        				branch_hvbf_lW_tag1_deta->Fill();
+                                        branch_hvbf_lW_tag2_deta->Fill();
+                                        branch_hvbf_hW_tag1_deta->Fill();
+                                        branch_hvbf_hW_tag2_deta->Fill();
 
 					branch_hvbf_lv_e->Fill();
 					branch_hvbf_lv_pt->Fill();
