@@ -1292,7 +1292,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	ReadLikelihoodvbf126mu mvaReader126mu( hvbf_inputVarsMVA );
 
 
-	const char* inputVars[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+	//const char* inputVars[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+        const char* inputVars[] = { "ptlvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs"};
 	std::vector<std::string> inputVarsMVA;
 	for (int i=0; i<8; ++i) inputVarsMVA.push_back( inputVars[i] );
 

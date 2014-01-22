@@ -1341,7 +1341,9 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	const char* inputVars_b[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
 
 
-	const char* inputVars[] = { "ptlvjj", "ylvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+	//const char* inputVars[] = { "ptlvjj", "ylvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+        const char* inputVars[] = { "ptlvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs"};
+
 	// here the bug is fixed for electron charge in 2 jet bin
 
 
