@@ -439,6 +439,9 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch * branch_vbf600mu   =  newtree->Branch("mvavbf600mu",   &mvavbf600mu,    "mvavbf600mu/F");
 
 	Float_t effwt = 1.0, puwt = 1.0, puwt_up = 1.0, puwt_down = 1.0;
+
+	genwt = 1.0; // in case the ntuple doesn't have it.
+
 	TBranch * branch_effwt          =  newtree->Branch("effwt",       &effwt,        "effwt/F");
 	TBranch * branch_puwt           =  newtree->Branch("puwt",        &puwt,         "puwt/F");
 	TBranch * branch_puwt_up        =  newtree->Branch("puwt_up",     &puwt_up,      "puwt_up/F");
@@ -1293,22 +1296,28 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 
 	//const char* inputVars[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
-        const char* inputVars[] = { "ptlvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs"};
-	std::vector<std::string> inputVarsMVA;
-	for (int i=0; i<8; ++i) inputVarsMVA.push_back( inputVars[i] );
+        const char* inputVars1[] = { "ptlvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs"};
+	std::vector<std::string> inputVarsMVA1;
+	for (int i=0; i<5; ++i) inputVarsMVA1.push_back( inputVars1[i] );
 
-	ReadMVA2j170mu mvaReader2j170mu( inputVarsMVA );  
-	ReadMVA2j180mu mvaReader2j180mu( inputVarsMVA );  
-	ReadMVA2j190mu mvaReader2j190mu( inputVarsMVA );  
-	ReadMVA2j200mu mvaReader2j200mu( inputVarsMVA );  
-	ReadMVA2j250mu mvaReader2j250mu( inputVarsMVA );  
-	ReadMVA2j300mu mvaReader2j300mu( inputVarsMVA );  
-	ReadMVA2j350mu mvaReader2j350mu( inputVarsMVA );  
-	ReadMVA2j400mu mvaReader2j400mu( inputVarsMVA );  
-	ReadMVA2j450mu mvaReader2j450mu( inputVarsMVA );  
-	ReadMVA2j500mu mvaReader2j500mu( inputVarsMVA );  
-	ReadMVA2j550mu mvaReader2j550mu( inputVarsMVA );  
-	ReadMVA2j600mu mvaReader2j600mu( inputVarsMVA );  
+	ReadMVA2j170mu mvaReader2j170mu( inputVarsMVA1 );  
+	ReadMVA2j180mu mvaReader2j180mu( inputVarsMVA1 );  
+	ReadMVA2j190mu mvaReader2j190mu( inputVarsMVA1 );  
+	ReadMVA2j200mu mvaReader2j200mu( inputVarsMVA1 );  
+	ReadMVA2j250mu mvaReader2j250mu( inputVarsMVA1 );  
+	ReadMVA2j300mu mvaReader2j300mu( inputVarsMVA1 );  
+	ReadMVA2j350mu mvaReader2j350mu( inputVarsMVA1 );  
+	ReadMVA2j400mu mvaReader2j400mu( inputVarsMVA1 );  
+	ReadMVA2j450mu mvaReader2j450mu( inputVarsMVA1 );  
+	ReadMVA2j500mu mvaReader2j500mu( inputVarsMVA1 );  
+	ReadMVA2j550mu mvaReader2j550mu( inputVarsMVA1 );  
+	ReadMVA2j600mu mvaReader2j600mu( inputVarsMVA1 );  
+
+
+       const char* inputVars[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+        std::vector<std::string> inputVarsMVA;
+        for (int i=0; i<8; ++i) inputVarsMVA.push_back( inputVars[i] );
+
 	ReadMVA2j400interferencedownmu mvaReader2j400interferencedownmu( inputVarsMVA );
 	ReadMVA2j400interferencenominalmu mvaReader2j400interferencenominalmu( inputVarsMVA );
 	ReadMVA2j400interferenceupmu mvaReader2j400interferenceupmu( inputVarsMVA );
@@ -1852,6 +1861,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		effwt = 
 			muIDEff.GetEfficiency(W_muon_pt, W_muon_eta) * 
 			muHLTEff.GetEfficiency(W_muon_pt, W_muon_eta);
+
+		effwt *= (genwt >= 0) ? 1 : -1;
 
 		// Pile up Re-weighting
 		if (wda>20120999) { // MC samples
@@ -2884,7 +2895,6 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		hvbf_l_e = lepton.E();
 
 		hvbf_event_met_pfmet = event_met_pfmet;
-
 		hvbf_event_met_pfmetPhi = event_met_pfmetPhi;
 
 		hvbf_l_MET_deltaphi = getDeltaPhi(hvbf_l_phi, hvbf_event_met_pfmetPhi);

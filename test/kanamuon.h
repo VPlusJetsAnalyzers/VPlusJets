@@ -713,6 +713,7 @@ class kanamuon {
    Float_t         GenGroomedJet_CA8_constituents0pr_phi[100];
    Float_t         GenGroomedJet_CA8_constituents0pr_e[100];
    Int_t           GenGroomedJet_CA8_nconstituents0pr;
+   Float_t         genwt;
    Int_t           numGenJets;
    Int_t           numGenJetBTags;
    Float_t         JetGen_Et[8];
@@ -1797,6 +1798,7 @@ class kanamuon {
    TBranch        *b_GenGroomedJet_CA8_constituents0pr_phi;   //!
    TBranch        *b_GenGroomedJet_CA8_constituents0pr_e;   //!
    TBranch        *b_GenGroomedJet_CA8_nconstituents0pr;   //!
+   TBranch        *b_genwt;   //!
    TBranch        *b_numGenJets;   //!
    TBranch        *b_numGenJetBTags;   //!
    TBranch        *b_JetGen_Et;   //!
@@ -3040,6 +3042,7 @@ void kanamuon::Init(TTree *tree)
    fChain->SetBranchAddress("GenGroomedJet_CA8_constituents0pr_phi", GenGroomedJet_CA8_constituents0pr_phi, &b_GenGroomedJet_CA8_constituents0pr_phi);
    fChain->SetBranchAddress("GenGroomedJet_CA8_constituents0pr_e", GenGroomedJet_CA8_constituents0pr_e, &b_GenGroomedJet_CA8_constituents0pr_e);
    fChain->SetBranchAddress("GenGroomedJet_CA8_nconstituents0pr", &GenGroomedJet_CA8_nconstituents0pr, &b_GenGroomedJet_CA8_nconstituents0pr);
+   fChain->SetBranchAddress("W_genwt", &genwt, &b_genwt);
    fChain->SetBranchAddress("numGenJets", &numGenJets, &b_numGenJets);
    fChain->SetBranchAddress("numGenJetBTags", &numGenJetBTags, &b_numGenJetBTags);
    fChain->SetBranchAddress("JetGen_Et", JetGen_Et, &b_JetGen_Et);

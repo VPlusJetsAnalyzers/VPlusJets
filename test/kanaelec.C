@@ -473,6 +473,9 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch * branch_vbf600el   =  newtree->Branch("mvavbf600el",   &mvavbf600el,    "mvavbf600el/F");
 
 	Float_t effwt = 1.0, puwt = 1.0, puwt_up = 1.0, puwt_down = 1.0;
+ 
+	genwt = 1.0; // in case the ntuple doesn't have it.
+
 	TBranch * branch_effwt          =  newtree->Branch("effwt",       &effwt,        "effwt/F");
 	TBranch * branch_puwt           =  newtree->Branch("puwt",        &puwt,         "puwt/F");
 	TBranch * branch_puwt_up        =  newtree->Branch("puwt_up",     &puwt_up,      "puwt_up/F");
@@ -1341,8 +1344,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	const char* inputVars_b[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
 
 
-	//const char* inputVars[] = { "ptlvjj", "ylvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
-        const char* inputVars[] = { "ptlvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs"};
+	const char* inputVars[] = { "ptlvjj", "ylvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+        const char* inputVars1[] = { "ptlvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs"};
 
 	// here the bug is fixed for electron charge in 2 jet bin
 
@@ -1355,21 +1358,27 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 	std::vector<std::string> inputVarsMVA;
 	for (int i=0; i<8; ++i) inputVarsMVA.push_back( inputVars[i] );
+
+
+        std::vector<std::string> inputVarsMVA1;
+        for (int i=0; i<5; ++i) inputVarsMVA1.push_back( inputVars1[i] );
+
+
 	std::vector<std::string> inputVarsMVA_v2;
 	for (int i=0; i<8; ++i) inputVarsMVA_v2.push_back( inputVars_v2[i] );
 
-	ReadMVA2j170el mvaReader2j170el( inputVarsMVA );  
-	ReadMVA2j180el mvaReader2j180el( inputVarsMVA );  
-	ReadMVA2j190el mvaReader2j190el( inputVarsMVA );  
-	ReadMVA2j200el mvaReader2j200el( inputVarsMVA );  
-	ReadMVA2j250el mvaReader2j250el( inputVarsMVA );  
-	ReadMVA2j300el mvaReader2j300el( inputVarsMVA );  
-	ReadMVA2j350el mvaReader2j350el( inputVarsMVA );  
-	ReadMVA2j400el mvaReader2j400el( inputVarsMVA );  
-	ReadMVA2j450el mvaReader2j450el( inputVarsMVA );  
-	ReadMVA2j500el mvaReader2j500el( inputVarsMVA );  
-	ReadMVA2j550el mvaReader2j550el( inputVarsMVA );  
-	ReadMVA2j600el mvaReader2j600el( inputVarsMVA );  
+	ReadMVA2j170el mvaReader2j170el( inputVarsMVA1 );  
+	ReadMVA2j180el mvaReader2j180el( inputVarsMVA1 );  
+	ReadMVA2j190el mvaReader2j190el( inputVarsMVA1 );  
+	ReadMVA2j200el mvaReader2j200el( inputVarsMVA1 );  
+	ReadMVA2j250el mvaReader2j250el( inputVarsMVA1 );  
+	ReadMVA2j300el mvaReader2j300el( inputVarsMVA1 );  
+	ReadMVA2j350el mvaReader2j350el( inputVarsMVA1 );  
+	ReadMVA2j400el mvaReader2j400el( inputVarsMVA1 );  
+	ReadMVA2j450el mvaReader2j450el( inputVarsMVA1 );  
+	ReadMVA2j500el mvaReader2j500el( inputVarsMVA1 );  
+	ReadMVA2j550el mvaReader2j550el( inputVarsMVA1 );  
+	ReadMVA2j600el mvaReader2j600el( inputVarsMVA1 );  
 	ReadMVA2j400interferencedownel mvaReader2j400interferencedownel( inputVarsMVA_v2 );
 	ReadMVA2j400interferencenominalel mvaReader2j400interferencenominalel( inputVarsMVA_v2 );
 	ReadMVA2j400interferenceupel mvaReader2j400interferenceupel( inputVarsMVA_v2 );
@@ -1933,7 +1942,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			eleHLTEff.GetEfficiency(W_electron_pt, W_electron_eta) *
 			eleMHTEff.GetEfficiency(event_met_pfmet, 0) *
 			eleWMtEff.GetEfficiency(W_mt, W_electron_eta);
-
+  		 effwt *= (genwt >= 0) ? 1 : -1; 
 		// Pile up Re-weighting
 		if (wda>20120999) { // MC samples
 			//      puwt      =    LumiWeights_.weight3D(event_mcPU_nvtx[0], event_mcPU_nvtx[1], event_mcPU_nvtx[2]);
