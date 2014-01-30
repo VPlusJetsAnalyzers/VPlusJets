@@ -109,6 +109,7 @@ void ewk::MCTreeFiller::SetBranches()
 	SetBranch( V_Vz,        "V_vz_gen[6]");
 	SetBranch( V_Y,         "V_y_gen[6]");
 	SetBranch( V_Id,        "V_Id_gen[6]");
+        SetBranch( V_hadronic,        "V_hadronic_gen[6]");
 
 
         SetBranch( &ngq,"ngq_gen");
@@ -461,6 +462,7 @@ void ewk::MCTreeFiller::init()
 		V_Vz  [i]           = -10.;
 		V_Y   [i]           = -10.;
 		V_Id  [i]           = 0;
+		V_hadronic [i]     =false;
 	}
 
 
@@ -847,8 +849,12 @@ void ewk::MCTreeFiller::fill(const edm::Event& iEvent)
 		if(abspdgid==22)Photon_pt_gen = V->pt();
 
 		size_t ndau = 0;
-
+		bool V_had = false ;	
 		if(!(V==NULL)) ndau = V->numberOfDaughters();
+		if( ndau>0 ){
+		if(V->daughter(0)->pdgId()<=6)
+			V_had =true;
+ 		}
 		// The vector boson must decay to leptons
 		//if(ndau<1) continue;
 		//if( (Vtype_=="Z") && !( abspdgid==22 || abspdgid==23) ) continue;
@@ -869,7 +875,7 @@ void ewk::MCTreeFiller::fill(const edm::Event& iEvent)
 			V_Pt  [nVectorBosons] = V->pt();
 			V_Et  [nVectorBosons] = V->et();
 			V_Id  [nVectorBosons] = V->pdgId();
-
+			V_hadronic [nVectorBosons] = V_had;
 			nVectorBosons++;
 		}
 

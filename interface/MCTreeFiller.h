@@ -106,6 +106,7 @@ namespace ewk {
 			float V_Vz[6];
 			float V_Y[6];
 			int V_Id[6];
+                        bool V_hadronic[6];
 
 
 			int ngq;
