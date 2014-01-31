@@ -32,6 +32,13 @@ parser.add_option('--toy', dest='toy', action='store_true',
 parser.add_option('--toyOut', dest='toyOut', help='filename for toy output')
 parser.add_option('--injectS', type='float', dest='sigInject',
                   help='amount of signal to inject')
+parser.add_option('--genConfig',
+                  dest='genConfig',
+                  help='which config to select look at HWW2DConfig.py for ' +\
+                      'an example.  Use the file name minus the .py extension.'
+                  )
+parser.add_option('--xc', dest='xc', action='store_true',
+                  help='use cross-check background to generate')
 
 (opts, args) = parser.parse_args()
 
@@ -74,6 +81,12 @@ if opts.reuse != None:
     if len(opts.reuse) > 0:
         wsname = opts.reuse
     commonCmd += [ '--ws', wsname ]
+
+if opts.genConfig:
+    commonCmd.extend(['--genConfig', opts.genConfig])
+
+if opts.xc:
+    commonCmd.append('--xc')
 
 searchString = '*HWW%iParameters' % opts.mH
 if opts.sb:

@@ -38,6 +38,15 @@ parser.add_option('--xrootd', dest='xrootd', action='store_true',
                   help='use xrootd file opening.')
 parser.add_option('--injectS', type='float', dest='sigInject',
                   help='amount of signal to inject')
+parser.add_option('--genConfig',
+                  dest='genConfig',
+                  help='which config to select look at HWW2DConfig.py for ' +\
+                      'an example.  Use the file name minus the .py extension.'
+                  )
+parser.add_option('--xc', dest='xc', action='store_true',
+                  help='use cross-check background to generate')
+parser.add_option('--sideband', dest='sb', type='int',
+                  help='use sideband dataset and model instead')
 
 (opts, args) = parser.parse_args()
 
@@ -86,6 +95,7 @@ for arg in args:
         mWWArgs.append(arg)
 
 print mjjArgs
+
 pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
                         isElectron = opts.isElectron, initFile = mjjArgs,
                         includeSignal = False, MVACutOverride = mvaCutOverride,
@@ -98,202 +108,263 @@ fitter = RooWjj2DFitter.Wjj2DFitter(pars)
 fitter.ws.SetName("w_mjj")
 
 totalPdf = fitter.makeFitter()
-
-if opts.ws:
-    fitter.loadWorkspaceFromFile(opts.ws, getFloatPars = False,
-                                 wsname = 'w_mjj')
-
-fitter.readParametersFromFile()
-fitter.expectedFromPars()
-fitter.resetYields()
-
-startpars = totalPdf.getParameters(fitter.ws.set('obsSet'))
-fitter.ws.defineSet("params", startpars)
-fitter.ws.saveSnapshot("initPars", startpars)
-
-if opts.toy and not opts.ws:
-    #generate toy dataset
-    print 'Generated parameters'
-    fitter.ws.set('params').Print('v')
-    fitter.ws.saveSnapshot("genPars", startpars)
-
-    data = totalPdf.generate(fitter.ws.set('obsSet'), RooFit.Name('data_obs'),
-                             RooFit.Extended())
-    if fitter.pars.binData:
-        data = RooDataHist('data_obs', 'data_obs', fitter.ws.set('obsSet'),
-                           data)
-        data.Print('v')
-    getattr(fitter.ws, 'import')(data)
-else:
-    data = fitter.loadData()
-
-data.Print()
-startpars.IsA().Destructor(startpars)
-
-print 'Time elapsed: %.1f sec' % timer.RealTime()
-print 'CPU time used: %.1f sec' % timer.CpuTime()
-print 'starting fitting routine'
-timer.Continue()
-fitter.ws.var('diboson_nrm').setConstant()
-fitter.ws.var('top_nrm').setConstant()
-fitter.ws.var('r_signal').setVal(1.0)
-fitter.ws.var('r_signal').setError(0.04)
-fr = None
-fr = fitter.fit(overrideRangeCmd=True)
-
-plot1 = fitter.stackedPlot(pars.var[0])
-
-sigPdf = fitter.ws.pdf('ggH')
-n_sig = fitter.ws.var('n_ggH').getVal() + fitter.ws.var('n_qqH').getVal()
 sigScaler = 2.
-print "N HWW:", n_sig
-
-sigPdf.plotOn(plot1, RooFit.Range('plotRange'),
-              RooFit.NormRange('plotRange'),
-              RooFit.Normalization(n_sig*sigScaler, RooAbsReal.NumEvent),
-              RooFit.Name('signal_HWW'),
-              RooFit.LineColor(kBlue+2))
-plot1.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
-
-leg1 = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot1)
-
-c1 = TCanvas('c1', pars.var[0] + ' plot')
-plot1.addObject(leg1)
-plot1.Draw()
-c1.Update()
-
-ndf = 0
-
-if fr:
-    floatVars = [ fr.floatParsFinal().at(i).GetName() \
-                      for i in range(0, fr.floatParsFinal().getSize()) ]
-    fitter.ws.defineSet('floatingParams', ','.join(floatVars))
-    fitter.ws.saveSnapshot("fitPars", ','.join(floatVars))
-    ndf = fr.floatParsFinal().getSize() - \
-        fitter.ws.set('constraintSet').getSize()
-    # fr.Print('v')
-
-print '%i free parameters in the fit' % ndf
-
-firstCurve1 = plot1.getObject(1)
-# firstCurve1.Print()
-
-(chi2_1, ndf_1) = pulls.computeChi2(plot1.getHist('theData'), firstCurve1)
-pull1 = pulls.createPull(plot1.getHist('theData'), firstCurve1)
-    
-
-chi2 = chi2_1
-ndf = ndf_1-ndf
-
-cp1 = TCanvas("cp1", pars.var[0] + ' pull')
-pull1.Draw('ap')
-pull1.SetName(pars.var[0] + "_pull")
-cp1.SetGridy()
-cp1.Update()
-pull1.GetXaxis().SetLimits(pars.varRanges[pars.var[0]][1], 
-                           pars.varRanges[pars.var[0]][2])
-pull1.GetXaxis().SetTitle(fitter.ws.var(pars.var[0]).getTitle(True).Data())
-pull1.GetYaxis().SetTitle("pull (#sigma)")
-
-blinder = plot1.findObject('TBox')
-blinder2 = None
-if blinder:
-    blinder2 = TBox(pars.exclude[pars.var[0]][0], pull1.GetYaxis().GetXmin(),
-                    pars.exclude[pars.var[0]][1], pull1.GetYaxis().GetXmax())
-    blinder2.SetFillColor(blinder.GetFillColor())
-    blinder2.SetFillStyle(blinder.GetFillStyle())
-
-if blinder2:
-    #blinder2.Print()
-    blinder2.Draw()
-
-cp1.Update()
-
 mode = 'muon'
 if opts.isElectron:
     mode = 'electron'
+fr = None
 
-print 'Time elapsed: %.1f sec' % timer.RealTime()
-print 'CPU time used: %.1f sec' % timer.CpuTime()
+chi2 = 0
+ndf = 1
 
-print 'starting sideband fit routine'
-timer.Continue()
+def mjjfitting(fitter):
 
-WpJ_params_sideband = RooArgSet('WpJ_params_sideband')
+    if opts.ws:
+        fitter.loadWorkspaceFromFile(opts.ws, getFloatPars = False,
+                                     wsname = 'w_mjj')
 
-sigInt = fitter.ws.pdf('WpJ').createIntegral(fitter.ws.set('obsSet'),
-                                             fitter.ws.set('obsSet'),
-                                             'signalRegion')
-fullInt = fitter.ws.pdf('WpJ').createIntegral(fitter.ws.set('obsSet'),
-                                              fitter.ws.set('obsSet'))
-n_WpJ_sig = sigInt.getVal()/fullInt.getVal()*fitter.ws.function('f_WpJ_norm').getVal()
-print 'W+jets integral in signal region:',sigInt.getVal()/fullInt.getVal(),
-print 'W+jets yield in the signal region:',n_WpJ_sig
+    fitter.readParametersFromFile()
+    fitter.expectedFromPars()
+    fitter.resetYields()
+
+    startpars = totalPdf.getParameters(fitter.ws.set('obsSet'))
+    fitter.ws.defineSet("params", startpars)
+    fitter.ws.saveSnapshot("initPars", startpars)
+
+    if opts.toy and not opts.ws:
+        #generate toy dataset
+        print 'Generated parameters'
+        fitter.ws.set('params').Print('v')
+        fitter.ws.saveSnapshot("genPars", startpars)
+
+        data = totalPdf.generate(fitter.ws.set('obsSet'), RooFit.Name('data_obs'),
+                                 RooFit.Extended())
+        if fitter.pars.binData:
+            data = RooDataHist('data_obs', 'data_obs', fitter.ws.set('obsSet'),
+                               data)
+            data.Print('v')
+        getattr(fitter.ws, 'import')(data)
+    else:
+        data = fitter.loadData()
+
+    data.Print()
+    startpars.IsA().Destructor(startpars)
+
+    print 'Time elapsed: %.1f sec' % timer.RealTime()
+    print 'CPU time used: %.1f sec' % timer.CpuTime()
+    print 'starting fitting routine'
+    timer.Continue()
+    fitter.ws.var('diboson_nrm').setConstant()
+    fitter.ws.var('top_nrm').setConstant()
+    fitter.ws.var('r_signal').setVal(1.0)
+    fitter.ws.var('r_signal').setError(0.04)
+
+    fr = fitter.fit(overrideRangeCmd=True)
+
+    plot1 = fitter.stackedPlot(pars.var[0])
+
+    sigPdf = fitter.ws.pdf('ggH')
+    n_sig = fitter.ws.var('n_ggH').getVal() + fitter.ws.var('n_qqH').getVal()
+    print "N HWW:", n_sig
+
+    sigPdf.plotOn(plot1, RooFit.Range('plotRange'),
+                  RooFit.NormRange('plotRange'),
+                  RooFit.Normalization(n_sig*sigScaler, RooAbsReal.NumEvent),
+                  RooFit.Name('signal_HWW'),
+                  RooFit.LineColor(kBlue+2))
+    plot1.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
+
+    leg1 = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot1)
+
+    c1 = TCanvas('c1', pars.var[0] + ' plot')
+    plot1.addObject(leg1)
+    plot1.Draw()
+    c1.Update()
+
+    ndf = 0
+
+    if fr:
+        floatVars = [ fr.floatParsFinal().at(i).GetName() \
+                          for i in range(0, fr.floatParsFinal().getSize()) ]
+        fitter.ws.defineSet('floatingParams', ','.join(floatVars))
+        fitter.ws.saveSnapshot("fitPars", ','.join(floatVars))
+        ndf = fr.floatParsFinal().getSize() - \
+            fitter.ws.set('constraintSet').getSize()
+        # fr.Print('v')
+
+    print '%i free parameters in the fit' % ndf
+
+    firstCurve1 = plot1.getObject(1)
+    # firstCurve1.Print()
+
+    (chi2_1, ndf_1) = pulls.computeChi2(plot1.getHist('theData'), firstCurve1)
+    pull1 = pulls.createPull(plot1.getHist('theData'), firstCurve1)
+
+
+    chi2 = chi2_1
+    ndf = ndf_1-ndf
+
+    cp1 = TCanvas("cp1", pars.var[0] + ' pull')
+    pull1.Draw('ap')
+    pull1.SetName(pars.var[0] + "_pull")
+    cp1.SetGridy()
+    cp1.Update()
+    pull1.GetXaxis().SetLimits(pars.varRanges[pars.var[0]][1], 
+                               pars.varRanges[pars.var[0]][2])
+    pull1.GetXaxis().SetTitle(fitter.ws.var(pars.var[0]).getTitle(True).Data())
+    pull1.GetYaxis().SetTitle("pull (#sigma)")
+
+    blinder = plot1.findObject('TBox')
+    blinder2 = None
+    if blinder:
+        blinder2 = TBox(pars.exclude[pars.var[0]][0], pull1.GetYaxis().GetXmin(),
+                        pars.exclude[pars.var[0]][1], pull1.GetYaxis().GetXmax())
+        blinder2.SetFillColor(blinder.GetFillColor())
+        blinder2.SetFillStyle(blinder.GetFillStyle())
+
+    if blinder2:
+        #blinder2.Print()
+        blinder2.Draw()
+
+    cp1.Update()
+
+    print 'Time elapsed: %.1f sec' % timer.RealTime()
+    print 'CPU time used: %.1f sec' % timer.CpuTime()
+
+    timer.Continue()
+
+    return (plot1, pull1, chi2, ndf, fr)
+
+if not opts.toy:
+    (plot1, pull1, chi2, ndf, fr) = mjjfitting(fitter)
+else:
+    fitter.readParametersFromFile()
+    fitter.expectedFromPars()
+    fitter.resetYields()
+    fitter.ws.var('WpJ_nrm').setError(0.006)
+
 
 import HWW1D2FitsConfig_mWW
 print mWWArgs
-pars_mWW = HWW1D2FitsConfig_mWW.theConfig(Nj = opts.Nj, mH = opts.mH, 
-                                          isElectron = opts.isElectron, 
-                                          initFile = mWWArgs,
-                                          includeSignal = True,
-                                          mjj_config = opts.modeConfig,
-                                          MVACutOverride = mvaCutOverride,
-                                          xrootd = opts.xrootd)
+
+configArgs = {
+    'Nj': opts.Nj,
+    'mH': opts.mH,
+    'isElectron': opts.isElectron,
+    'initFile': mWWArgs,
+    'includeSignal': True,
+    'mjj_config': opts.modeConfig,
+    'MVACutOverride': mvaCutOverride,
+    'xrootd': opts.xrootd,
+    }
+if opts.sb > 0:
+    sb = 'high'
+    configArgs['sideband'] = sb
+elif opts.sb < 0:
+    sb = 'low'
+    configArgs['sideband'] = sb
+pars_mWW = HWW1D2FitsConfig_mWW.theConfig(**configArgs)
 pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
 
 if opts.toy:
     pars_mWW.blind = False
+sb = None
 
-# add systematic errors multipliers to ggH signals
-if (opts.mH >= 400):
-    pars_mWW.ggHdoSystMult = True
+def prepFitter(config = opts.modeConfig, initFiles = mWWArgs):
+    theArgs = dict(configArgs)
+    theArgs['mjj_config'] = config
+    theArgs['initFile'] = initFiles    
+    pars_mWW = HWW1D2FitsConfig_mWW.theConfig(**theArgs)
+    pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
 
-fitter_mWW = RooWjj2DFitter.Wjj2DFitter(pars_mWW)
-fitter_mWW.ws.SetName("w_mWW")
+    if opts.toy or opts.sb:
+        pars_mWW.blind = False
+
+    # add systematic errors multipliers to ggH signals
+    if (opts.mH >= 400):
+        pars_mWW.ggHdoSystMult = True
+
+    fitter_mWW = RooWjj2DFitter.Wjj2DFitter(pars_mWW)
+    fitter_mWW.ws.SetName("w_mWW")
+    totalPdf_mWW = fitter_mWW.makeFitter()
+    fitter_mWW.readParametersFromFile()
+
+    regionName = 'signalRegion'
+    if opts.sb:
+        regionName = 'sidebandRegion'
+        fitter.ws.var(fitter.pars.var[0]).setRange(regionName,
+                                                   pars_mWW.regionLow,
+                                                   pars_mWW.regionHigh)
+    sigInt = fitter.ws.pdf('WpJ').createIntegral(fitter.ws.set('obsSet'),
+                                                 fitter.ws.set('obsSet'),
+                                                 regionName)
+    fullInt = fitter.ws.pdf('WpJ').createIntegral(fitter.ws.set('obsSet'),
+                                                  fitter.ws.set('obsSet'))
+    n_WpJ_sig = sigInt.getVal()/fullInt.getVal()*fitter.ws.function('f_WpJ_norm').getVal()
+    print 'W+jets integral in signal region:',sigInt.getVal()/fullInt.getVal(),
+    print 'W+jets yield in the signal region:',n_WpJ_sig
+
+    WpJ_mWW = fitter_mWW.ws.var('n_WpJ')
+    WpJ_mWW.setVal(n_WpJ_sig)
+    fitter_mWW.expectedFromPars()
+    fitter_mWW.resetYields()
+
+    if opts.sigInject:
+        fitter_mWW.ws.var('r_signal').setVal(opts.sigInject)
+    fitter_mWW.ws.var('r_signal').setError(0.1)
+    fitter_mWW.ws.var('r_signal').setRange(-3., 9.)
+    fitter_mWW.ws.var('r_signal').setConstant(False)
+
+    return fitter_mWW
+
+fitter_mWW = prepFitter()
 totalPdf_mWW = fitter_mWW.makeFitter()
-fitter_mWW.readParametersFromFile()
-WpJ_mWW = fitter_mWW.ws.var('n_WpJ')
-WpJ_mWW.setVal(n_WpJ_sig)
-fitter_mWW.expectedFromPars()
+
+fitter_gen = fitter_mWW
+genPdf = totalPdf_mWW
+if opts.toy and opts.genConfig:
+    iFiles = mWWArgs
+    if opts.xc:
+        iFiles = [ 
+            fn.replace('mWW', 'mWW_syst_p') if (fn.find('WpJ') >= 0) else fn \
+                for fn in mWWArgs ]
+    fitter_gen = prepFitter(opts.genConfig, iFiles)
+    genPdf = fitter_gen.makeFitter()
 
 mWWCut = '((%s>%.0f)&&(%s<%.0f))' % \
     (pars.var[0], pars.exclude[pars.var[0]][0],
      pars.var[0], pars.exclude[pars.var[0]][1])
 print 'signal region cut:',mWWCut
 
-fitter_mWW.resetYields()
 params_mWW = totalPdf_mWW.getParameters(fitter_mWW.ws.set('obsSet'))
 
 predictedPars = params_mWW.snapshot()
 
-if opts.sigInject:
-    fitter_mWW.ws.var('r_signal').setVal(opts.sigInject)
-fitter_mWW.ws.var('r_signal').setError(0.1)
-fitter_mWW.ws.var('r_signal').setRange(-3., 9.)
-fitter_mWW.ws.var('r_signal').setConstant(False)
-
 params_mWW.Print("v")
 fitter_mWW.ws.defineSet("params", params_mWW)
 
-if opts.ws:
-    fitter_mWW.loadWorkspaceFromFile(opts.ws, getFloatPars = False,
-                                     wsname = 'w_mWW')
+# if opts.ws:
+#     fitter_mWW.loadWorkspaceFromFile(opts.ws, getFloatPars = False,
+#                                      wsname = 'w_mWW')
 
 fitter_mWW.ws.saveSnapshot("genPars", params_mWW)
 if opts.toy and not opts.ws:
     #generate toy dataset
     print 'Generated parameters'
-    fitter_mWW.ws.set('params').Print('v')
+    params_gen = genPdf.getParameters(fitter_gen.ws.set('obsSet'))
+    if not fitter_gen.ws.loadSnapshot('genPars'):
+        fitter_gen.ws.saveSnapshot('genPars', params_gen)
+    params_gen.Print('v')
 
-    data = totalPdf_mWW.generate(fitter_mWW.ws.set('obsSet'), 
-                                 RooFit.Name('data_obs'),
-                                 RooFit.Extended())
+    data = genPdf.generate(fitter_gen.ws.set('obsSet'),
+                           RooFit.Name('data_obs'),
+                           RooFit.Extended())
     if fitter_mWW.pars.binData:
         data = RooDataHist('data_obs', 'data_obs', fitter_mWW.ws.set('obsSet'),
                            data)
     data.Print('v')
     getattr(fitter_mWW.ws, 'import')(data)
-elif not opts.ws:    
+else:
     fitter_mWW.loadDataFromWorkspace(fitter.ws, mWWCut)
 
 #compute limits
@@ -305,6 +376,8 @@ upperHist = None
 full_pdf = fitter_mWW.makeConstrainedFitter()
 if not full_pdf:
     full_pdf = totalPdf_mWW
+
+fitter_mWW.ws.var('r_signal').setVal(0.)
 
 if opts.doLimit:
     # parIter = params_mWW.createIterator()
@@ -604,14 +677,16 @@ output = TFile("HWW%ilnujj_%s_%ijets_1D2Fit%s_output.root" % \
                    (opts.mH,mode, opts.Nj, extraTag),
                "recreate")
 
-fr.SetName('fit_result')
-fr.Write()
+if fr:
+    fr.SetName('fit_result')
+    fr.Write()
 if fr_mWW:
     fr_mWW.SetName('fit_result_mWW')
     fr_mWW.Write()
 
-plot1.Write()
-pull1.Write()
+if not opts.toy:
+    plot1.Write()
+    pull1.Write()
 plot_mWW.Write()
 pull_mWW.Write()
 plot_mWW_withErrs.Write()
@@ -637,10 +712,11 @@ output.Close()
 print 'Time elapsed: %.1f sec' % timer.RealTime()
 print 'CPU time used: %.1f sec' % timer.CpuTime()
 
-print '***',pars.var[0], 'fit ***'
-print '%i degrees of freedom' % ndf
-print 'chi2: %.2f / %i = %.2f' % (chi2_1, ndf, (chi2/ndf))
-print 'chi2 probability: %.4g' % (TMath.Prob(chi2, ndf))
+if not opts.toy:
+    print '***',pars.var[0], 'fit ***'
+    print '%i degrees of freedom' % ndf
+    print 'chi2: %.2f / %i = %.2f' % (chi2, ndf, (chi2/ndf))
+    print 'chi2 probability: %.4g' % (TMath.Prob(chi2, ndf))
 
 # print '*** low sideband fit ***'
 # print '%i degrees of freedom' % ndf_low

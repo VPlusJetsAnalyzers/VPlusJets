@@ -25,7 +25,7 @@ def theConfig(**kwargs):
 
     pars.isElectron = kwargs['isElectron']
     if ('initFile' in kwargs):
-        pars.initialParametersFile = kwargs['initFile']
+        pars.initialParametersFile = list(kwargs['initFile'])
     else:
         pars.inititalParametersFile = []
 

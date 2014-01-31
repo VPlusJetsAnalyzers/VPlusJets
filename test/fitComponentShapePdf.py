@@ -174,8 +174,13 @@ if (compName == 'qqH') and (opts.mH == 170):
 refEffLumi = -1.
 print 'integrated lumi:',pars.integratedLumi
 in_ws = None
+loadIt = True
 if opts.ws:
     in_ws = TFile(opts.ws).Get('wjj2dfitter')
+    if in_ws.data('data'):
+        getattr(fitter.ws, 'import')(in_ws.data('data'))
+        data = fitter.ws.data('data')
+        loadIt = False
 for (ifile, (filename, ngen, xsec)) in enumerate(files):
     if refEffLumi > 0.:
         scale = refEffLumi/(ngen/xsec)
@@ -188,7 +193,7 @@ for (ifile, (filename, ngen, xsec)) in enumerate(files):
                                         cutOverride = cutOverride,
                                         interference = opts.interference,
                                         additionalWgt = scale)
-    
+
     tmpData.Print()
     print filename,'effective integrated lumi:',ngen/xsec
     expectedYield = xsec*pars.integratedLumi*tmpData.sumEntries()/scale/ngen
@@ -197,15 +202,19 @@ for (ifile, (filename, ngen, xsec)) in enumerate(files):
     print filename,'scale:',scale
     sumNExp += expectedYield
     sumxsec += xsec
-    if not data:
-        data = tmpData.Clone('data')
+    if refEffLumi < 0:
         refEffLumi = ngen/xsec
-    else:
-        data.append(tmpData)
+    if loadIt:
+        if not data:
+            data = tmpData.Clone('data')
+        else:
+            data.append(tmpData)
 
 print compName,'total expected yield: %.1f' % sumNExp
 print compName,'overall A x eff: %.3g' % (sumNExp/sumxsec/pars.integratedLumi)
 data.Print()
+if not fitter.ws.data('data'):
+    getattr(fitter.ws, 'import')(data)
 
 hist2d = None
 try:

@@ -42,9 +42,8 @@ config = __import__(opts.modeConfig)
 import RooWjj2DFitter
 
 from ROOT import TCanvas, RooFit, RooLinkedListIter, TMath, RooRandom, TFile, \
-    RooDataHist, RooMsgService, TStopwatch, RooAbsPdf, TBox, kBlack, kRed, \
-    kBlue, kOrange, kDashed, RooAbsCollection, RooArgSet, RooStats, Double, \
-    RooAbsReal, RooAbsData, TH1F
+    RooDataHist, RooMsgService, TStopwatch, RooAbsPdf, RooAbsData, \
+    RooWorkspace, RooArgList, RooAddPdf
 import pulls
 
 timer = TStopwatch()
@@ -105,25 +104,38 @@ startpars = totalPdf.getParameters(fitter.ws.set('obsSet'))
 fitter.ws.defineSet("params", startpars)
 fitter.ws.saveSnapshot("initPars", startpars)
 
-if opts.toy:
-    #generate toy dataset
-    print 'Generated parameters'
-    fitter.ws.set('params').Print('v')
-    fitter.ws.saveSnapshot("genPars", startpars)
+components = list(pars.backgrounds) + list(pars.signals)
+var_name = pars.var[0]
+combinedWS = RooWorkspace('w_mjj', 'combined ws')
+for comp in components:
+    compPdf = fitter.ws.pdf(comp)
+    getattr(combinedWS, 'import')(compPdf)
+    newPdf = combinedWS.pdf(comp)
+    newPdf.SetName('%s_%s' % (comp, var_name))
+    yieldf = fitter.ws.function('f_%s_norm' % comp)
+    getattr(combinedWS, 'import')(yieldf)
 
-    data = totalPdf.generate(fitter.ws.set('obsSet'), RooFit.Name('data_obs'),
-                             RooFit.Extended())
-    if fitter.pars.binData:
-        data.SetName('data_unbinned')
-        getattr(fitter.ws, 'import')(data)
-        data = RooDataHist('data_obs', 'data_obs', fitter.ws.set('obsSet'),
-                           data)
-    data.Print('v')
-    getattr(fitter.ws, 'import')(data)
-else:    
-    data = fitter.loadData()
+fitter.ws.Print()
 
-data.Print()
+# if opts.toy:
+#     #generate toy dataset
+#     print 'Generated parameters'
+#     fitter.ws.set('params').Print('v')
+#     fitter.ws.saveSnapshot("genPars", startpars)
+
+#     data = totalPdf.generate(fitter.ws.set('obsSet'), RooFit.Name('data_obs'),
+#                              RooFit.Extended())
+#     if fitter.pars.binData:
+#         data.SetName('data_unbinned')
+#         getattr(fitter.ws, 'import')(data)
+#         data = RooDataHist('data_obs', 'data_obs', fitter.ws.set('obsSet'),
+#                            data)
+#     data.Print('v')
+#     getattr(fitter.ws, 'import')(data)
+# else:    
+#     data = fitter.loadData()
+
+# data.Print()
 startpars.IsA().Destructor(startpars)
 
 print 'Time elapsed: %.1f sec' % timer.RealTime()
@@ -161,8 +173,8 @@ fitter_mWW = RooWjj2DFitter.Wjj2DFitter(pars_mWW)
 fitter_mWW.ws.SetName("w_mWW")
 totalPdf_mWW = fitter_mWW.makeFitter()
 fitter_mWW.readParametersFromFile()
-WpJ_mWW = fitter_mWW.ws.var('n_WpJ')
-WpJ_mWW.setVal(n_WpJ_sig)
+# WpJ_mWW = fitter_mWW.ws.var('n_WpJ')
+# WpJ_mWW.setVal(n_WpJ_sig)
 fitter_mWW.expectedFromPars()
 
 mWWCut = '((%s>%.0f)&&(%s<%.0f))' % \
@@ -184,24 +196,46 @@ fitter_mWW.ws.var('r_signal').setConstant(False)
 params_mWW.Print("v")
 fitter_mWW.ws.defineSet("params", params_mWW)
 
+var_name = pars_mWW.var[0]
+other_var = pars_mWW.var[1]
+compPdfs = []
+for comp in components:
+    compPdf = fitter_mWW.ws.pdf(comp)
+    getattr(combinedWS, 'import')(compPdf)
+    newPdf = combinedWS.pdf(comp)
+    newPdf.SetName('%s_%s' % (comp, var_name))
+    norm = combinedWS.function('f_%s_norm' % comp)
+    combinedWS.factory('PROD::%s(%s_%s, %s)' % (comp, comp, other_var,
+                                                newPdf.GetName()))
+    compPdfs.append(combinedWS.factory('RooExtendPdf::%s_extended(%s, %s)' %\
+                                           (comp, comp, norm.GetName())))
+
+combinedWS.defineSet('obsSet', '%s,%s' % (other_var, var_name))
+
+if opts.sigInject:
+    combinedWS.var('r_signal').setVal(opts.sigInject)
+combinedWS.var('r_signal').setError(0.1)
+combinedWS.var('r_signal').setRange(-3., 9.)
+combinedWS.var('r_signal').setConstant(False)
+
+compNames = [ c.GetName() for c in compPdfs ]
+compList = RooArgList(combinedWS.argSet(','.join(compNames)))
+getattr(combinedWS, 'import')(RooAddPdf('total', 'total', compList))
+combinedPdf = combinedWS.pdf('total')
+genPars = combinedPdf.getParameters(combinedWS.set('obsSet'))
+combinedWS.defineSet('params', genPars)
+
 if opts.toy:
     #generate toy dataset
     print 'Generated parameters'
-    fitter_mWW.ws.set('params').Print('v')
-    fitter_mWW.ws.saveSnapshot("genPars", params_mWW)
+    combinedWS.set('params').Print('v')
+    combinedWS.saveSnapshot("genPars", combinedWS.set('params'))
 
-    data = totalPdf_mWW.generate(fitter_mWW.ws.set('obsSet'), 
-                                 RooFit.Name('data_obs'),
-                                 RooFit.Extended())
-    if fitter_mWW.pars.binData:
-        data.SetName('data_unbinned')
-        getattr(fitter_mWW.ws, 'import')(data)
-        data = RooDataHist('data_obs', 'data_obs', fitter_mWW.ws.set('obsSet'),
-                           data)
+    data = combinedPdf.generate(combinedWS.set('obsSet'), 
+                                RooFit.Name('data_obs'),
+                                RooFit.Extended())
     data.Print('v')
-    getattr(fitter_mWW.ws, 'import')(data)
-else:    
-    fitter_mWW.loadDataFromWorkspace(fitter.ws, mWWCut)
+    getattr(combinedWS, 'import')(data)
 
 extraTag = ''
 if opts.includeSignal:
@@ -209,12 +243,15 @@ if opts.includeSignal:
 if mvaCutOverride:
     extraTag += '_mvaCut' + str(mvaCutOverride)
 
+combinedWS.Print()
 output = TFile("HWW%ilnujj_%s_%ijets_1D2Fit%s_gen.root" % \
                    (opts.mH,mode, opts.Nj, extraTag),
                "recreate")
 
-fitter.ws.Write()
-fitter_mWW.ws.Write()
+# fitter.ws.Write()
+# fitter_mWW.ws.Write()
+
+combinedWS.Write()
 
 output.Close()
 
