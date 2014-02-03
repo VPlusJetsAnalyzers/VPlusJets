@@ -24,7 +24,7 @@ printargs() {
 }
 
 cutval=0.0
-cutdir=toyFit${cutval}Sig_newGen
+cutdir=toyFit${cutval}Sig_allGen
 submit=submit_${cutdir}.txt
 mkdir -p $cutdir
 cd $cutdir

@@ -321,7 +321,8 @@ fitter_mWW = prepFitter()
 totalPdf_mWW = fitter_mWW.makeFitter()
 
 fitter_gen = fitter_mWW
-genPdf = totalPdf_mWW
+full_pdf = fitter_mWW.makeConstrainedFitter()
+genPdf = full_pdf
 if opts.toy and opts.genConfig:
     iFiles = mWWArgs
     if opts.xc:
@@ -329,7 +330,7 @@ if opts.toy and opts.genConfig:
             fn.replace('mWW', 'mWW_syst_p') if (fn.find('WpJ') >= 0) else fn \
                 for fn in mWWArgs ]
     fitter_gen = prepFitter(opts.genConfig, iFiles)
-    genPdf = fitter_gen.makeFitter()
+    genPdf = fitter_gen.makeConstrainedFitter()
 
 mWWCut = '((%s>%.0f)&&(%s<%.0f))' % \
     (pars.var[0], pars.exclude[pars.var[0]][0],
@@ -349,12 +350,31 @@ fitter_mWW.ws.defineSet("params", params_mWW)
 
 fitter_mWW.ws.saveSnapshot("genPars", params_mWW)
 if opts.toy and not opts.ws:
+    print "Generate global nuisance parameters"
+    constraints = genPdf.getAllConstraints(fitter_gen.ws.set('obsSet'),
+                                           fitter_gen.ws.set('constrainedSet'))
+    # nuisIter = fitter_gen.ws.set('constraintSet').createIterator()
+    nuisIter = constraints.createIterator()
+    c = nuisIter.Next()
+    while c:
+        obs = c.getObservables(fitter_gen.ws.set('constrainedSet'))
+        c.Print()
+        if obs.selectByName('*_nrm').getSize() == 1:
+            print "generating for %s" % obs.first().GetName()
+            nuisData = c.generate(obs, RooFit.NumEvents(1))
+            # nuisData.Print('v')
+            fitter_gen.ws.var(nuisData.get().first().GetName()).setVal(nuisData.get().first().getVal())
+            nuisData.IsA().Destructor(nuisData)
+            obs.Print('v')
+        obs.IsA().Destructor(obs)
+        c = nuisIter.Next()
+    constraints.IsA().Destructor(constraints)
     #generate toy dataset
     print 'Generated parameters'
     params_gen = genPdf.getParameters(fitter_gen.ws.set('obsSet'))
+    params_gen.Print('v')
     if not fitter_gen.ws.loadSnapshot('genPars'):
         fitter_gen.ws.saveSnapshot('genPars', params_gen)
-    params_gen.Print('v')
 
     data = genPdf.generate(fitter_gen.ws.set('obsSet'),
                            RooFit.Name('data_obs'),
@@ -373,7 +393,6 @@ from array import array
 
 upperHist = None
 
-full_pdf = fitter_mWW.makeConstrainedFitter()
 if not full_pdf:
     full_pdf = totalPdf_mWW
 
