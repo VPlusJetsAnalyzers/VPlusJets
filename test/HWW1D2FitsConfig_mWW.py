@@ -118,7 +118,10 @@ def theConfig(**kwargs):
     pars.doExclude = False
     pars.blind = pars_mjj.blind
 
-    pars.binData = pars_mjj.binData
-    pars.binData = True
+    # pars.binData = pars_mjj.binData
+    if ('binned' in kwargs):
+        pars.binData = kwargs['binned']
+    else:
+        pars.binData = True
 
     return pars

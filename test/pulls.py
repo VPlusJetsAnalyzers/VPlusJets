@@ -7,7 +7,7 @@ def createResid(theData, curve, curveUp = None, curveDown = None,
 
     pullGraph = TGraphErrors(theData.GetN())
 
-
+    Npull = 0
     # print 'normalize',normalize
 
     for datapt in range(0, theData.GetN()):
@@ -39,20 +39,26 @@ def createResid(theData, curve, curveUp = None, curveDown = None,
                                   + diffDown**2)
 
         pull = 0.
+        if errN <= 0:
+            continue
+
         if normalize:
             if (errN > 0):
                 pull = (binN - curveN)/errN
                 errN = 1.
         elif not normalize:
-            pull = binN - curveN
+            if (errN > 0):
+                pull = binN - curveN
 
         # print 'bin: (', binmin, ',', binmax, ') N:', binN, '+/-', errN,
         # print 'curve N:', curveN
         # print 'pull:', pull, 'errN:',errN
 
-        pullGraph.SetPoint(datapt, theData.GetX()[datapt], pull)
-        pullGraph.SetPointError(datapt, 0., errN)
+        pullGraph.SetPoint(Npull, theData.GetX()[datapt], pull)
+        pullGraph.SetPointError(Npull, 0., errN)
+        Npull += 1
 
+    pullGraph.Set(Npull)
     return pullGraph
 
 def computeChi2(theData, curve):

@@ -27,14 +27,14 @@ printargs() {
     echo "Queue" >>$submit
 }
 
-cutval=FloatFit300Wider20Nov2013
+cutval=Fits4Feb2014
 cutdir=${cutval}
 submit=submit_cut=${cutval}.txt
 mkdir -p $cutdir
 cd $cutdir
 printheader
-# for masspt in 170 180 190 200 250 300 350 400 450 500 550 600
-for masspt in 450 500 550
+for masspt in 170 180 190 200 250 300 350 400 450 500 550 600
+# for masspt in 450 500 550
 do
   printargs
 done

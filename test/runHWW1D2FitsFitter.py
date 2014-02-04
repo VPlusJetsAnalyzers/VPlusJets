@@ -47,6 +47,8 @@ parser.add_option('--xc', dest='xc', action='store_true',
                   help='use cross-check background to generate')
 parser.add_option('--sideband', dest='sb', type='int',
                   help='use sideband dataset and model instead')
+parser.add_option('--unbinned', dest='binned', action='store_false',
+                  help='unbinned m_lvjj fit instead of binned ML.')
 
 (opts, args) = parser.parse_args()
 
@@ -263,12 +265,12 @@ if opts.sb > 0:
 elif opts.sb < 0:
     sb = 'low'
     configArgs['sideband'] = sb
-pars_mWW = HWW1D2FitsConfig_mWW.theConfig(**configArgs)
-pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
+if opts.binned != None:
+    configArgs['binned'] = opts.binned
+# pars_mWW = HWW1D2FitsConfig_mWW.theConfig(**configArgs)
+# pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
 
-if opts.toy:
-    pars_mWW.blind = False
-sb = None
+# sb = None
 
 def prepFitter(config = opts.modeConfig, initFiles = mWWArgs):
     theArgs = dict(configArgs)
@@ -276,6 +278,9 @@ def prepFitter(config = opts.modeConfig, initFiles = mWWArgs):
     theArgs['initFile'] = initFiles    
     pars_mWW = HWW1D2FitsConfig_mWW.theConfig(**theArgs)
     pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
+
+    if opts.binned == False:
+        pars_mWW.constrainShapes = []
 
     if opts.toy or opts.sb:
         pars_mWW.blind = False
@@ -315,9 +320,11 @@ def prepFitter(config = opts.modeConfig, initFiles = mWWArgs):
     fitter_mWW.ws.var('r_signal').setRange(-3., 9.)
     fitter_mWW.ws.var('r_signal').setConstant(False)
 
-    return fitter_mWW
+    return fitter_mWW, pars_mWW
 
-fitter_mWW = prepFitter()
+(fitter_mWW,pars_mWW) = prepFitter()
+if opts.toy:
+    pars_mWW.blind = False
 totalPdf_mWW = fitter_mWW.makeFitter()
 
 fitter_gen = fitter_mWW
@@ -329,7 +336,7 @@ if opts.toy and opts.genConfig:
         iFiles = [ 
             fn.replace('mWW', 'mWW_syst_p') if (fn.find('WpJ') >= 0) else fn \
                 for fn in mWWArgs ]
-    fitter_gen = prepFitter(opts.genConfig, iFiles)
+    (fitter_gen,pars_gen) = prepFitter(opts.genConfig, iFiles)
     genPdf = fitter_gen.makeConstrainedFitter()
 
 mWWCut = '((%s>%.0f)&&(%s<%.0f))' % \

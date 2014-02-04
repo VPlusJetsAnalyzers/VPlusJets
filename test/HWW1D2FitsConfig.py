@@ -105,7 +105,7 @@ def theConfig(**kwargs):
     pars = Wjj2DFitterPars()
 
     # pars.MCDirectory = '/uscms_data/d2/andersj/Wjj/2012/data/Moriond2013/ReducedTrees/'
-    pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA/Higgs_22Oct/'
+    pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA_v1/'
     if ('xrootd' in kwargs) and kwargs['xrootd']:
         pars.MCDirectory = 'root://cmseos:1094/' + pars.MCDirectory
     pars.QCDDirectory = "/uscms_data/d3/ilyao/QCD8TeV/Moriond13/"
