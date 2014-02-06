@@ -1,11 +1,12 @@
-def createTree(fnames, altTrue = {}, cut = ''):
-    from array import array
-    from ROOT import TTree
+from array import array
+from ROOT import TTree, TFile, SetOwnership
+
+def createTree(fnames, altTrue = {}, cut = '', f = None):
     cols = {}
     data = None
     line = 0
     for fname in fnames:
-        # print 'opening',fname
+        print 'opening',fname
         fin = open(fname, 'r')
         for currLine in fin:
             var = False
@@ -57,7 +58,11 @@ def createTree(fnames, altTrue = {}, cut = ''):
                     err = False
                     pull = False
             if (data == None):
-                data = TTree('data', 'data')
+                # if not f:
+                #     f = TFile(fnames[0].replace('.asc', '.root'), 'recreate')
+                data = TTree('data', fnames[0])
+                if f:
+                    SetOwnership(data, False)
                 for key in cols.keys():
                     data.Branch(key, cols[key], key + '/D')
 
@@ -73,7 +78,7 @@ def createTree(fnames, altTrue = {}, cut = ''):
             line += 1
         # print 'completed',fname
 
-    #data.Print()
+    data.Print()
     if cut and (len(cut) > 0):
         return data.CopyTree(cut)
     else:

@@ -19,12 +19,12 @@ EOF
 printargs() {
     echo "Error = fitToys_M${masspt}_Sig${cutval}_${start}_${end}.stderr" >>$submit
     echo "Output = fitToys_M${masspt}_Sig${cutval}_${start}_${end}.stdout" >>$submit
-    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runToyBatch.py --mH ${masspt} -s ${start} -e ${end} --injectS ${cutval}" >>$submit
+    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runToyBatch.py --mH ${masspt} -s ${start} -e ${end} --injectS ${cutval} --genConfig HWW1D2FitsConfig" >>$submit
     echo "Queue" >>$submit
 }
 
 cutval=0.0
-cutdir=toyFit${cutval}Sig
+cutdir=toyFit${cutval}Sig_allGen
 submit=submit_${cutdir}.txt
 mkdir -p $cutdir
 cd $cutdir
