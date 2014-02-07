@@ -111,7 +111,22 @@ void ewk::MCTreeFiller::SetBranches()
 	SetBranch( V_Id,        "V_Id_gen[6]");
         SetBranch( V_hadronic,        "V_hadronic_gen[6]");
         SetBranch( V_dau0_Id,        "V_dau0_Id[6]");
+        SetBranch( V_dau0_Pt,        "V_dau0_pt_gen[6]");
+        SetBranch( V_dau0_Eta,       "V_dau0_eta_gen[6]");
+        SetBranch( V_dau0_Phi,       "V_dau0_phi_gen[6]");
+        SetBranch( V_dau0_E,         "V_dau0_e_gen[6]");
+        SetBranch( V_dau0_px,        "V_dau0_px_gen[6]");
+        SetBranch( V_dau0_py,        "V_dau0_py_gen[6]");
+        SetBranch( V_dau0_pz,        "V_dau0_pz_gen[6]");
+
         SetBranch( V_dau1_Id,        "V_dau1_Id[6]");
+        SetBranch( V_dau1_Pt,        "V_dau1_pt_gen[6]");
+        SetBranch( V_dau1_Eta,       "V_dau1_eta_gen[6]");
+        SetBranch( V_dau1_Phi,       "V_dau1_phi_gen[6]");
+        SetBranch( V_dau1_E,         "V_dau1_e_gen[6]");
+        SetBranch( V_dau1_px,        "V_dau1_px_gen[6]");
+        SetBranch( V_dau1_py,        "V_dau1_py_gen[6]");
+        SetBranch( V_dau1_pz,        "V_dau1_pz_gen[6]");
 
 
         SetBranch( &ngq,"ngq_gen");
@@ -464,8 +479,25 @@ void ewk::MCTreeFiller::init()
 		V_Vz  [i]           = -10.;
 		V_Y   [i]           = -10.;
 		V_Id  [i]           = 0;
+
 		V_dau0_Id[i]	    = 0;
+                V_dau0_Pt  [i]           = -1.;
+                V_dau0_Eta [i]           = -10.;
+                V_dau0_Phi [i]           = -10.;
+                V_dau0_E   [i]           = -1.;
+                V_dau0_px  [i]           = -99999.;
+                V_dau0_py  [i]           = -99999.;
+                V_dau0_pz  [i]           = -99999.;
+
                 V_dau1_Id[i]        = 0;
+                V_dau1_Pt  [i]           = -1.;
+                V_dau1_Eta [i]           = -10.;
+                V_dau1_Phi [i]           = -10.;
+                V_dau1_E   [i]           = -1.;
+                V_dau1_px  [i]           = -99999.;
+                V_dau1_py  [i]           = -99999.;
+                V_dau1_pz  [i]           = -99999.;
+
 		V_hadronic [i]     =false;
 
 	}
@@ -882,8 +914,27 @@ void ewk::MCTreeFiller::fill(const edm::Event& iEvent)
 			V_Et  [nVectorBosons] = V->et();
 			V_Id  [nVectorBosons] = V->pdgId();
 			V_hadronic [nVectorBosons] = V_had;
+			if (!(((V->daughter(0))==NULL) || ((V->daughter(1))==NULL)))
+			{
 			V_dau0_Id[nVectorBosons] = V->daughter(0)->pdgId();
+                        V_dau0_Pt  [nVectorBosons] = V->daughter(0)->pt();
+                        V_dau0_Eta [nVectorBosons] = V->daughter(0)->eta();
+                        V_dau0_Phi [nVectorBosons] = V->daughter(0)->phi();
+                        V_dau0_E   [nVectorBosons] = V->daughter(0)->energy();
+                        V_dau0_px  [nVectorBosons] = V->daughter(0)->px();
+                        V_dau0_py  [nVectorBosons] = V->daughter(0)->py();
+                        V_dau0_pz  [nVectorBosons] = V->daughter(0)->pz();
+
                         V_dau1_Id[nVectorBosons] = V->daughter(1)->pdgId();
+                        V_dau1_Pt  [nVectorBosons] = V->daughter(1)->pt();
+                        V_dau1_Eta [nVectorBosons] = V->daughter(1)->eta();
+                        V_dau1_Phi [nVectorBosons] = V->daughter(1)->phi();
+                        V_dau1_E   [nVectorBosons] = V->daughter(1)->energy();
+                        V_dau1_px  [nVectorBosons] = V->daughter(1)->px();
+                        V_dau1_py  [nVectorBosons] = V->daughter(1)->py();
+                        V_dau1_pz  [nVectorBosons] = V->daughter(1)->pz();
+
+			}
 			nVectorBosons++;
 		}
 
