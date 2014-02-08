@@ -103,9 +103,9 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
   else if (myflag == 20120001 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
-      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
-      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
+      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root", h_events, h_events_weighted);
+      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
 
     } else {
       InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
@@ -119,9 +119,9 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
       // InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root", h_events, h_events_weighted);
       // myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root");
       // Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_19p3invfb");
-      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root", h_events, h_events_weighted);
-      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
+      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
+      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
       
     } else  {        
       // InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
@@ -2151,30 +2151,43 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			ang_ha = a_costheta1; ang_hb = fabs(a_costheta2); ang_hs = a_costhetastar;  ang_phi = a_phi; ang_phia = a_phistar1; ang_phib = a_phistar2;
 
 			// Fill the trained MVA output 
-			std::vector<double> mvaInputVal;
-			mvaInputVal.push_back( ptlvjj );
-			mvaInputVal.push_back( ylvjj );
-			mvaInputVal.push_back( W_muon_charge );   ///////different for electron and muon
+			std::vector<double> mvaInputVal1;
+			mvaInputVal1.push_back( ptlvjj );
+			mvaInputVal1.push_back( W_muon_charge );   ///////different for electron and muon
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
-			mvaInputVal.push_back( ang_ha );
-			mvaInputVal.push_back( ang_hb );
-			mvaInputVal.push_back( ang_hs );
-			mvaInputVal.push_back( ang_phi );
-			mvaInputVal.push_back( ang_phib );
+			mvaInputVal1.push_back( ang_ha );
+			mvaInputVal1.push_back( ang_hb );
+			mvaInputVal1.push_back( ang_hs );
 
-			mva2j170mu = (float) mvaReader2j170mu.GetMvaValue( mvaInputVal );
-			mva2j180mu = (float) mvaReader2j180mu.GetMvaValue( mvaInputVal );
-			mva2j190mu = (float) mvaReader2j190mu.GetMvaValue( mvaInputVal );
-			mva2j200mu = (float) mvaReader2j200mu.GetMvaValue( mvaInputVal );
-			mva2j250mu = (float) mvaReader2j250mu.GetMvaValue( mvaInputVal );
-			mva2j300mu = (float) mvaReader2j300mu.GetMvaValue( mvaInputVal );
-			mva2j350mu = (float) mvaReader2j350mu.GetMvaValue( mvaInputVal );
-			mva2j400mu = (float) mvaReader2j400mu.GetMvaValue( mvaInputVal );
-			mva2j450mu = (float) mvaReader2j450mu.GetMvaValue( mvaInputVal );
-			mva2j500mu = (float) mvaReader2j500mu.GetMvaValue( mvaInputVal );
-			mva2j550mu = (float) mvaReader2j550mu.GetMvaValue( mvaInputVal );
-			mva2j600mu = (float) mvaReader2j600mu.GetMvaValue( mvaInputVal );
+			mva2j170mu = (float) mvaReader2j170mu.GetMvaValue( mvaInputVal1 );
+			mva2j180mu = (float) mvaReader2j180mu.GetMvaValue( mvaInputVal1 );
+			mva2j190mu = (float) mvaReader2j190mu.GetMvaValue( mvaInputVal1 );
+			mva2j200mu = (float) mvaReader2j200mu.GetMvaValue( mvaInputVal1 );
+			mva2j250mu = (float) mvaReader2j250mu.GetMvaValue( mvaInputVal1 );
+			mva2j300mu = (float) mvaReader2j300mu.GetMvaValue( mvaInputVal1 );
+			mva2j350mu = (float) mvaReader2j350mu.GetMvaValue( mvaInputVal1 );
+			mva2j400mu = (float) mvaReader2j400mu.GetMvaValue( mvaInputVal1 );
+			mva2j450mu = (float) mvaReader2j450mu.GetMvaValue( mvaInputVal1 );
+			mva2j500mu = (float) mvaReader2j500mu.GetMvaValue( mvaInputVal1 );
+			mva2j550mu = (float) mvaReader2j550mu.GetMvaValue( mvaInputVal1 );
+			mva2j600mu = (float) mvaReader2j600mu.GetMvaValue( mvaInputVal1 );
+
+                        // Fill the trained MVA output 
+                        std::vector<double> mvaInputVal;
+                        mvaInputVal.push_back( ptlvjj );
+                        mvaInputVal.push_back( ylvjj );
+                        mvaInputVal.push_back( W_muon_charge );   ///////different for electron and muon
+                        //mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
+                        //mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
+                        mvaInputVal.push_back( ang_ha );
+                        mvaInputVal.push_back( ang_hb );
+                        mvaInputVal.push_back( ang_hs );
+                        mvaInputVal.push_back( ang_phi );
+                        mvaInputVal.push_back( ang_phib );
+
+
+
 			mva2j400interferencenominalmu = (float) mvaReader2j400interferencenominalmu.GetMvaValue( mvaInputVal );
 			mva2j450interferencenominalmu = (float) mvaReader2j450interferencenominalmu.GetMvaValue( mvaInputVal );
 			mva2j500interferencenominalmu = (float) mvaReader2j500interferencenominalmu.GetMvaValue( mvaInputVal );

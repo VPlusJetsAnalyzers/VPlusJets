@@ -2605,30 +2605,41 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			ang_ha = a_costheta1; ang_hb = fabs(a_costheta2); ang_hs = a_costhetastar;  ang_phi = a_phi; ang_phia = a_phistar1; ang_phib = a_phistar2;
 
 			// Fill the trained MVA output 
-			std::vector<double> mvaInputVal;
-			mvaInputVal.push_back( ptlvjj );
-			mvaInputVal.push_back( ylvjj );
-			mvaInputVal.push_back( W_electron_charge );   ///////different for electron and muon
+			std::vector<double> mvaInputVal1;
+			mvaInputVal1.push_back( ptlvjj );
+			mvaInputVal1.push_back( W_electron_charge );   ///////different for electron and muon
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
-			mvaInputVal.push_back( ang_ha );
-			mvaInputVal.push_back( ang_hb );
-			mvaInputVal.push_back( ang_hs );
-			mvaInputVal.push_back( ang_phi );
-			mvaInputVal.push_back( ang_phib );
+			mvaInputVal1.push_back( ang_ha );
+			mvaInputVal1.push_back( ang_hb );
+			mvaInputVal1.push_back( ang_hs );
 
-			mva2j170el = (float) mvaReader2j170el.GetMvaValue( mvaInputVal );
-			mva2j180el = (float) mvaReader2j180el.GetMvaValue( mvaInputVal );
-			mva2j190el = (float) mvaReader2j190el.GetMvaValue( mvaInputVal );
-			mva2j200el = (float) mvaReader2j200el.GetMvaValue( mvaInputVal );
-			mva2j250el = (float) mvaReader2j250el.GetMvaValue( mvaInputVal );
-			mva2j300el = (float) mvaReader2j300el.GetMvaValue( mvaInputVal );
-			mva2j350el = (float) mvaReader2j350el.GetMvaValue( mvaInputVal );
-			mva2j400el = (float) mvaReader2j400el.GetMvaValue( mvaInputVal );
-			mva2j450el = (float) mvaReader2j450el.GetMvaValue( mvaInputVal );
-			mva2j500el = (float) mvaReader2j500el.GetMvaValue( mvaInputVal );
-			mva2j550el = (float) mvaReader2j550el.GetMvaValue( mvaInputVal );
-			mva2j600el = (float) mvaReader2j600el.GetMvaValue( mvaInputVal );
+			mva2j170el = (float) mvaReader2j170el.GetMvaValue( mvaInputVal1 );
+			mva2j180el = (float) mvaReader2j180el.GetMvaValue( mvaInputVal1 );
+			mva2j190el = (float) mvaReader2j190el.GetMvaValue( mvaInputVal1 );
+			mva2j200el = (float) mvaReader2j200el.GetMvaValue( mvaInputVal1 );
+			mva2j250el = (float) mvaReader2j250el.GetMvaValue( mvaInputVal1 );
+			mva2j300el = (float) mvaReader2j300el.GetMvaValue( mvaInputVal1 );
+			mva2j350el = (float) mvaReader2j350el.GetMvaValue( mvaInputVal1 );
+			mva2j400el = (float) mvaReader2j400el.GetMvaValue( mvaInputVal1 );
+			mva2j450el = (float) mvaReader2j450el.GetMvaValue( mvaInputVal1 );
+			mva2j500el = (float) mvaReader2j500el.GetMvaValue( mvaInputVal1 );
+			mva2j550el = (float) mvaReader2j550el.GetMvaValue( mvaInputVal1 );
+			mva2j600el = (float) mvaReader2j600el.GetMvaValue( mvaInputVal1 );
+
+                      // Fill the trained MVA output 
+                        std::vector<double> mvaInputVal;
+                        mvaInputVal.push_back( ptlvjj );
+                        mvaInputVal.push_back( ylvjj );
+                        mvaInputVal.push_back( W_electron_charge );   ///////different for electron and muon
+                        //mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
+                        //mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
+                        mvaInputVal.push_back( ang_ha );
+                        mvaInputVal.push_back( ang_hb );
+                        mvaInputVal.push_back( ang_hs );
+                        mvaInputVal.push_back( ang_phi );
+                        mvaInputVal.push_back( ang_phib );
+
 			mva2j400interferencenominalel = (float) mvaReader2j400interferencenominalel.GetMvaValue( mvaInputVal );
 			mva2j450interferencenominalel = (float) mvaReader2j450interferencenominalel.GetMvaValue( mvaInputVal );
 			mva2j500interferencenominalel = (float) mvaReader2j500interferencenominalel.GetMvaValue( mvaInputVal );
