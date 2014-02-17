@@ -13,10 +13,15 @@ parser.add_option('-e', '--end', dest='end', default=50, type='int',
                   help='ending sequence')
 parser.add_option('--injectS', type='float', dest='sigInject', default=0.,
                   help='amount of signal to inject')
-parser.add_option('--xc', dest='xc', action='store_true',
+parser.add_option('--xc', dest='xc',
                   help='use cross-check background to generate')
 parser.add_option('--genConfig', dest='genConfig', help='use this config to'+\
                       'to generate with')
+parser.add_option('-m', '--mode', 
+                  dest='modeConfig',
+                  help='which config to select look at HWW2DConfig.py for ' +\
+                      'an example.  Use the file name minus the .py extension.'
+                  )
 
 (opts, args) = parser.parse_args()
 
@@ -29,11 +34,14 @@ logfile = open(logfilename, 'w')
 
 print "logfilename:",logfilename
 
+if opts.modeConfig:
+    cmd.extend(['-m', opts.modeConfig])
+
 if opts.genConfig:
     cmd.extend(['--genConfig', opts.genConfig])
 
 if opts.xc:
-    cmd.append('--xc')
+    cmd.extend(['--xc', opts.xc])
 
 for t in range(opts.start, opts.end):
     # if opts.gen_config:

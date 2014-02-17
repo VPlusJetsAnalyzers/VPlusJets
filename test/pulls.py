@@ -48,7 +48,8 @@ def createResid(theData, curve, curveUp = None, curveDown = None,
                 errN = 1.
         elif not normalize:
             if (errN > 0):
-                pull = binN - curveN
+                pull = (binN - curveN)/(binmax-binmin)
+            errN /= (binmax-binmin)
 
         # print 'bin: (', binmin, ',', binmax, ') N:', binN, '+/-', errN,
         # print 'curve N:', curveN

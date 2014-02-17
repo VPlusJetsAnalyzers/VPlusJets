@@ -54,3 +54,4 @@ runToyBatch.py
 genA1D2FitsToy.py
 genHWW1D2FitsToy.py
 HWW1D2FitsConfigPoly.py
+HWW1D2FitsConfigAlt.py

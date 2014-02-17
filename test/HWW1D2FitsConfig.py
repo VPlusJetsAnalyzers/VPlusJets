@@ -52,7 +52,7 @@ mu2Pars = {
            # {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 23, None, 5),
             'ggH':(13, 5),'qqH':(7, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     600: ( "mva2j600mu", 0.600, 340.0, 900.0, 14,
-           {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 35, None, None),
+           {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 33, None, None),
            # {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 23, None, 5),
             'ggH':(13, 5),'qqH':(7, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     }
@@ -104,13 +104,11 @@ def theConfig(**kwargs):
     print kwargs
     pars = Wjj2DFitterPars()
 
-    # pars.MCDirectory = '/uscms_data/d2/andersj/Wjj/2012/data/Moriond2013/ReducedTrees/'
-    pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA_v1/'
+    # pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA_v1/'
+    pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA/Higgs_22Oct/'
     if ('xrootd' in kwargs) and kwargs['xrootd']:
         pars.MCDirectory = 'root://cmseos:1094/' + pars.MCDirectory
     pars.QCDDirectory = "/uscms_data/d3/ilyao/QCD8TeV/Moriond13/"
-    # pars.MCDirectory = "root://cmseos:1094//eos/uscms/store/user/lnujj/Moriond2013/RD_includingDiboson/"
-    # pars.MCDirectory = "root://cmseos:1094//eos/uscms/store/user/lnujj/HCP2012METfix/ReducedTrees/"
 
     pars.DataDirectory = pars.MCDirectory
     pars.isElectron = kwargs['isElectron']

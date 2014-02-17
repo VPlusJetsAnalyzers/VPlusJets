@@ -43,7 +43,7 @@ parser.add_option('--genConfig',
                   help='which config to select look at HWW2DConfig.py for ' +\
                       'an example.  Use the file name minus the .py extension.'
                   )
-parser.add_option('--xc', dest='xc', action='store_true',
+parser.add_option('--xc', dest='xc',
                   help='use cross-check background to generate')
 parser.add_option('--sideband', dest='sb', type='int',
                   help='use sideband dataset and model instead')
@@ -61,7 +61,7 @@ import RooWjj2DFitter
 from ROOT import TCanvas, RooFit, RooLinkedListIter, TMath, RooRandom, TFile, \
     RooDataHist, RooMsgService, TStopwatch, RooAbsPdf, TBox, kBlack, kRed, \
     kBlue, kOrange, kDashed, RooAbsCollection, RooArgSet, RooStats, Double, \
-    RooAbsReal, RooAbsData, TH1F
+    RooAbsReal, RooAbsData, TH1F, RooArgList
 import pulls
 
 timer = TStopwatch()
@@ -334,8 +334,7 @@ if opts.toy and opts.genConfig:
     iFiles = mWWArgs
     if opts.xc:
         iFiles = [ 
-            fn.replace('mWW', 'mWW_syst_p') if (fn.find('WpJ') >= 0) else fn \
-                for fn in mWWArgs ]
+            opts.xc if (fn.find('WpJ') >= 0) else fn for fn in mWWArgs ]
     (fitter_gen,pars_gen) = prepFitter(opts.genConfig, iFiles)
     genPdf = fitter_gen.makeConstrainedFitter()
 
@@ -505,53 +504,55 @@ sigPdf.plotOn(plot_mWW, RooFit.Range('plotRange'),
 plot_mWW.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
 
 leg_mWW = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot_mWW)
+plot_mWW.addObject(leg_mWW)
 
-plot_mWW_withErrs = fitter_mWW.stackedPlot(pars_mWW.var[0])
-plot_mWW_withErrs.SetName('%s_plot_with_errors' % (pars_mWW.var[0]))
-nexp = totalPdf_mWW.expectedEvents(fitter_mWW.ws.set('obsSet'))
-if fr_mWW:
-    totalPdf_mWW.plotOn(plot_mWW_withErrs, 
-                        RooFit.VisualizeError(fr_mWW, 1, True),
-                        RooFit.Range('plotRange'),
-                        RooFit.NormRange('plotRange'),
-                        RooFit.Normalization(nexp, RooAbsReal.NumEvent),
-                        RooFit.Name('fitErrors'),
-                        RooFit.FillColor(kOrange+1),
-                        RooFit.FillStyle(3001))
-    plot_mWW_withErrs.getCurve().SetTitle('Fit errors')
-    errs = plot_mWW_withErrs.getCurve('fitErrors')
-    (upper, lower) = pulls.splitErrCurve(errs)
+# plot_mWW_withErrs = fitter_mWW.stackedPlot(pars_mWW.var[0])
+# plot_mWW_withErrs.SetName('%s_plot_with_errors' % (pars_mWW.var[0]))
+# nexp = totalPdf_mWW.expectedEvents(fitter_mWW.ws.set('obsSet'))
+# if fr_mWW:
+#     totalPdf_mWW.plotOn(plot_mWW_withErrs, 
+#                         RooFit.VisualizeError(fr_mWW, 1, True),
+#                         RooFit.Range('plotRange'),
+#                         RooFit.NormRange('plotRange'),
+#                         RooFit.Normalization(nexp, RooAbsReal.NumEvent),
+#                         RooFit.Name('fitErrors'),
+#                         RooFit.FillColor(kOrange+1),
+#                         RooFit.FillStyle(3001))
+#     plot_mWW_withErrs.getCurve().SetTitle('Fit errors')
+#     errs = plot_mWW_withErrs.getCurve('fitErrors')
+#     (upper, lower) = pulls.splitErrCurve(errs)
 
-sigPdf.plotOn(plot_mWW_withErrs, RooFit.Range('plotRange'),
-              RooFit.NormRange('plotRange'),
-              RooFit.Normalization(n_sig*sigScaler, RooAbsReal.NumEvent),
-              RooFit.Name('signal_HWW'),
-              RooFit.LineColor(kBlue+2))
-plot_mWW_withErrs.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
+# sigPdf.plotOn(plot_mWW_withErrs, RooFit.Range('plotRange'),
+#               RooFit.NormRange('plotRange'),
+#               RooFit.Normalization(n_sig*sigScaler, RooAbsReal.NumEvent),
+#               RooFit.Name('signal_HWW'),
+#               RooFit.LineColor(kBlue+2))
+# plot_mWW_withErrs.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
 
-leg_mWW_withErrs = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot_mWW_withErrs)
-plot_mWW_withErrs.addObject(leg_mWW_withErrs)
+# leg_mWW_withErrs = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot_mWW_withErrs)
+# plot_mWW_withErrs.addObject(leg_mWW_withErrs)
 
 # errs.Print('v')
 # upper.Print('v')
 # lower.Print('v')
 
 c_mWW = TCanvas('c_mWW', pars_mWW.var[0] + ' plot')
-plot_mWW.addObject(leg_mWW)
 plot_mWW.Draw()
 # if blinder:
 #     plot_mWW.setInvisible('theData', True)
 c_mWW.Update()
 
-c_mWW_err = TCanvas('c_mWW_err', 'with errors')
-plot_mWW_withErrs.Draw()
-c_mWW_err.Update()
+# c_mWW_err = TCanvas('c_mWW_err', 'with errors')
+# plot_mWW_withErrs.Draw()
+# c_mWW_err.Update()
 
 (chi2_mWW, ndf_mWW) = pulls.computeChi2(plot_mWW.getHist('theData'), 
                                         plot_mWW.getObject(1))
+nFreeFitParams = 0
 if fr_mWW:
-    ndf_mWW -= fr_mWW.floatParsFinal().getSize() - \
+    nFreeFitParams = fr_mWW.floatParsFinal().getSize() - \
         fitter_mWW.ws.set('constraintSet').getSize()
+    ndf_mWW -= nFreeFitParams
 pull_mWW = pulls.createPull(plot_mWW.getHist('theData'), 
                             plot_mWW.getObject(1))
 cp_mWW = TCanvas('cp_mWW', pars_mWW.var[0] + ' mWW pull')
@@ -579,32 +580,40 @@ while p:
     p = parIter.Next()
 
 
-bkgHisto = full_pdf.createHistogram("HWW%snujj_bkg" % mode,
-                                    fitter_mWW.ws.var(pars_mWW.var[0]))
-bkgHisto.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto.Integral())
-bkgHisto.Print()
-bkgHisto.SetName("HWW%snujj_bkg" % mode)
-# c_debug = TCanvas('c_debug', 'debug')
 c_bkg = TCanvas('c_bkg', 'histograms')
 c_bkg.cd()
+
+TH1F.SetDefaultSumw2(True)
+bkgHisto = full_pdf.createHistogram("HWW%snujj_bkg" % mode,
+                                    fitter_mWW.ws.var(pars_mWW.var[0]))
+bkgHisto.Print()
+bkgHisto.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto.Integral())
+bkgHisto.Print()
+
+# for bi in range(1, bkgHisto.GetNbinsX()+1):
+#     print bi, 'content:', bkgHisto.GetBinContent(bi), '+/-', bkgHisto.GetBinError(bi)
+# print
+
+bkgHisto.SetName("HWW%snujj_bkg" % mode)
+# c_debug = TCanvas('c_debug', 'debug')
 bkgHisto.Draw()
-if fr_mWW:
-    bkgHisto_up = fitter_mWW.utils.newEmptyHist(
-        'HWW%snujj_bkg_%sbkgshapeUp' % (mode, mode), 1)
-    bkgHisto_up = pulls.curveToHist(upper, bkgHisto_up)
-    bkgHisto_up.Print()
-    bkgHisto_up.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_up.Integral())
-    bkgHisto_up.SetLineColor(kOrange+2)
-    bkgHisto_up.SetLineStyle(kDashed)
-    bkgHisto_dwn = fitter_mWW.utils.newEmptyHist(
-        'HWW%snujj_bkg_%sbkgshapeDown' % (mode, mode), 1)
-    bkgHisto_dwn = pulls.curveToHist(lower, bkgHisto_dwn)
-    bkgHisto_dwn.Print()
-    bkgHisto_dwn.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_dwn.Integral())
-    bkgHisto_dwn.SetLineColor(kOrange+4)
-    bkgHisto_dwn.SetLineStyle(kDashed)
-    bkgHisto_up.Draw('same')
-    bkgHisto_dwn.Draw('same')
+# if fr_mWW:
+#     bkgHisto_up = fitter_mWW.utils.newEmptyHist(
+#         'HWW%snujj_bkg_%sbkgshapeUp' % (mode, mode), 1)
+#     bkgHisto_up = pulls.curveToHist(upper, bkgHisto_up)
+#     bkgHisto_up.Print()
+#     bkgHisto_up.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_up.Integral())
+#     bkgHisto_up.SetLineColor(kOrange+2)
+#     bkgHisto_up.SetLineStyle(kDashed)
+#     bkgHisto_dwn = fitter_mWW.utils.newEmptyHist(
+#         'HWW%snujj_bkg_%sbkgshapeDown' % (mode, mode), 1)
+#     bkgHisto_dwn = pulls.curveToHist(lower, bkgHisto_dwn)
+#     bkgHisto_dwn.Print()
+#     bkgHisto_dwn.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_dwn.Integral())
+#     bkgHisto_dwn.SetLineColor(kOrange+4)
+#     bkgHisto_dwn.SetLineStyle(kDashed)
+#     bkgHisto_up.Draw('same')
+#     bkgHisto_dwn.Draw('same')
 
 c_bkg.Update()
 ggHPdf = fitter_mWW.ws.pdf('ggH')
@@ -647,7 +656,21 @@ dataHisto.SetMarkerStyle(20)
 dataHisto.SetName('HWW%snujj_data_obs' % mode)
 dataHisto.Draw('same')
 dataHisto.Print()
+# obs = RooArgList(fitter_mWW.ws.var(pars_mWW.var[0]))
+# bkgf = full_pdf.asTF(obs,RooArgList(params_mWW),RooArgSet(obs))
+# bkgf.SetLineColor(2)
+# bkgf.SetLineWidth(3)
+# bkgf.Draw('same')
 c_bkg.Update()
+
+print 'histogram chi2 test:'
+pval = dataHisto.Chi2Test(bkgHisto, 'uwpchi2')
+print 'chi2:',pval,'n fit params:',nFreeFitParams,
+print 'ndf:',dataHisto.GetNbinsX()-nFreeFitParams-1,
+print 'p-value:',TMath.Prob(pval, dataHisto.GetNbinsX()-nFreeFitParams-1)
+# chi2f = dataHisto.Chisquare(bkgf)
+# print 'chi2f:', chi2f
+print
 
 fitter_mWW.ws.saveSnapshot('nullFitSnapshot', fitter_mWW.ws.allVars())
 
@@ -715,11 +738,11 @@ if not opts.toy:
     pull1.Write()
 plot_mWW.Write()
 pull_mWW.Write()
-plot_mWW_withErrs.Write()
+# plot_mWW_withErrs.Write()
 bkgHisto.Write()
-if fr_mWW:
-    bkgHisto_up.Write()
-    bkgHisto_dwn.Write()
+# if fr_mWW:
+#     bkgHisto_up.Write()
+#     bkgHisto_dwn.Write()
 qqHHisto.Write()
 ggHHisto.Write()
 for histo in interf:

@@ -380,7 +380,7 @@ class Wjj2DFitterUtils:
                        )
         elif model==1:
             # power-law model
-            ws.factory("power_%s[-2., -30., 30.]" % idString)
+            ws.factory("power_%s[-4., -30., 30.]" % idString)
             ws.factory("RooPowerLaw::%s(%s, power_%s)" % \
                            (pdfName, var, idString)
                        )
@@ -479,7 +479,7 @@ class Wjj2DFitterUtils:
             self.analyticPdf(ws, var, 23, pdfName, idString, 3)
         elif model == 12:
             # 2 parameter power law
-            ws.factory("power_%s[2, -30, 30]" % idString)
+            ws.factory("power_%s[4, -30, 30]" % idString)
             ws.factory("power2_%s[0, -20, 20]" % idString)
             ws.factory("EXPR::%s('1./TMath::Power(@0,@1+@2*log(@0/@3))', %s, power_%s, power2_%s, 8000)" % \
                            (pdfName, var, idString, idString)
@@ -725,11 +725,13 @@ class Wjj2DFitterUtils:
         elif model == 33:
             # erf model turning off
             theShift = 0.2
-            offset = ws.factory("offset_%s[500, %f, %f]" % \
-                                    (idString, ws.var(var).getMax()*theShift+ws.var(var).getMin()*(1-theShift), 
-                                     ws.var(var).getMax()*2))
+            # offset = ws.factory("offset_%s[500, %f, %f]" % \
+            #                         (idString, 0.), 
+            #                          ws.var(var).getMax()*2))
+            offset = ws.factory("offset_%s[500]" % (idString))
             offset.setVal(ws.var(var).getMax())
             offset.setError(offset.getVal()*0.2)
+            offset.setConstant(False)
             width = ws.factory("width_%s[50, 0, 1000]" % idString)
             width.setVal(offset.getVal()*0.2)
             width.setError(width.getVal()*0.2)

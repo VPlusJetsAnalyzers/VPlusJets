@@ -15,7 +15,7 @@ mu2Pars = {
             'ggH':(13, 5),'qqH':(13, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     180: ( "mva2j180mu", 0.500, 165.0, 245.0, 10,
            # {'diboson': (22, 12),'top':(13, 8),'WpJ':(10, 8, None, None),
-           {'diboson': (22, 12),'top':(13, 8),'WpJ':(10, 23, None, 4),
+           {'diboson': (22, 12),'top':(13, 8),'WpJ':(10, 23, None, 6),
             'ggH':(13, 5),'qqH':(13, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     190: ( "mva2j190mu", 0.500, 165.0, 245.0, 10,
            # {'diboson': (22, 12), 'top': (13, 8), 'WpJ': (10, 8, None, None), 
@@ -23,7 +23,7 @@ mu2Pars = {
             'ggH':(13, 5),'qqH':(13, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     200: ( "mva2j200mu", 0.500, 165.0, 245.0, 10,
            # {'diboson': (22, 12), 'top': (13, 8), 'WpJ': (10, 14, None, None), 
-           {'diboson': (22, 12), 'top': (13, 8), 'WpJ': (10, 23, None, 4), 
+           {'diboson': (22, 12), 'top': (13, 8), 'WpJ': (10, 23, None, 6), 
             'ggH':(13, 5),'qqH':(13, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     250: ( "mva2j250mu", 0.500, 200.0, 400.0, 10,
            # {'diboson': (22, 12), 'top': (5, 10), 'WpJ': (10, 14, None, None), 
@@ -31,7 +31,7 @@ mu2Pars = {
             'ggH':(13, 5),'qqH':(7, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     300: ( "mva2j300mu", 0.500, 200.0, 400.0, 10,
            # {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 14, None, None), 
-           {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 23, None, 7), 
+           {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 23, None, 6), 
             'ggH':(13, 5),'qqH':(7, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     350: ( "mva2j350mu", 0.500, 250., 475., 9,
            # {'diboson': (22, 12),'top':(13, 12),'WpJ':(10, 37, None, 2),
@@ -39,7 +39,7 @@ mu2Pars = {
             'ggH':(13, 5),'qqH':(7, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     400: ( "mva2j400mu", 0.500, 300.0, 600, 10,
            # {'diboson':(31, 12),'top':(13, 12),'WpJ':(10, 37, None, 2),
-           {'diboson':(31, 12),'top':(13, 12),'WpJ':(10, 23, None, 4),
+           {'diboson':(31, 12),'top':(13, 12),'WpJ':(10, 23, None, 5),
             'ggH':(13, 5),'qqH':(7, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     450: ( "mva2j450mu", 0.500, 340.0, 900.0, 14,
            # {'diboson':(31, 12),'top':(5, 12),'WpJ':(10, 35, None, None),
@@ -55,7 +55,7 @@ mu2Pars = {
             'ggH':(13, 5),'qqH':(7, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     600: ( "mva2j600mu", 0.600, 340.0, 900.0, 14,
            # {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 35, None, None),
-           {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 23, None, 7),
+           {'diboson': (22, 12), 'top': (5, 12), 'WpJ': (10, 23, None, 6),
             'ggH':(13, 5),'qqH':(7, 5)}, {"high":(98, 154), "low":(55, 66)} ),
     }
 
@@ -111,8 +111,6 @@ def theConfig(**kwargs):
     if ('xrootd' in kwargs) and kwargs['xrootd']:
         pars.MCDirectory = 'root://cmseos:1094/' + pars.MCDirectory
     pars.QCDDirectory = "/uscms_data/d3/ilyao/QCD8TeV/Moriond13/"
-    # pars.MCDirectory = "root://cmseos:1094//eos/uscms/store/user/lnujj/Moriond2013/RD_includingDiboson/"
-    # pars.MCDirectory = "root://cmseos:1094//eos/uscms/store/user/lnujj/HCP2012METfix/ReducedTrees/"
 
     pars.DataDirectory = pars.MCDirectory
     pars.isElectron = kwargs['isElectron']
