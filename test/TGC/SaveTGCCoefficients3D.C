@@ -13,16 +13,21 @@ void drawCoeffProfiles1pair(char *infile,
 {
   TFile * fin = new TFile(infile);
   TTree* tr = (TTree*) fin->Get("tree"); 
-  for (int i=0; i<=6; i++) {
-    TString hname(Form("%s_p%d_%s_%s",proc,i,varx,vary));
+
+  int nmax = TString(proc).Contains("wz") ? 6 : 5;
+
+  for (int i=0; i<=nmax; i++) {
 
     if (!tr->GetLeaf(Form("p%d",i))) continue;
 
-    cout << "Drawing " << TString(hname)<<endl;
+    TString hname(Form("%s_p%d_%s_%s",proc,i,varx,vary));
 
     TProfile2D* prof2d = new TProfile2D(hname,"",nptsx,xmin,xmax,nptsy,ymin,ymax);
     prof2d->SetTitle(Form("%s;%s;%s;p%d",hname.Data(),varx,vary,i));
+
+    cout << "Drawing " << TString(hname)<<endl;
     tr->Draw(Form("p%d:%s:%s>>%s",i,trvary,trvarx,hname.Data()),"","goff");
+
     outgraphs.push_back(prof2d);
   }
 }
