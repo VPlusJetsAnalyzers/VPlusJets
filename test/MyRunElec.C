@@ -1,4 +1,4 @@
-void MyRunElec(double myflag=20112250, bool isQCD=false, int runflag)
+void MyRunElec(double myflag=201210313, bool isQCD=false, int runflag)
 {
   gSystem->Load("libFWCoreFWLite.so");
   gSystem->Load("libPhysicsToolsUtilities.so");

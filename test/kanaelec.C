@@ -50,7 +50,7 @@ struct sortPt
 void kanaelec::myana(double myflag, bool isQCD, int runflag)
 {
   //Prepare the histogram for the cut-flow control : 8 presel + 7 sel
-  const int n_step = 15;
+  const int n_step = 20;
   TH1F* h_events          = new TH1F("h_events", "h_events", n_step, 0, n_step);
   TH1F* h_events_weighted = new TH1F("h_events_weighted", "h_events_weighted", n_step, 0, n_step);
 
@@ -63,14 +63,21 @@ void kanaelec::myana(double myflag, bool isQCD, int runflag)
     "loose ele veto",
     "loose mu veto",
     "loose jets",
-    "P_{T}(WJ1) > 30", 
+    "fourJets",
+    "P_{T}(WJ1) > 30",
     "P_{T}(WJ2) > 30",
+    "P_{T}(TagJ1) > 30",
+    "P_{T}(TagJ2) > 30",
     "M_{T}(W^{lep}) > 30",
     "tighter lepton",
-    "#Delta#eta(W^{had}) < 1.5",
-    "#Delta#phi(WJ1,MET) > 0.4",
-    "P_{T}(W^{had}) > 40"
-  };
+    "M_{inv}(W^{had}) > 30",
+    "Pfmet > 25",
+    "W mass window 65-95",
+    "anti-btag on W jets",
+    "TMVA Liklihood"};
+    //"#Delta#eta(W^{had}) < 1.5",
+   // "#Delta#phi(WJ1,MET) > 0.4",
+  //  "P_{T}(W^{had}) > 40"
 
   for ( int istep = 0; istep < n_step; istep++ ) {
     h_events -> GetXaxis() -> SetBinLabel( istep + 1, step_names[istep].c_str() );
@@ -466,6 +473,9 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch * branch_vbf600el   =  newtree->Branch("mvavbf600el",   &mvavbf600el,    "mvavbf600el/F");
 
 	Float_t effwt = 1.0, puwt = 1.0, puwt_up = 1.0, puwt_down = 1.0;
+ 
+	genwt = 1.0; // in case the ntuple doesn't have it.
+
 	TBranch * branch_effwt          =  newtree->Branch("effwt",       &effwt,        "effwt/F");
 	TBranch * branch_puwt           =  newtree->Branch("puwt",        &puwt,         "puwt/F");
 	TBranch * branch_puwt_up        =  newtree->Branch("puwt_up",     &puwt_up,      "puwt_up/F");
@@ -888,7 +898,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t hvbf_wjj_e =-999,   hvbf_wjj_pt =-999,   hvbf_wjj_eta =-999, hvbf_wjj_Rapidity =-999, hvbf_wjj_phi =-999,   hvbf_wjj_m =-999;
 	Float_t hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999;
 	Float_t hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999;
-	Float_t hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999, hvbf_lvjj_Rapidity=-999,  hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,   hvbf_lvjj_y=-999;
+	Float_t hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999, hvbf_lvjj_Rapidity=-999,  hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,   hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999;
 	Float_t hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999;
 	Float_t hvbf_lv_e=-999,   hvbf_lv_pt=-999,   hvbf_lv_eta=-999, hvbf_lv_Rapidity=-999, hvbf_lv_phi=-999,   hvbf_lv_m=-999,   hvbf_lv_mT=-999;
 	Float_t hvbf_l_e=-999,   hvbf_l_pt=-999,   hvbf_l_eta=-999,   hvbf_l_phi=-999;
@@ -953,6 +963,15 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_hvbf_lvjj_m    = newtree->Branch("hvbf_lvjj_m",    &hvbf_lvjj_m,     "hvbf_lvjj_m/F");
 	TBranch *branch_hvbf_lvjj_y    = newtree->Branch("hvbf_lvjj_y",    &hvbf_lvjj_y,     "hvbf_lvjj_y/F");
 
+       TBranch *branch_hvbf_jjj_m    = newtree->Branch("hvbf_jjj_m",    &hvbf_jjj_m,     "hvbf_jjj_m/F");
+        TBranch *branch_hvbf_lvj_m    = newtree->Branch("hvbf_lvj_m",    &hvbf_lvj_m,     "hvbf_lvj_m/F");
+
+        TBranch *branch_hvbf_lW_tag1_deta  = newtree->Branch("hvbf_lW_tag1_deta",  &hvbf_lW_tag1_deta,"hvbf_lW_tag1_deta/F");
+        TBranch *branch_hvbf_lW_tag2_deta  = newtree->Branch("hvbf_lW_tag2_deta",  &hvbf_lW_tag2_deta,"hvbf_lW_tag2_deta/F");
+        TBranch *branch_hvbf_hW_tag1_deta  = newtree->Branch("hvbf_hW_tag1_deta",  &hvbf_hW_tag1_deta,"hvbf_hW_tag1_deta/F");
+        TBranch *branch_hvbf_hW_tag2_deta  = newtree->Branch("hvbf_hW_tag2_deta",  &hvbf_hW_tag2_deta,"hvbf_hW_tag2_deta/F");
+
+
 	TBranch *branch_hvbf_lv_e    = newtree->Branch("hvbf_lv_e",    &hvbf_lv_e,     "hvbf_lv_e/F");
 	TBranch *branch_hvbf_lv_pt   = newtree->Branch("hvbf_lv_pt",   &hvbf_lv_pt,    "hvbf_lv_pt/F");
 	TBranch *branch_hvbf_lv_eta  = newtree->Branch("hvbf_lv_eta",  &hvbf_lv_eta,   "hvbf_lv_eta/F");
@@ -999,7 +1018,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t vbf_wjj_ang_ha   = 999, vbf_wjj_ang_hb = 999, vbf_wjj_ang_hs = 999, vbf_wjj_ang_phi = 999, vbf_wjj_ang_phia = 999, vbf_wjj_ang_phib = 999;
 	// VBF Higgs Analysis   
 
-	Int_t hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1;
+	Int_t hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1, fourJets=0;
 
 	Float_t hvbf_wjj_ang_ha   = 999, hvbf_wjj_ang_hb = 999, hvbf_wjj_ang_hs = 999,hvbf_wjj_ang_phi = 999, hvbf_wjj_ang_phia = 999, hvbf_wjj_ang_phib = 999;
 
@@ -1326,6 +1345,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 
 	const char* inputVars[] = { "ptlvjj", "ylvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+        const char* inputVars1[] = { "ptlvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs"};
+
 	// here the bug is fixed for electron charge in 2 jet bin
 
 
@@ -1337,21 +1358,27 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 	std::vector<std::string> inputVarsMVA;
 	for (int i=0; i<8; ++i) inputVarsMVA.push_back( inputVars[i] );
+
+
+        std::vector<std::string> inputVarsMVA1;
+        for (int i=0; i<5; ++i) inputVarsMVA1.push_back( inputVars1[i] );
+
+
 	std::vector<std::string> inputVarsMVA_v2;
 	for (int i=0; i<8; ++i) inputVarsMVA_v2.push_back( inputVars_v2[i] );
 
-	ReadMVA2j170el mvaReader2j170el( inputVarsMVA );  
-	ReadMVA2j180el mvaReader2j180el( inputVarsMVA );  
-	ReadMVA2j190el mvaReader2j190el( inputVarsMVA );  
-	ReadMVA2j200el mvaReader2j200el( inputVarsMVA );  
-	ReadMVA2j250el mvaReader2j250el( inputVarsMVA );  
-	ReadMVA2j300el mvaReader2j300el( inputVarsMVA );  
-	ReadMVA2j350el mvaReader2j350el( inputVarsMVA );  
-	ReadMVA2j400el mvaReader2j400el( inputVarsMVA );  
-	ReadMVA2j450el mvaReader2j450el( inputVarsMVA );  
-	ReadMVA2j500el mvaReader2j500el( inputVarsMVA );  
-	ReadMVA2j550el mvaReader2j550el( inputVarsMVA );  
-	ReadMVA2j600el mvaReader2j600el( inputVarsMVA );  
+	ReadMVA2j170el mvaReader2j170el( inputVarsMVA1 );  
+	ReadMVA2j180el mvaReader2j180el( inputVarsMVA1 );  
+	ReadMVA2j190el mvaReader2j190el( inputVarsMVA1 );  
+	ReadMVA2j200el mvaReader2j200el( inputVarsMVA1 );  
+	ReadMVA2j250el mvaReader2j250el( inputVarsMVA1 );  
+	ReadMVA2j300el mvaReader2j300el( inputVarsMVA1 );  
+	ReadMVA2j350el mvaReader2j350el( inputVarsMVA1 );  
+	ReadMVA2j400el mvaReader2j400el( inputVarsMVA1 );  
+	ReadMVA2j450el mvaReader2j450el( inputVarsMVA1 );  
+	ReadMVA2j500el mvaReader2j500el( inputVarsMVA1 );  
+	ReadMVA2j550el mvaReader2j550el( inputVarsMVA1 );  
+	ReadMVA2j600el mvaReader2j600el( inputVarsMVA1 );  
 	ReadMVA2j400interferencedownel mvaReader2j400interferencedownel( inputVarsMVA_v2 );
 	ReadMVA2j400interferencenominalel mvaReader2j400interferencenominalel( inputVarsMVA_v2 );
 	ReadMVA2j400interferenceupel mvaReader2j400interferenceupel( inputVarsMVA_v2 );
@@ -1821,6 +1848,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		vbf_event = 0; vbf_aj_id = -1; vbf_bj_id = -1; vbf_waj_id = -1; vbf_wbj_id = -1;
 		vbf_wjj_ang_ha   = 999; vbf_wjj_ang_hb = 999; vbf_wjj_ang_hs = 999; vbf_wjj_ang_phi = 999; vbf_wjj_ang_phia = 999; vbf_wjj_ang_phib = 999;
 		hvbf_event = 0;
+                fourJets=0;
 
 		//VBF diboson event
 		vbf_diboson_event = 0;
@@ -1914,7 +1942,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			eleHLTEff.GetEfficiency(W_electron_pt, W_electron_eta) *
 			eleMHTEff.GetEfficiency(event_met_pfmet, 0) *
 			eleWMtEff.GetEfficiency(W_mt, W_electron_eta);
-
+  		 effwt *= (genwt >= 0) ? 1 : -1; 
 		// Pile up Re-weighting
 		if (wda>20120999) { // MC samples
 			//      puwt      =    LumiWeights_.weight3D(event_mcPU_nvtx[0], event_mcPU_nvtx[1], event_mcPU_nvtx[2]);
@@ -2039,7 +2067,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		bool  isgengdevt = 0;
 		bool isgendevtnojetevt = 0;
 
-		if (JetPFCor_Pt[0]>Jpt ) {
+/*		if (JetPFCor_Pt[0]>Jpt ) {
 			h_events          -> Fill ( istep ); 
 			h_events_weighted -> Fill ( istep, effwt*puwt ); 
 			istep++;
@@ -2061,7 +2089,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				}
 			}
 		}
-
+*/
+                if( JetPFCor_Pt[0]>Jpt && JetPFCor_Pt[1]>Jpt  && W_mt>30. && W_electron_et>30.){isgengdevt=1;}
 		if(W_mt>30. && W_electron_et>30.){isgendevtnojetevt=1;}
 		bool goodlepton = 0;
 		if ( //W_mt>30. //Move to MVA MET Later
@@ -2267,7 +2296,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			hvbf_bj_eta    = (hvbf_bjp).Eta();
 			hvbf_bj_phi    = (hvbf_bjp).Phi();
 			// vbf_bj_m      = (j_p).M();
-			hvbf_jj_deta   =hvbf_aj_eta-hvbf_bj_eta;
+			hvbf_jj_deta   =fabs(hvbf_aj_eta-hvbf_bj_eta);
 			hvbf_jj_dphi   = getDeltaPhi(hvbf_aj_phi,hvbf_bj_phi);
 			//cout<<"  "<<hvbf_jj_Rapidity<<endl;
 		} //loop  
@@ -2311,8 +2340,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			hvbf_wbj_pt     = (hwjj_bjp).Pt();
 			hvbf_wbj_eta    = (hwjj_bjp).Eta();
 			hvbf_wbj_phi    = (hwjj_bjp).Phi();
-
-			hvbf_wjj_deta= hvbf_waj_eta-hvbf_wbj_eta;
+			hvbf_wjj_deta= fabs(hvbf_waj_eta-hvbf_wbj_eta);
 			hvbf_wjj_dphi= getDeltaPhi(hvbf_waj_phi,hvbf_wbj_phi);
 		}
 		TLorentzVector  lepton;
@@ -2327,6 +2355,11 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		hvbf_lvjj_phi    = (lepton+nutrino+hwjj_ajp+hwjj_bjp).Phi();
 		hvbf_lvjj_Rapidity    = (lepton+nutrino+hwjj_ajp+hwjj_bjp).Rapidity();
 		hvbf_lvjj_m      = (lepton+nutrino+hwjj_ajp+hwjj_bjp).M();
+
+                hvbf_jjj_m      = (hvbf_ajp+hwjj_ajp+hwjj_bjp).M();
+                hvbf_lvj_m      = (lepton+nutrino+hvbf_bjp).M();
+
+
 
 		hvbf_lv_m      = (lepton+nutrino).M();
 		hvbf_lv_e      = (lepton+nutrino).E();
@@ -2344,12 +2377,25 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		hvbf_event_met_pfmet = event_met_pfmet;
 		hvbf_event_met_pfmetPhi = event_met_pfmetPhi;
 
+                hvbf_lW_tag1_deta= fabs(hvbf_jj_eta-hvbf_aj_eta);
+                hvbf_lW_tag2_deta= fabs(hvbf_jj_eta-hvbf_bj_eta);
+                hvbf_hW_tag1_deta= fabs(hvbf_wjj_eta-hvbf_aj_eta);
+                hvbf_hW_tag2_deta= fabs(hvbf_wjj_eta-hvbf_bj_eta);
+
+
+
 		//hvbf_MET_e = b_nvp.Pt();
 		//hvbf_MET_e = b_nvp.Eta();
 		//hvbf_MET_e = b_nvp.Eta();
 
 		hvbf_l_MET_deltaphi = getDeltaPhi(hvbf_l_phi, hvbf_event_met_pfmetPhi);
 		hvbf_lW_hW_deltaphi = getDeltaPhi(hvbf_lv_phi, hvbf_wjj_phi);
+
+               if (htag_i_id!=-1 && htag_j_id!=-1 && hwjj_a_id!=-1 && hwjj_b_id!=-1)
+                {
+                        fourJets=1;
+                }
+
 
 		if (htag_i_id!=-1 && htag_j_id!=-1 && hwjj_a_id!=-1 && hwjj_b_id!=-1 && goodlepton==1 && hvbf_lv_mT >30. && hvbf_wjj_m >30.&& event_met_pfmet>25.)
 		{
@@ -2405,6 +2451,74 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		}
 
 
+                if (fourJets==1)
+                {
+                        h_events          -> Fill ( istep );
+                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                        istep++;
+                        if (hvbf_waj_pt>Jpt ) {
+                                h_events          -> Fill ( istep );
+                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                istep++;
+                                if ( hvbf_wbj_pt>Jpt ) {
+                                        h_events          -> Fill ( istep );
+                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                        istep++;
+                                        if (hvbf_aj_pt >Jpt ) {
+                                                h_events          -> Fill ( istep );
+                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                istep++;
+                                                if ( hvbf_bj_pt>Jpt ) {
+                                                        h_events          -> Fill ( istep );
+                                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                        istep++;
+                                                        if ( W_mt>30. ) {
+                                                                h_events          -> Fill ( istep );
+                                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                istep++;
+                                                                if ( W_electron_pt>30.
+                                                                                && fabs(W_electron_eta)<2.5
+                                                                   ) {
+                                                                        h_events          -> Fill ( istep );
+                                                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                        istep++;
+                                                                        if (hvbf_wjj_m >30.)
+                                                                        {
+                                                                                h_events          -> Fill ( istep );
+                                                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                istep++;
+                                                                                if (event_met_pfmet>25.)
+                                                                                {
+                                                                                        h_events          -> Fill ( istep );
+                                                                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                        istep++;
+                                                                                        if (hvbf_wjj_m>65. && hvbf_wjj_m<95.)
+                                                                                        {
+                                                                                                h_events          -> Fill ( istep );
+                                                                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                                istep++;
+											   if ( hvbf_wjet1_btagCSV<0.679 &&  hvbf_wjet2_btagCSV< 0.679)
+                                                                                                {
+                                                                                                        h_events          -> Fill ( istep );
+                                                                                                        h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                                        istep++;
+                                                                                                        if ( mva126el > 0.6)
+                                                                                                        {
+                                                                                                                h_events          -> Fill ( istep );
+                                                                                                                h_events_weighted -> Fill ( istep, effwt*puwt );
+                                                                                                                istep++;
+
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }}}}
+
+
 		// Fill the trained MVA output 
 		//if(hvbf_event==1){
 		std::vector<double> hvbf_mvaInputVal;
@@ -2431,7 +2545,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 
 		// 2 and 3 jet event for Mjj
-		if (isgengdevt
+/*		if (isgengdevt
 				&& fabs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5 ) {
 			h_events          -> Fill ( istep ); 
 			h_events_weighted -> Fill ( istep, effwt*puwt ); 
@@ -2449,6 +2563,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				}
 			}
 		}
+*/
 		// 2 and 3 jet event for Hww
 		if (isgengdevt) { ggdevt = 4;// Do the kinematic fit for all event!!!
 			if ( JetPFCor_Pt[1] > Jpt && JetPFCor_Pt[2] < Jpt ) {ggdevt = 2;}
@@ -2490,30 +2605,41 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			ang_ha = a_costheta1; ang_hb = fabs(a_costheta2); ang_hs = a_costhetastar;  ang_phi = a_phi; ang_phia = a_phistar1; ang_phib = a_phistar2;
 
 			// Fill the trained MVA output 
-			std::vector<double> mvaInputVal;
-			mvaInputVal.push_back( ptlvjj );
-			mvaInputVal.push_back( ylvjj );
-			mvaInputVal.push_back( W_electron_charge );   ///////different for electron and muon
+			std::vector<double> mvaInputVal1;
+			mvaInputVal1.push_back( ptlvjj );
+			mvaInputVal1.push_back( W_electron_charge );   ///////different for electron and muon
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
-			mvaInputVal.push_back( ang_ha );
-			mvaInputVal.push_back( ang_hb );
-			mvaInputVal.push_back( ang_hs );
-			mvaInputVal.push_back( ang_phi );
-			mvaInputVal.push_back( ang_phib );
+			mvaInputVal1.push_back( ang_ha );
+			mvaInputVal1.push_back( ang_hb );
+			mvaInputVal1.push_back( ang_hs );
 
-			mva2j170el = (float) mvaReader2j170el.GetMvaValue( mvaInputVal );
-			mva2j180el = (float) mvaReader2j180el.GetMvaValue( mvaInputVal );
-			mva2j190el = (float) mvaReader2j190el.GetMvaValue( mvaInputVal );
-			mva2j200el = (float) mvaReader2j200el.GetMvaValue( mvaInputVal );
-			mva2j250el = (float) mvaReader2j250el.GetMvaValue( mvaInputVal );
-			mva2j300el = (float) mvaReader2j300el.GetMvaValue( mvaInputVal );
-			mva2j350el = (float) mvaReader2j350el.GetMvaValue( mvaInputVal );
-			mva2j400el = (float) mvaReader2j400el.GetMvaValue( mvaInputVal );
-			mva2j450el = (float) mvaReader2j450el.GetMvaValue( mvaInputVal );
-			mva2j500el = (float) mvaReader2j500el.GetMvaValue( mvaInputVal );
-			mva2j550el = (float) mvaReader2j550el.GetMvaValue( mvaInputVal );
-			mva2j600el = (float) mvaReader2j600el.GetMvaValue( mvaInputVal );
+			mva2j170el = (float) mvaReader2j170el.GetMvaValue( mvaInputVal1 );
+			mva2j180el = (float) mvaReader2j180el.GetMvaValue( mvaInputVal1 );
+			mva2j190el = (float) mvaReader2j190el.GetMvaValue( mvaInputVal1 );
+			mva2j200el = (float) mvaReader2j200el.GetMvaValue( mvaInputVal1 );
+			mva2j250el = (float) mvaReader2j250el.GetMvaValue( mvaInputVal1 );
+			mva2j300el = (float) mvaReader2j300el.GetMvaValue( mvaInputVal1 );
+			mva2j350el = (float) mvaReader2j350el.GetMvaValue( mvaInputVal1 );
+			mva2j400el = (float) mvaReader2j400el.GetMvaValue( mvaInputVal1 );
+			mva2j450el = (float) mvaReader2j450el.GetMvaValue( mvaInputVal1 );
+			mva2j500el = (float) mvaReader2j500el.GetMvaValue( mvaInputVal1 );
+			mva2j550el = (float) mvaReader2j550el.GetMvaValue( mvaInputVal1 );
+			mva2j600el = (float) mvaReader2j600el.GetMvaValue( mvaInputVal1 );
+
+                      // Fill the trained MVA output 
+                        std::vector<double> mvaInputVal;
+                        mvaInputVal.push_back( ptlvjj );
+                        mvaInputVal.push_back( ylvjj );
+                        mvaInputVal.push_back( W_electron_charge );   ///////different for electron and muon
+                        //mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
+                        //mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
+                        mvaInputVal.push_back( ang_ha );
+                        mvaInputVal.push_back( ang_hb );
+                        mvaInputVal.push_back( ang_hs );
+                        mvaInputVal.push_back( ang_phi );
+                        mvaInputVal.push_back( ang_phib );
+
 			mva2j400interferencenominalel = (float) mvaReader2j400interferencenominalel.GetMvaValue( mvaInputVal );
 			mva2j450interferencenominalel = (float) mvaReader2j450interferencenominalel.GetMvaValue( mvaInputVal );
 			mva2j500interferencenominalel = (float) mvaReader2j500interferencenominalel.GetMvaValue( mvaInputVal );
@@ -4205,6 +4331,14 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		branch_hvbf_lvjj_phi->Fill();
 		branch_hvbf_lvjj_m->Fill();
 		branch_hvbf_lvjj_y->Fill();
+                branch_hvbf_jjj_m->Fill();
+                branch_hvbf_lvj_m->Fill();
+
+                branch_hvbf_lW_tag1_deta->Fill();
+                branch_hvbf_lW_tag2_deta->Fill();
+                branch_hvbf_hW_tag1_deta->Fill();
+                branch_hvbf_hW_tag2_deta->Fill();
+
 
 		branch_hvbf_lv_e->Fill();
 		branch_hvbf_lv_pt->Fill();

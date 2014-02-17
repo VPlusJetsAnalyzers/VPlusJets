@@ -72,6 +72,8 @@ namespace ewk {
 		private:
 			// private data members
 
+			float mcWeight;
+
 			float Photon_pt_gen;
 			float H_mass;
 			float H_px;
@@ -104,6 +106,23 @@ namespace ewk {
 			float V_Vz[6];
 			float V_Y[6];
 			int V_Id[6];
+			int   V_dau0_Id[6];
+                        float V_dau0_Pt[6];
+                        float V_dau0_Eta[6];
+                        float V_dau0_Phi[6];
+                        float V_dau0_E[6];
+                        float V_dau0_px[6];
+                        float V_dau0_py[6];
+                        float V_dau0_pz[6];
+                        int   V_dau1_Id[6];
+                        float V_dau1_Pt[6];
+                        float V_dau1_Eta[6];
+                        float V_dau1_Phi[6];
+                        float V_dau1_E[6];
+                        float V_dau1_px[6];
+                        float V_dau1_py[6];
+                        float V_dau1_pz[6];
+                        bool  V_hadronic[6];
 
 
 			int ngq;

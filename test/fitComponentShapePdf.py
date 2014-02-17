@@ -7,6 +7,10 @@ parser.add_option('-m', '--mode', default="HWW2DConfig", dest='modeConfig',
                   help='which config to select look at HWW2DConfig.py for ' +\
                       'an example.  Use the file name minus the .py extension.'
                   )
+parser.add_option('--mjj', dest='mjj_config',
+                  help='which config to select for the mjj parameters' +\
+                      'an example.  Use the file name minus the .py extension.'
+                  )
 parser.add_option('-H', '--mH', dest='mH', default=350, type='int',
                   help='Higgs Mass Point')
 parser.add_option('-j', '--Njets', dest='Nj', default=2, type='int',
@@ -70,6 +74,9 @@ mvaCutOverride = None
 if hasattr(opts, "mvaCut") and (opts.mvaCut != None):
     mvaCutOverride = opts.mvaCut
     configArgs['MVACutOverride'] = opts.mvaCut
+
+if opts.mjj_config:
+    configArgs['mjj_config'] = opts.mjj_config
 
 sb = None
 if opts.sb > 0:
@@ -167,8 +174,13 @@ if (compName == 'qqH') and (opts.mH == 170):
 refEffLumi = -1.
 print 'integrated lumi:',pars.integratedLumi
 in_ws = None
+loadIt = True
 if opts.ws:
     in_ws = TFile(opts.ws).Get('wjj2dfitter')
+    if in_ws.data('data'):
+        getattr(fitter.ws, 'import')(in_ws.data('data'))
+        data = fitter.ws.data('data')
+        loadIt = False
 for (ifile, (filename, ngen, xsec)) in enumerate(files):
     if refEffLumi > 0.:
         scale = refEffLumi/(ngen/xsec)
@@ -181,7 +193,7 @@ for (ifile, (filename, ngen, xsec)) in enumerate(files):
                                         cutOverride = cutOverride,
                                         interference = opts.interference,
                                         additionalWgt = scale)
-    
+
     tmpData.Print()
     print filename,'effective integrated lumi:',ngen/xsec
     expectedYield = xsec*pars.integratedLumi*tmpData.sumEntries()/scale/ngen
@@ -190,15 +202,19 @@ for (ifile, (filename, ngen, xsec)) in enumerate(files):
     print filename,'scale:',scale
     sumNExp += expectedYield
     sumxsec += xsec
-    if not data:
-        data = tmpData.Clone('data')
+    if refEffLumi < 0:
         refEffLumi = ngen/xsec
-    else:
-        data.append(tmpData)
+    if loadIt:
+        if not data:
+            data = tmpData.Clone('data')
+        else:
+            data.append(tmpData)
 
 print compName,'total expected yield: %.1f' % sumNExp
 print compName,'overall A x eff: %.3g' % (sumNExp/sumxsec/pars.integratedLumi)
 data.Print()
+if not fitter.ws.data('data'):
+    getattr(fitter.ws, 'import')(data)
 
 hist2d = None
 try:

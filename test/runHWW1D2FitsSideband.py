@@ -237,7 +237,8 @@ configArgs = {
     'isElectron': opts.isElectron, 
     'initFile': mWWArgs,
     'includeSignal': True,
-    'MVACutOverride': mvaCutOverride
+    'MVACutOverride': mvaCutOverride,
+    'mjj_config': opts.modeConfig
 }
 
 sb = None

@@ -35,6 +35,12 @@ parser.add_option('--sideband', dest='sb', type='int',
                   help='use sideband dataset and model instead')
 parser.add_option('--xrootd', dest='xrootd', action='store_true',
                   help='use xrootd file opening.')
+parser.add_option('--altConfig',
+                  dest='altConfig',
+                  help='which config to select look at HWW2DConfig.py for ' +\
+                      'an example.  Use the file name minus the .py extension.'
+                  )
+
 (opts, args) = parser.parse_args()
 
 components = [ 'ggH', 'qqH', 'diboson', 'top', 'WpJ' ]
@@ -43,6 +49,10 @@ if len(args) > 0:
 
 cmdBase = [ 'python', 'fitComponentShapePdf.py', '-b', '-j', '2', 
             '-m', 'HWW1D2FitsConfig', '--mH', str(opts.mH) ]
+
+if opts.altConfig:
+    cmdBase[6] = opts.altConfig
+    
 if opts.isElectron:
     cmdBase.append('--electrons')
 
@@ -61,6 +71,7 @@ for component in components:
         cmd.append('--makeFree')
     cmd2 = list(cmd)
     cmd2[6] = 'HWW1D2FitsConfig_mWW'
+    cmd2.extend(['--mjj', cmd[6]])
     bn = '1D2FitsParameters/%sHWW%iParameters' % (component, opts.mH)
     if opts.sb:
         bn += '_sideband%i' % opts.sb

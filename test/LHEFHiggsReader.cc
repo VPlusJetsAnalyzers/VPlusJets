@@ -1,3 +1,7 @@
+// -*- mode: C++ -*-
+// to compile:
+// c++ -o LHEFHiggsReader `root-config --glibs --cflags` LHEFHiggsReader.cc
+
 #include "LHEF.h"
 #include "TFile.h"
 #include "TTree.h"

@@ -1,14 +1,18 @@
 from RooWjj2DFitterPars import Wjj2DFitterPars
 from ROOT import kRed, kAzure, kGreen, kBlue, kCyan, kViolet, kGray
 import HWWSignalShapes
-import HWW1D2FitsConfig
-from HWW1D2FitsConfig import mu2Pars, el2Pars
+# import HWW1D2FitsConfig
+# from HWW1D2FitsConfig import mu2Pars, el2Pars
 
 def theConfig(**kwargs):
     # (Nj, mH, isElectron = False, initFile = [], includeSignal = True,
     #           MVACutOverride = None):
     print 'mWW',kwargs
-    pars_mjj = HWW1D2FitsConfig.theConfig(**kwargs)
+    if ('mjj_config' in kwargs):
+        mjjConfig = __import__(kwargs['mjj_config'])
+    else:
+        mjjConfig = __import__('HWW1D2FitsConfig')
+    pars_mjj = mjjConfig.theConfig(**kwargs)
     pars = Wjj2DFitterPars()
 
     pars.MCDirectory = pars_mjj.MCDirectory
@@ -21,7 +25,7 @@ def theConfig(**kwargs):
 
     pars.isElectron = kwargs['isElectron']
     if ('initFile' in kwargs):
-        pars.initialParametersFile = kwargs['initFile']
+        pars.initialParametersFile = list(kwargs['initFile'])
     else:
         pars.inititalParametersFile = []
 
@@ -39,19 +43,19 @@ def theConfig(**kwargs):
     pars.Njets = kwargs['Nj']
     pars.mHiggs = kwargs['mH']
 
-    modePars = mu2Pars
+    modePars = mjjConfig.mu2Pars
     if pars.isElectron:
         flavorString = 'el'
         if pars.Njets == 3:
-            modePars = el3Pars
+            modePars = mjjConfig.el3Pars
         else:
-            modePars = el2Pars
+            modePars = mjjConfig.el2Pars
     else:
         flavorString = 'mu'
         if pars.Njets == 3:
-            modePars = mu3Pars
+            modePars = mjjConfig.mu3Pars
         else:
-            modePars = mu2Pars
+            modePars = mjjConfig.mu2Pars
 
     pars.btagVeto = pars_mjj.btagVeto
     
