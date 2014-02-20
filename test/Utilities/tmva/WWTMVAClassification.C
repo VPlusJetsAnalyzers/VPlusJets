@@ -37,7 +37,7 @@
 #include "TROOT.h"
 #include "TPluginManager.h"
 
-#include "/uscms/home/kukarzev/nobackup/root/root_v5.32.00/tmva/test/TMVAGui.C"
+#include "TMVAGui.C"
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
 // needs to be included when makecint runs (ACLIC)
@@ -48,7 +48,7 @@
 // read input data file with ascii format (otherwise ROOT) ?
 Bool_t ReadDataFromAsciiIFormat = kFALSE;
 
-void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets, TString chan="el" ) 
+void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets = 2, TString chan="el" ) 
 {
 	// The explicit loading of the shared libTMVA is done in TMVAlogon.C, defined in .rootrc
 	// if you use your private .rootrc, or run from a different directory, please copy the 
@@ -161,7 +161,7 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 	char classifierName[192];
 	sprintf(classifierName,"TMVAClassification_%3.0f_nJ%i_%s",mH,njets,chan.Data());
 	TMVA::Factory *factory = new TMVA::Factory( classifierName, outputFile, 
-			"!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D" );
+			"!V:!Silent:!Color:!DrawProgressBar:Transformations=I;D;P;G,D" );
 	//TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification", outputFile, 
 	//                                           "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D" );
 
@@ -173,8 +173,7 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 	// Define the input variables that shall be used for the MVA training
 
 	// leptonic W
-	factory->AddVariable("WWpt := ptlvjj", 'F');
-	factory->AddVariable("WWy := ylvjj", 'F');
+	// factory->AddVariable("WWpt := ptlvjj", 'F');
 	//factory->AddVariable("Wpt := W_pt", 'F');
 	//factory->AddVariable("MET := event_met_pfmet", 'F');
 	if (chan == "mu"){
@@ -190,9 +189,10 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 	// factory->AddVariable("J1QGL := JetPFCor_QGLikelihood[0]", 'F');
 	// factory->AddVariable("J2QGL := JetPFCor_QGLikelihood[1]", 'F');
 
-	factory->AddVariable("costheta1 := ang_ha", 'F');
+	// factory->AddVariable("costheta1 := ang_ha", 'F');
 	factory->AddVariable("costheta2 := ang_hb", 'F');
 	factory->AddVariable("costhetaS := ang_hs", 'F');
+	// factory->AddVariable("WWy := ylvjj", 'F');
 	factory->AddVariable("Phi := ang_phi", 'F');
 	factory->AddVariable("Phi2 := ang_phib", 'F');
 
@@ -210,11 +210,11 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 
 	// read training and test data
 	char signalOutputName[250];
-	sprintf(signalOutputName,"/uscms_data/d3/lnujj/data/Moriond2013/ReducedTrees/RD_%s_HWWMH%3.0f_CMSSW532_private.root",chan.Data(),mH);
+	sprintf(signalOutputName,"/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA/Higgs_22Oct/RD_%s_HWWMH%3.0f_CMSSW532_private.root",chan.Data(),mH);
 	TFile *input1 = TFile::Open( signalOutputName );
 
 	char backgroundOutputName1[250];
-	sprintf(backgroundOutputName1,"/uscms_data/d3/lnujj/data/Moriond2013/ReducedTrees/RD_%s_WpJ_CMSSW532.root",chan.Data());
+	sprintf(backgroundOutputName1,"/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA/Higgs_22Oct/RD_%s_WJets_CMSSW532_merged2_v2.root",chan.Data());
 	//    char backgroundOutputName2[192];
 	//  sprintf(backgroundOutputName2,"/eos/uscms/store/user/ajay/HCP2012METfix/ReducedTrees/RD_for_training/RD_%s_TTbar_CMSSW532.root",chan.Data());
 	TFile *input2 = TFile::Open( backgroundOutputName1 );
@@ -225,10 +225,11 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 
 	TTree *old_signal     = (TTree*)input1->Get("WJet");
 	TTree *background1 = (TTree*)input2->Get("WJet");
-       TFile *newfile = new TFile("small.root","recreate");
+	TFile newfile("small.root","recreate");
 
-	 TTree * signal = old_signal->CloneTree(old_signal->GetEntries()*0.66);
-
+	// TTree * signal = old_signal->CloneTree(old_signal->GetEntries()*0.66);
+	TTree * signal = old_signal;
+	 
 	//    TTree *background2 = (TTree*)input3->Get("WJet");
 	// global event weights per tree (see below for setting event-wise weights)
 	//    Double_t signalWeight     = 19.52*2.*.0314*10386/299968.;
@@ -320,7 +321,7 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 	//    TCut mycutb = "abs(eta)>1.5"; // for example: TCut mycutb = "abs(var1)<0.5";
 
 
-	char * mass4bodycut = "";
+	TString mass4bodycut( "" );
 	if(njets==2 ) {
 		if(chan.Contains("mu")) {
 			//if(mH==125.) mass4bodycut = "(ggh125_Mlvjj >100 && ggh125_Mlvjj<250)"; // 2j170mu
@@ -407,7 +408,7 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 	else
 	//    {sprintf(mycutschar,"(gg125evt == 1) && (Mass2j_PFCor>65 && Mass2j_PFCor<95) && %s",mass4bodycut);}
 */
-	{sprintf(mycutschar," (fit_status==0) && (W_mt>30) &&((abs(JetPFCor_Eta[0])>2.4)||(JetPFCor_Pt[0]<30.)||(JetPFCor_bDiscriminatorCSV[0]<0.244)) && ((abs(JetPFCor_Eta[1])>2.4)||(JetPFCor_Pt[1]<30.)||(JetPFCor_bDiscriminatorCSV[1]<0.244)) && ((abs(JetPFCor_Eta[2])>2.4)||(JetPFCor_Pt[2]<30.)||(JetPFCor_bDiscriminatorCSV[2]<0.244))&&((abs(JetPFCor_Eta[3])>2.4)||(JetPFCor_Pt[3]<30.)||(JetPFCor_bDiscriminatorCSV[3]<0.244))&&((abs(JetPFCor_Eta[4])>2.4)||(JetPFCor_Pt[4]<30.)||(JetPFCor_bDiscriminatorCSV[4]<0.244))&&((abs(JetPFCor_Eta[5])>2.4)||(JetPFCor_Pt[5]<30.)||(JetPFCor_bDiscriminatorCSV[5]<0.244)) && (Mass2j_PFCor>66 && Mass2j_PFCor<98) && %s",mass4bodycut);}
+	{sprintf(mycutschar,"(fit_status==0)&&(W_mt>30) &&((abs(JetPFCor_Eta[0])>2.4)||(JetPFCor_Pt[0]<30.)||(JetPFCor_bDiscriminatorCSV[0]<0.244)) && ((abs(JetPFCor_Eta[1])>2.4)||(JetPFCor_Pt[1]<30.)||(JetPFCor_bDiscriminatorCSV[1]<0.244)) && ((abs(JetPFCor_Eta[2])>2.4)||(JetPFCor_Pt[2]<30.)||(JetPFCor_bDiscriminatorCSV[2]<0.244))&&((abs(JetPFCor_Eta[3])>2.4)||(JetPFCor_Pt[3]<30.)||(JetPFCor_bDiscriminatorCSV[3]<0.244))&&((abs(JetPFCor_Eta[4])>2.4)||(JetPFCor_Pt[4]<30.)||(JetPFCor_bDiscriminatorCSV[4]<0.244))&&((abs(JetPFCor_Eta[5])>2.4)||(JetPFCor_Pt[5]<30.)||(JetPFCor_bDiscriminatorCSV[5]<0.244))&&(Mass2j_PFCor>66)&&(Mass2j_PFCor<98)&&%s",mass4bodycut.Data());}
 	 
 //	if(njets==2) 
 /*	{
@@ -429,7 +430,7 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 
 	// tell the factory to use all remaining events in the trees after training for testing:
 	factory->PrepareTrainingAndTestTree( mycuts, mycuts,
-			"nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
+			"nTrain_Signal=0:nTrain_Background=0:nTest_Signal=0:nTest_Background=0:SplitMode=Random:NormMode=None:!V" );
         //          "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
 
 
@@ -474,8 +475,23 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 
 	// Likelihood
 	if (Use["Likelihood"])
-		factory->BookMethod( TMVA::Types::kLikelihood, "Likelihood", 
-				"H:!V:!TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50" ); 
+	  factory->BookMethod( TMVA::Types::kLikelihood, "Likelihood", 
+			       "!H:!V:!TransformOutput:PDFInterpol=Spline2"
+			       ":NSmoothSig[0]=0:NSmoothBkg[0]=0"
+			       ":NBinsSig[0]=5:NBinsBkg[0]=5"
+			       ":PDFInterpolSig[0]=Spline0:PDFInterpolBkg[0]=Spline0"
+			       ":NSmoothSig[1]=20:NSmoothBkg[1]=15"
+			       ":NBinsSig[1]=20:NBinsBkg[1]=20"
+			       ":NSmoothSig[2]=10:NSmoothBkg[2]=10"
+			       ":NBinsSig[2]=20:NBinsBkg[2]=20"
+			       ":NSmoothSig[3]=10:NSmoothBkg[3]=10"
+			       ":NBinsSig[3]=20:NBinsBkg[3]=20"
+			       ":NSmoothSig[4]=10:NSmoothBkg[4]=10"
+			       ":NBinsSig[4]=20:NBinsBkg[4]=20"
+			       ":NSmooth=10"
+			       ":NAvEvtPerBin=10:CheckHist"
+			       // "!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50"
+			       ); 
 
 	// test the decorrelated likelihood
 	if (Use["LikelihoodD"])
@@ -484,7 +500,7 @@ void WWTMVAClassification( TString myMethodList = "", double mH=170., int njets,
 
 	if (Use["LikelihoodPCA"])
 		factory->BookMethod( TMVA::Types::kLikelihood, "LikelihoodPCA", 
-				"!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmooth=5:NAvEvtPerBin=50:VarTransform=PCA" ); 
+				"!H:!V:!TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=5:NSmoothBkg[0]=5:NSmooth=5:NAvEvtPerBin=100:VarTransform=PCA" ); 
 
 	// test the new kernel density estimator
 	if (Use["LikelihoodKDE"])

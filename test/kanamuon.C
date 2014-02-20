@@ -103,9 +103,11 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
   else if (myflag == 20120001 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
-      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root", h_events, h_events_weighted);
-      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
+      //InitCounters( inDataDir + "mu_SingleMuon2012_pt1.root", h_events, h_events_weighted);
+      //myChain->Add( inDataDir + "mu_SingleMuon2012_pt1.root");
+      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
+      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
 
     } else {
       InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
@@ -116,17 +118,14 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
   else if (myflag == 20120002 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
-      // InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root", h_events, h_events_weighted);
-      // myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root");
-      // Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_19p3invfb");
-      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
-      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
+      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root", h_events, h_events_weighted);
+      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
       
     } else  {        
-      // InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
-      // myChain->Add( inQCDDir + "QCDmu.root");
-      // Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
+       InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
+       myChain->Add( inQCDDir + "QCDmu.root");
+       Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
     }
   }
   else if (!isQCD) {
@@ -1296,7 +1295,9 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 
 	//const char* inputVars[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
-        const char* inputVars1[] = { "ptlvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs"};
+        //const char* inputVars1[] = { "ptlvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs"};
+          const char* inputVars1[] = { "W_muon_charge", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+
 	std::vector<std::string> inputVarsMVA1;
 	for (int i=0; i<5; ++i) inputVarsMVA1.push_back( inputVars1[i] );
 
@@ -1639,7 +1640,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Long64_t nbytes = 0, nb = 0;
 	for (Long64_t jentry=0; jentry<nentries;jentry++) {
 		//Long64_t ientry = LoadTree(jentry);
-		//if (ientry < 0) break;
+		//if (ientry <0) break;
 		if(jentry%100000==0){cout<< "jentry: " << jentry << endl;}
 		nb = newtree->GetEntry(jentry);   nbytes += nb;
 		// Cut variable definitions
@@ -2152,13 +2153,16 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 			// Fill the trained MVA output 
 			std::vector<double> mvaInputVal1;
-			mvaInputVal1.push_back( ptlvjj );
+			//mvaInputVal1.push_back( ptlvjj );
 			mvaInputVal1.push_back( W_muon_charge );   ///////different for electron and muon
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
-			mvaInputVal1.push_back( ang_ha );
+			//mvaInputVal1.push_back( ang_ha );
 			mvaInputVal1.push_back( ang_hb );
 			mvaInputVal1.push_back( ang_hs );
+                        mvaInputVal1.push_back( ang_phi );
+                        mvaInputVal1.push_back( ang_phib );
+
 
 			mva2j170mu = (float) mvaReader2j170mu.GetMvaValue( mvaInputVal1 );
 			mva2j180mu = (float) mvaReader2j180mu.GetMvaValue( mvaInputVal1 );

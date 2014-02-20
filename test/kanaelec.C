@@ -120,9 +120,7 @@ void kanaelec::myana(double myflag, bool isQCD, int runflag)
   }
   else if (myflag == 20120001 || myflag == -100){
     myChain = new TChain("WJet");
-    
     if ( !isQCD ) {
-
       InitCounters( inDataDir + "WenuJets_DataAllSingleElectronTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
       myChain->Add( inDataDir + "WenuJets_DataAllSingleElectronTrigger_GoldenJSON_v1_fb.root");
       Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WenuJets_DataAllSingleElectronTrigger_GoldenJSON_v1_fb");
@@ -1345,7 +1343,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 
 	const char* inputVars[] = { "ptlvjj", "ylvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
-        const char* inputVars1[] = { "ptlvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs"};
+        //const char* inputVars1[] = { "ptlvjj", "W_electron_charge", "ang_ha", "ang_hb", "ang_hs"};
+         const char* inputVars1[] = { "W_electron_charge", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
 
 	// here the bug is fixed for electron charge in 2 jet bin
 
@@ -1711,6 +1710,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 		//Long64_t ientry = LoadTree(jentry);
 		//if (ientry < 0) break;
+                //if (jentry >1000> 0) break;
+
 		nb = newtree->GetEntry(jentry);   nbytes += nb;
 		// Cut variable definitions
 		double jess    = 1.00; // control the jet energy scale
@@ -2606,13 +2607,15 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 			// Fill the trained MVA output 
 			std::vector<double> mvaInputVal1;
-			mvaInputVal1.push_back( ptlvjj );
+			//mvaInputVal1.push_back( ptlvjj );
 			mvaInputVal1.push_back( W_electron_charge );   ///////different for electron and muon
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
-			mvaInputVal1.push_back( ang_ha );
+			//mvaInputVal1.push_back( ang_ha );
 			mvaInputVal1.push_back( ang_hb );
 			mvaInputVal1.push_back( ang_hs );
+                        mvaInputVal1.push_back( ang_phi );
+                        mvaInputVal1.push_back( ang_phib );
 
 			mva2j170el = (float) mvaReader2j170el.GetMvaValue( mvaInputVal1 );
 			mva2j180el = (float) mvaReader2j180el.GetMvaValue( mvaInputVal1 );
