@@ -19,15 +19,20 @@ EOF
 printargs() {
     echo "Error = fitmu_M=${masspt}_MVA${cutval}.stderr" >>$submit
     echo "Output = fitmu_M=${masspt}_MVA${cutval}.stdout" >>$submit
-    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runHiggsNew.py --doShapes --doFit --expLimit 20 --obsLimit --xrootd $masspt" >>$submit
+    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runHiggsNew.py --doShapes --doFit --expLimit 20 --obsLimit --xrootd $masspt ${modeArg}" >>$submit
     echo "Queue" >>$submit
     echo "Error = fitel_M=${masspt}_MVA${cutval}.stderr" >>$submit
     echo "Output = fitel_M=${masspt}_MVA${cutval}.stdout" >>$submit
-    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runHiggsNew.py --doShapes --doFit --electrons --expLimit 20 --obsLimit --xrootd $masspt" >>$submit
+    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runHiggsNew.py --doShapes --doFit --electrons --expLimit 20 --obsLimit --xrootd $masspt ${modeArg}" >>$submit
     echo "Queue" >>$submit
 }
 
-cutval=Fits4Feb2014
+echo -n "tarring ... "
+tar czf HWWFitting.tar.gz -T filesForHWWFit.txt -X excludeForHWWFit.txt
+echo "done"
+
+modeArg="--mode HWW1D2FitsConfig"
+cutval=NomFits19Feb2014
 cutdir=${cutval}
 submit=submit_cut=${cutval}.txt
 mkdir -p $cutdir

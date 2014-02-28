@@ -39,6 +39,8 @@ parser.add_option('--genConfig',
                   )
 parser.add_option('--xc', dest='xc',
                   help='use cross-check background to generate')
+parser.add_option('--WpJ', dest='WpJ',
+                  help='use WpJ background to fit')
 parser.add_option('-m', '--mode', 
                   dest='modeConfig',
                   help='which config to select look at HWW2DConfig.py for ' +\
@@ -115,6 +117,12 @@ else:
 inputPars = [ '1D2FitsParameters/%s' % n for n in fnmatch.filter(
         os.listdir('1D2FitsParameters/'), searchString ) 
               ]
+if opts.WpJ:
+    for fn in inputPars:
+        if (fn.find('WpJ')>=0) and fn.endswith('_mWW.txt'):
+            print 'replacing',fn,'with',opts.WpJ
+            inputPars[inputPars.index(fn)] = opts.WpJ
+
 #print inputPars
 muCmd = list(commonCmd) + inputPars
 

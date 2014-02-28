@@ -1,7 +1,7 @@
 from array import array
-from ROOT import TTree, TFile, SetOwnership
+from ROOT import TTree
 
-def createTree(fnames, altTrue = {}, cut = '', f = None):
+def createTree(fnames, altTrue = {}, cut = ''):
     cols = {}
     data = None
     line = 0
@@ -58,11 +58,9 @@ def createTree(fnames, altTrue = {}, cut = '', f = None):
                     err = False
                     pull = False
             if (data == None):
-                # if not f:
-                #     f = TFile(fnames[0].replace('.asc', '.root'), 'recreate')
                 data = TTree('data', fnames[0])
-                if f:
-                    SetOwnership(data, False)
+                # if f:
+                #     SetOwnership(data, False)
                 for key in cols.keys():
                     data.Branch(key, cols[key], key + '/D')
 

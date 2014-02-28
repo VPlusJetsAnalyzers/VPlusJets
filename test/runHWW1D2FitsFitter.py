@@ -71,11 +71,11 @@ timer.Start()
 #RooAbsPdf.defaultIntegratorConfig().setEpsAbs(1e-9)
 if not opts.debug:
     RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
-    RooMsgService.instance().addStream(RooFit.ERROR,
-                                       RooFit.Prefix(True), 
-                                       RooFit.ClassName('RooExpPoly'),
-                                       RooFit.OutputFile('/dev/null'))
-    RooMsgService.instance().Print('v')
+    # RooMsgService.instance().addStream(RooFit.ERROR,
+    #                                    RooFit.Prefix(True), 
+    #                                    RooFit.ClassName('RooExpPoly'),
+    #                                    RooFit.OutputFile('/dev/null'))
+    # RooMsgService.instance().Print('v')
 
 if hasattr(opts, "seed") and (opts.seed >= 0):
     print "random seed:", opts.seed
@@ -334,7 +334,7 @@ if opts.toy and opts.genConfig:
     iFiles = mWWArgs
     if opts.xc:
         iFiles = [ 
-            opts.xc if (fn.find('WpJ') >= 0) else fn for fn in mWWArgs ]
+            opts.xc if fn.startswith('WpJ') else fn for fn in mWWArgs ]
     (fitter_gen,pars_gen) = prepFitter(opts.genConfig, iFiles)
     genPdf = fitter_gen.makeConstrainedFitter()
 
@@ -506,31 +506,31 @@ plot_mWW.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
 leg_mWW = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot_mWW)
 plot_mWW.addObject(leg_mWW)
 
-# plot_mWW_withErrs = fitter_mWW.stackedPlot(pars_mWW.var[0])
-# plot_mWW_withErrs.SetName('%s_plot_with_errors' % (pars_mWW.var[0]))
-# nexp = totalPdf_mWW.expectedEvents(fitter_mWW.ws.set('obsSet'))
-# if fr_mWW:
-#     totalPdf_mWW.plotOn(plot_mWW_withErrs, 
-#                         RooFit.VisualizeError(fr_mWW, 1, True),
-#                         RooFit.Range('plotRange'),
-#                         RooFit.NormRange('plotRange'),
-#                         RooFit.Normalization(nexp, RooAbsReal.NumEvent),
-#                         RooFit.Name('fitErrors'),
-#                         RooFit.FillColor(kOrange+1),
-#                         RooFit.FillStyle(3001))
-#     plot_mWW_withErrs.getCurve().SetTitle('Fit errors')
-#     errs = plot_mWW_withErrs.getCurve('fitErrors')
-#     (upper, lower) = pulls.splitErrCurve(errs)
+plot_mWW_withErrs = fitter_mWW.stackedPlot(pars_mWW.var[0])
+plot_mWW_withErrs.SetName('%s_plot_with_errors' % (pars_mWW.var[0]))
+nexp = totalPdf_mWW.expectedEvents(fitter_mWW.ws.set('obsSet'))
+if fr_mWW:
+    totalPdf_mWW.plotOn(plot_mWW_withErrs, 
+                        RooFit.VisualizeError(fr_mWW, 1, True),
+                        RooFit.Range('plotRange'),
+                        RooFit.NormRange('plotRange'),
+                        RooFit.Normalization(nexp, RooAbsReal.NumEvent),
+                        RooFit.Name('fitErrors'),
+                        RooFit.FillColor(kOrange+1),
+                        RooFit.FillStyle(3001))
+    plot_mWW_withErrs.getCurve().SetTitle('Fit errors')
+    # errs = plot_mWW_withErrs.getCurve('fitErrors')
+    # (upper, lower) = pulls.splitErrCurve(errs)
 
-# sigPdf.plotOn(plot_mWW_withErrs, RooFit.Range('plotRange'),
-#               RooFit.NormRange('plotRange'),
-#               RooFit.Normalization(n_sig*sigScaler, RooAbsReal.NumEvent),
-#               RooFit.Name('signal_HWW'),
-#               RooFit.LineColor(kBlue+2))
-# plot_mWW_withErrs.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
+sigPdf.plotOn(plot_mWW_withErrs, RooFit.Range('plotRange'),
+              RooFit.NormRange('plotRange'),
+              RooFit.Normalization(n_sig*sigScaler, RooAbsReal.NumEvent),
+              RooFit.Name('signal_HWW'),
+              RooFit.LineColor(kBlue+2))
+plot_mWW_withErrs.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
 
-# leg_mWW_withErrs = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot_mWW_withErrs)
-# plot_mWW_withErrs.addObject(leg_mWW_withErrs)
+leg_mWW_withErrs = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot_mWW_withErrs)
+plot_mWW_withErrs.addObject(leg_mWW_withErrs)
 
 # errs.Print('v')
 # upper.Print('v')
@@ -542,9 +542,9 @@ plot_mWW.Draw()
 #     plot_mWW.setInvisible('theData', True)
 c_mWW.Update()
 
-# c_mWW_err = TCanvas('c_mWW_err', 'with errors')
-# plot_mWW_withErrs.Draw()
-# c_mWW_err.Update()
+c_mWW_err = TCanvas('c_mWW_err', 'with errors')
+plot_mWW_withErrs.Draw()
+c_mWW_err.Update()
 
 (chi2_mWW, ndf_mWW) = pulls.computeChi2(plot_mWW.getHist('theData'), 
                                         plot_mWW.getObject(1))
@@ -738,7 +738,7 @@ if not opts.toy:
     pull1.Write()
 plot_mWW.Write()
 pull_mWW.Write()
-# plot_mWW_withErrs.Write()
+plot_mWW_withErrs.Write()
 bkgHisto.Write()
 # if fr_mWW:
 #     bkgHisto_up.Write()
