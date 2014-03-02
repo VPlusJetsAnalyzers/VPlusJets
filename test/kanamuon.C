@@ -1287,10 +1287,12 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	// For MVA analysis
 
 	// the training input variables
-	const char* hvbf_inputVars[] = { "hvbf_lvjj_Rapidity", "hvbf_aj_pt", "hvbf_bj_pt", "hvbf_waj_pt", "hvbf_wbj_pt", "hvbf_event_met_pfmet", "hvbf_wjj_ang_hs", "hvbf_wjj_ang_phib", "hvbf_jj_deta", "hvbf_jj_dphi", "hvbf_jj_m" };
+//	const char* hvbf_inputVars[] = { "hvbf_lvjj_Rapidity", "hvbf_aj_pt", "hvbf_bj_pt", "hvbf_waj_pt", "hvbf_wbj_pt", "hvbf_event_met_pfmet", "hvbf_wjj_ang_hs", "hvbf_wjj_ang_phib", "hvbf_jj_deta", "hvbf_jj_dphi", "hvbf_jj_m" };
+
+     const char* hvbf_inputVars[] = { "W_muon_charge", "hvbf_aj_pt", "hvbf_bj_pt", "hvbf_wjj_deta", "hvbf_wjj_m", "hvbf_jj_dphi", "hvbf_jj_m", "hvbf_lvjj_ZeppenField" };
 
 	std::vector<std::string> hvbf_inputVarsMVA;
-	for (int i=0; i<11; ++i) hvbf_inputVarsMVA.push_back( hvbf_inputVars[i] );
+	for (int i=0; i<8; ++i) hvbf_inputVarsMVA.push_back( hvbf_inputVars[i] );
 	ReadLikelihoodvbf126mu mvaReader126mu( hvbf_inputVarsMVA );
 
 
@@ -3060,19 +3062,14 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					// Fill the trained MVA output 
 					//if(hvbf_event==1){
 					std::vector<double> hvbf_mvaInputVal;
-					hvbf_mvaInputVal.push_back( hvbf_lvjj_Rapidity );
+					hvbf_mvaInputVal.push_back( W_muon_charge );
 					hvbf_mvaInputVal.push_back( hvbf_aj_pt);
 					hvbf_mvaInputVal.push_back( hvbf_bj_pt );  
-					//mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
-					//mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
-					hvbf_mvaInputVal.push_back( hvbf_waj_pt );
-					hvbf_mvaInputVal.push_back( hvbf_wbj_pt );
-					hvbf_mvaInputVal.push_back( hvbf_event_met_pfmet );
-					hvbf_mvaInputVal.push_back( hvbf_wjj_ang_hs );
-					hvbf_mvaInputVal.push_back( hvbf_wjj_ang_phib );
-					hvbf_mvaInputVal.push_back( hvbf_jj_deta );
+					hvbf_mvaInputVal.push_back( hvbf_wjj_deta );
+					hvbf_mvaInputVal.push_back( hvbf_wjj_m );
 					hvbf_mvaInputVal.push_back( hvbf_jj_dphi );
 					hvbf_mvaInputVal.push_back( hvbf_jj_m );
+					hvbf_mvaInputVal.push_back( hvbf_lvjj_ZeppenField );
 
 					mva126mu = (float) mvaReader126mu.GetMvaValue( hvbf_mvaInputVal );
 					//cout<<"  mva126mu "<<mva126mu<<endl;
