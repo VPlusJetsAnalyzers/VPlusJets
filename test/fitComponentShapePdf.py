@@ -480,7 +480,7 @@ parIter = finalPars.createIterator()
 p = parIter.Next()
 while p:
     if not p.isConstant():
-        p.setRange(p.getVal()-p.getError()*10., p.getVal()+p.getError()*10.)
+        p.setRange(p.getVal()-p.getError()*20., p.getVal()+p.getError()*20.)
     p = parIter.Next()
 
 if opts.makeConstant:

@@ -1,4 +1,4 @@
-1D2FitsParameters
+1D2FitsParameters/
 Limits/twikiBRtable.txt
 Limits/ggHtable8tev.txt
 Limits/vbfHtable8tev.txt
@@ -41,6 +41,7 @@ pulls.py
 limits.py
 HWWSignalShapes.py
 SignalShapeSystematic.py
+HWW1D2FitsConfigNominal.py
 HWW1D2FitsConfig.py
 HWW1D2FitsConfig_mWW.py
 runHWW1D2FitsFitter.py
@@ -53,5 +54,15 @@ runHiggsNew.py
 runToyBatch.py
 genA1D2FitsToy.py
 genHWW1D2FitsToy.py
-HWW1D2FitsConfigPoly.py
 HWW1D2FitsConfigAlt.py
+HWW1D2FitsConfigAltHigh.py
+HWW1D2FitsConfigAltLow.py
+HWW1D2FitsConfigPoly.py
+HWW1D2FitsConfigPolyHigh.py
+HWW1D2FitsConfigPolyLow.py
+HWW1D2FitsConfigMoreHigh.py
+HWW1D2FitsConfigMoreLow.py
+filesForHWWFit.txt
+excludeForHWWFit.txt
+extractWpJParameters.py
+plotFitFunctions.py

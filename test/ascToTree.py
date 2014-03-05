@@ -1,7 +1,7 @@
 from array import array
-from ROOT import TTree
+import ROOT as r
 
-def createTree(fnames, altTrue = {}, cut = ''):
+def createTree(fnames, rootfile, altTrue = {}):
     cols = {}
     data = None
     line = 0
@@ -58,13 +58,10 @@ def createTree(fnames, altTrue = {}, cut = ''):
                     err = False
                     pull = False
             if (data == None):
-                data = TTree('data', fnames[0])
-                # if f:
-                #     SetOwnership(data, False)
+                rootfile.cd()
+                data = r.TTree('data', fnames[0])
                 for key in cols.keys():
                     data.Branch(key, cols[key], key + '/D')
-
-                #data.Print()
             for key in cols:
                 if cols[key][0] == -9999.99:
                     print 'unfilled column',key,
@@ -76,8 +73,5 @@ def createTree(fnames, altTrue = {}, cut = ''):
             line += 1
         # print 'completed',fname
 
-    data.Print()
-    if cut and (len(cut) > 0):
-        return data.CopyTree(cut)
-    else:
-        return data
+    # data.Print()
+    return data

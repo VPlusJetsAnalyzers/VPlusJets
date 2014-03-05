@@ -26,6 +26,8 @@ parser.add_option('-m', '--mode',
                   )
 parser.add_option('--unbinned', dest='binned', action='store_false',
                   help='unbinned m_lvjj fit instead of binned ML.')
+parser.add_option('--mva', dest='mvaCut', type='float',
+                  help='override cut value for mva')
 
 (opts, args) = parser.parse_args()
 
@@ -52,6 +54,9 @@ if opts.WpJ:
 
 if opts.binned==False:
     cmd.append('--unbinned')
+
+if opts.mvaCut:
+    cmd.extend(['--mva', str(opts.mvaCut)])
 
 for t in range(opts.start, opts.end):
     # if opts.gen_config:

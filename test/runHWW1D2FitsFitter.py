@@ -49,6 +49,8 @@ parser.add_option('--sideband', dest='sb', type='int',
                   help='use sideband dataset and model instead')
 parser.add_option('--unbinned', dest='binned', action='store_false',
                   help='unbinned m_lvjj fit instead of binned ML.')
+parser.add_option('--qRooFit', dest='qRF', action='store_true',
+                  help='quiet RooFit warnings.')
 
 (opts, args) = parser.parse_args()
 
@@ -70,7 +72,10 @@ timer.Start()
 #RooAbsPdf.defaultIntegratorConfig().setEpsRel(1e-9)
 #RooAbsPdf.defaultIntegratorConfig().setEpsAbs(1e-9)
 if not opts.debug:
-    RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
+    if opts.qRF:
+        RooMsgService.instanc().setGlobalKillBelow(RooFit.FATAL)
+    else:
+        RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
     # RooMsgService.instance().addStream(RooFit.ERROR,
     #                                    RooFit.Prefix(True), 
     #                                    RooFit.ClassName('RooExpPoly'),
@@ -334,7 +339,7 @@ if opts.toy and opts.genConfig:
     iFiles = mWWArgs
     if opts.xc:
         iFiles = [ 
-            opts.xc if fn.startswith('WpJ') else fn for fn in mWWArgs ]
+            opts.xc if (fn.find('WpJ')>=0) else fn for fn in mWWArgs ]
     (fitter_gen,pars_gen) = prepFitter(opts.genConfig, iFiles)
     genPdf = fitter_gen.makeConstrainedFitter()
 
@@ -574,7 +579,7 @@ parIter = params_mWW.createIterator()
 p = parIter.Next()
 while p:
     if not p.isConstant():
-        p.setRange(p.getVal()-p.getError()*8., p.getVal()+p.getError()*8.)
+        p.setRange(p.getVal()-p.getError()*15, p.getVal()+p.getError()*15)
     # else:
     #     p.setRange(p.getVal()-p.getError()*3., p.getVal()+p.getError()*3.)
     p = parIter.Next()
