@@ -149,8 +149,13 @@ def curveToHist(curve, hist, debug = False):
 
 from array import array
 
-def subtractCurves(curve, mcurve, loX = None, hiX = None, debug = False):
+def subtractCurves(curve, mcurve, loX = None, hiX = None, debug = False,
+                   scale = 1.):
 
+    # subCurve = r.RooCurve("%s_minus_%s" % (curve.GetName(), mcurve.GetName()), 
+    #                       "%s_minus_%s" % (curve.GetName(), mcurve.GetName()),
+    #                       curve, mcurve, 1., -1.)
+    # return subCurve
     subCurve = r.RooCurve(curve)
     idxs = array('i', [0]*subCurve.GetN())
     r.TMath.BubbleLow(len(idxs), subCurve.GetX(), idxs)
@@ -158,19 +163,24 @@ def subtractCurves(curve, mcurve, loX = None, hiX = None, debug = False):
         loX = subCurve.GetX()[idxs[0]]
     if hiX == None:
         hiX = subCurve.GetX()[idxs[-1]]
-    print 'range for x:',loX, hiX
+    # print 'range for x:',loX, hiX
+    outn = 0;
     for n in range(0, subCurve.GetN()):
         x = subCurve.GetX()[n]
         y = subCurve.GetY()[n]
         if debug:
             print '(',x,',',y,')', mcurve.interpolate(x),
         y -= mcurve.interpolate(x)
-        if (abs(x -loX) <= 1e-6) or (abs(x-hiX) <= 1e-6):
-            y = 0.
+        y *= scale
         if debug:
             print 'new y:',y
-        subCurve.SetPoint(n,x,y)
+        if (abs(x -loX) <= 1e-6) or (abs(x-hiX) <= 1e-6):
+            y = 0.
+        else:
+            subCurve.SetPoint(outn,x,y)
+            outn += 1
 
+    subCurve.Set(outn)
     return subCurve
 
 def clipCurve(curve):
@@ -180,4 +190,15 @@ def clipCurve(curve):
             (curve.GetY()[curve.GetN()-1] < 1e-6):
         curve.RemovePoint(curve.GetN()-1)
 
+    return curve
+
+def scaleCurve(curve, scale = 1.0):
+    idxs = array('i', [0]*curve.GetN())
+    r.TMath.BubbleLow(len(idxs), curve.GetX(), idxs)
+    idys = array('i', [0]*curve.GetN())
+    r.TMath.BubbleLow(len(idys), curve.GetY(), idys)
+    scalef = r.TF2("scalef", "%f*y" % (scale), curve.GetX()[idxs[0]],
+                   curve.GetX()[idxs[-1]], curve.GetY()[idys[0]],
+                   curve.GetY()[idys[-1]])
+    curve.Apply(scalef)
     return curve

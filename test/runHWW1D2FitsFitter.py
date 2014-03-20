@@ -391,9 +391,12 @@ if opts.toy and not opts.ws:
                            RooFit.Name('data_obs'),
                            RooFit.Extended())
     if fitter_mWW.pars.binData:
+        unbinned_data = data
+        unbinned_data.SetName('data_unbinned')
+        getattr(fitter_mWW.ws, 'import')(unbinned_data)
         data = RooDataHist('data_obs', 'data_obs', fitter_mWW.ws.set('obsSet'),
                            data)
-    data.Print('v')
+    data.Print()
     getattr(fitter_mWW.ws, 'import')(data)
 else:
     fitter_mWW.loadDataFromWorkspace(fitter.ws, mWWCut)
@@ -447,7 +450,8 @@ if opts.doLimit:
     upperHist.Draw()
     c_upper.Update()
 
-    TMath.Quantiles(len(uppers), len(qs), uppersArray, qs, probs)
+    if len(uppers) > 4:
+        TMath.Quantiles(len(uppers), len(qs), uppersArray, qs, probs)
     # nquants = upperHist.GetQuantiles(len(qs), qs, probs)
     print 'sensible expected 95%% CL upper limit quantiles for %i toys: [' % len(uppers),
     for q in qs:

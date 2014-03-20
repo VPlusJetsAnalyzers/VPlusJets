@@ -410,7 +410,7 @@ class Wjj2DFitterUtils:
             fcore = ws.factory("f_%s_core[0.5, 0, 1]" % idString)
             if systMult:
                 fcore.setConstant()
-                kappa = ws.factory("RooPowerLaw::func_kappa_%s(kappa_%s[1.0], %s[0.])" % (fcore.GetName(), fcore.GetName(), systMult))
+                kappa = ws.factory("RooPowerFunction::func_kappa_%s(kappa_%s[1.0], %s[0.])" % (fcore.GetName(), fcore.GetName(), systMult))
                 fcore = ws.factory("prod::func_%s(%s, %s)" % (fcore.GetName(), fcore.GetName(), kappa.GetName()))
             ws.factory("SUM::%s(%s * %s_core, %s_tail)" % \
                            (pdfName, fcore.GetName(), pdfName, pdfName)

@@ -73,7 +73,7 @@ from array import array
 
 import pulls
 
-RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
+RooMsgService.instance().setGlobalKillBelow(RooFit.ERROR)
 
 configArgs = {'Nj': opts.Nj, 'mH': opts.mH, 'isElectron': opts.isElectron,
               'initFile' : args}

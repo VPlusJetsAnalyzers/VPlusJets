@@ -1,7 +1,7 @@
-from array import array
+import numpy as n
 import ROOT as r
 
-def createTree(fnames, rootfile, altTrue = {}):
+def createTree(fnames, altTrue = {}):
     cols = {}
     data = None
     line = 0
@@ -25,12 +25,12 @@ def createTree(fnames, rootfile, altTrue = {}):
                     float(tok)
                     if (not var):
                         if (not (varName in cols)):
-                            cols[varName] = array('d', [0.0])
+                            cols[varName] = n.zeros(1, dtype=float) #array('d', [0.0])
                         cols[varName][0] = float(tok)
                         var = True
                     elif (not err):
                         if (not (varName + '_err' in cols)):
-                            cols[varName + '_err'] = array('d', [0.0])
+                            cols[varName + '_err'] = n.zeros(1, dtype=float) #array('d', [0.0])
                         cols[varName + '_err'][0] = abs(float(tok))
                         err = True
                         ## if (float(tok) > 10000):
@@ -40,7 +40,7 @@ def createTree(fnames, rootfile, altTrue = {}):
                         #val = cols[varName][0]
                         #errval = cols[varName + '_err'][0]
                         if (not (varName + '_true' in cols)):
-                            cols[varName + '_true'] = array('d', [0.0])
+                            cols[varName + '_true'] = n.zeros(1, dtype=float) #array('d', [0.0])
                         tval = float(tok)
                         if (varName in altTrue):
                             tval = altTrue[varName]
@@ -50,7 +50,7 @@ def createTree(fnames, rootfile, altTrue = {}):
                         ##     doFill = False
                     elif (not gen):
                         if (not (varName + '_gen' in cols)):
-                            cols[varName + '_gen'] = array('d', [0.0])
+                            cols[varName + '_gen'] = n.zeros(1, dtype=float) #array('d', [0.0])
                         cols[varName + '_gen'][0] = float(tok)
                 except ValueError:
                     varName = tok.replace('-', '__').replace('.','_')
@@ -58,8 +58,9 @@ def createTree(fnames, rootfile, altTrue = {}):
                     err = False
                     pull = False
             if (data == None):
-                rootfile.cd()
-                data = r.TTree('data', fnames[0])
+                datafile = r.TFile(fname+'.root', 'recreate')
+                data = r.TTree('data', fname)
+                # r.SetOwnership(data, False)
                 for key in cols.keys():
                     data.Branch(key, cols[key], key + '/D')
             for key in cols:
@@ -73,5 +74,5 @@ def createTree(fnames, rootfile, altTrue = {}):
             line += 1
         # print 'completed',fname
 
-    # data.Print()
-    return data
+    print 'TTree', data.GetName(), 'has', data.GetEntries(), 'entries.'
+    return data, datafile

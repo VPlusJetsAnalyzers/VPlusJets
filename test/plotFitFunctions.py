@@ -48,20 +48,25 @@ nameMap = {
 curves = []
 
 fbasis = r.TFile.Open('%s_%i.root' % (opts.bn, basisModel))
-fbasis.Get('fit_mlvjj_Plot').Draw()
+plot = fbasis.Get('fit_mlvjj_Plot')
+plot.Draw()
 r.gPad.Update()
-basisCurve = fbasis.Get('fit_mlvjj_Plot').getCurve('fitCurve')
-basisError = fbasis.Get('fit_mlvjj_Plot').getCurve('fitErrors')
-xmin = fbasis.Get('fit_mlvjj_Plot').GetXaxis().GetXmin()
-xmax = fbasis.Get('fit_mlvjj_Plot').GetXaxis().GetXmax()
-ytitle = fbasis.Get('fit_mlvjj_Plot').GetYaxis().GetTitle()
+basisCurve = plot.getCurve('fitCurve')
+basisError = plot.getCurve('fitErrors')
 
-envelopeCurve = pulls.subtractCurves(basisError, basisCurve)
+overallScale = 1./plot.getFitRangeBinW()
+xmin = plot.GetXaxis().GetXmin()
+xmax = plot.GetXaxis().GetXmax()
+xtitle = plot.GetXaxis().GetTitle()
+
+envelopeCurve = pulls.subtractCurves(basisError, basisCurve, 
+                                     scale=overallScale)
 
 for model in args:
     f = r.TFile.Open('%s_%i.root' % (opts.bn, model))
     modelCurve = f.Get('fit_mlvjj_Plot').getCurve('fitCurve')
-    curves.append(pulls.subtractCurves(modelCurve, basisCurve))
+    curves.append(pulls.subtractCurves(modelCurve, basisCurve,
+                                       scale=overallScale))
     curves[-1].SetLineColor(colorMap[model])
     curves[-1].SetName('p_%s_minus_%s' % (nameMap[model], nameMap[basisModel]))
     curves[-1].SetTitle('%s minus %s' % (nameMap[model], nameMap[basisModel]))
@@ -71,8 +76,8 @@ leg = r.TLegend(0.6, 0.95, 0.95, 0.75, "", "NDC")
 
 envelopeCurve.Draw('af')
 envelopeCurve.GetXaxis().SetLimits(xmin, xmax)
-envelopeCurve.GetXaxis().SetTitle('m_{l#nujj} (GeV)')
-envelopeCurve.GetYaxis().SetTitle(ytitle)
+envelopeCurve.GetXaxis().SetTitle(xtitle)
+envelopeCurve.GetYaxis().SetTitle('Events / GeV')
 leg.AddEntry(envelopeCurve, "", "f")
 
 for curve in curves:

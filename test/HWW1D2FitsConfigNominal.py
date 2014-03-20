@@ -8,8 +8,8 @@ def theConfig(mu2Pars, el2Pars, **kwargs):
     print 'mjj',kwargs
     pars = Wjj2DFitterPars()
 
-    # pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA_v1/'
-    pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA/Higgs_22Oct/'
+    pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA_v2/'
+    # pars.MCDirectory = '/eos/uscms/store/user/lnujj/RDtrees_with_8TeV_MVA/Higgs_22Oct/'
     if ('xrootd' in kwargs) and kwargs['xrootd']:
         pars.MCDirectory = 'root://cmseos:1094/' + pars.MCDirectory
     pars.QCDDirectory = "/uscms_data/d3/ilyao/QCD8TeV/Moriond13/"

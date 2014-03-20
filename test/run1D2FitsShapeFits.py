@@ -47,12 +47,14 @@ components = [ 'ggH', 'qqH', 'diboson', 'top', 'WpJ' ]
 if len(args) > 0:
     components = args
 
-cmdBase = [ 'python', 'fitComponentShapePdf.py', '-b', '-j', '2', 
-            '-m', 'HWW1D2FitsConfig', '--mH', str(opts.mH) ]
-
+mjjConfig = 'HWW1D2FitsConfig'
 if opts.altConfig:
-    cmdBase[6] = opts.altConfig
-    
+    mjjConfig = opts.altConfig
+
+cmdBase = [ 'python', 'fitComponentShapePdf.py', '-b', '-j', '2', 
+            '--nativeBins',
+            '-m', mjjConfig, '--mH', str(opts.mH) ]
+
 if opts.isElectron:
     cmdBase.append('--electrons')
 
@@ -70,8 +72,8 @@ for component in components:
     if component == 'WpJ':
         cmd.append('--makeFree')
     cmd2 = list(cmd)
-    cmd2[6] = 'HWW1D2FitsConfig_mWW'
-    cmd2.extend(['--mjj', cmd[6]])
+    cmd2[cmd2.index(mjjConfig)] = 'HWW1D2FitsConfig_mWW'
+    cmd2.extend(['--mjj', mjjConfig])
     bn = '1D2FitsParameters/%sHWW%iParameters' % (component, opts.mH)
     if opts.sb:
         bn += '_sideband%i' % opts.sb
