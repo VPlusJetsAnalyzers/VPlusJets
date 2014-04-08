@@ -814,8 +814,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	// VBF Higgs Variables defined , initialized
 
 	Float_t hvbf_jj_e =-999,   hvbf_jj_pt =-999,   hvbf_jj_eta=-999, hvbf_jj_Rapidity=-999, hvbf_jj_phi =-999, hvbf_jj_m =-999;
-	Float_t hvbf_aj_e =-999,   hvbf_aj_pt =-999,   hvbf_aj_eta=-999,  hvbf_aj_phi =-999, hvbf_aj_m =-999;
-	Float_t hvbf_bj_e =-999,   hvbf_bj_pt =-999,   hvbf_bj_eta=-999,  hvbf_bj_phi =-999, hvbf_bj_m =-999;
+	Float_t hvbf_aj_e =-999,   hvbf_aj_pt =-999,   hvbf_aj_eta=-999,  hvbf_aj_phi =-999, hvbf_aj_m =-999,hvbf_aj_Rapidity=-999;
+	Float_t hvbf_bj_e =-999,   hvbf_bj_pt =-999,   hvbf_bj_eta=-999,  hvbf_bj_phi =-999, hvbf_bj_m =-999,hvbf_bj_Rapidity=-999;
 	Float_t hvbf_jj_deta=-999; Float_t hvbf_jj_dphi=-999;  Int_t   hvbf_jj_type=0,   hvbf_n_excj=0,   hvbf_n_exfj=0,   hvbf_n_gdjj=0;
 	Float_t mva126el=-999;
 
@@ -862,12 +862,14 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_hvbf_aj_eta  = newtree->Branch("hvbf_aj_eta",  &hvbf_aj_eta,   "hvbf_aj_eta/F");
 	TBranch *branch_hvbf_aj_phi  = newtree->Branch("hvbf_aj_phi",  &hvbf_aj_phi,   "hvbf_aj_phi/F");
 	TBranch *branch_hvbf_aj_m    = newtree->Branch("hvbf_aj_m",    &hvbf_aj_m,     "hvbf_aj_m/F");
+        TBranch *branch_hvbf_aj_Rapidity  = newtree->Branch("hvbf_aj_Rapidity",  &hvbf_aj_Rapidity,   "hvbf_aj_Rapidity/F");
 
 	TBranch *branch_hvbf_bj_e    = newtree->Branch("hvbf_bj_e",    &hvbf_bj_e,     "hvbf_bj_e/F");
 	TBranch *branch_hvbf_bj_pt   = newtree->Branch("hvbf_bj_pt",   &hvbf_bj_pt,    "hvbf_bj_pt/F");
 	TBranch *branch_hvbf_bj_eta  = newtree->Branch("hvbf_bj_eta",  &hvbf_bj_eta,   "hvbf_bj_eta/F");
 	TBranch *branch_hvbf_bj_phi  = newtree->Branch("hvbf_bj_phi",  &hvbf_bj_phi,   "hvbf_bj_phi/F");
 	TBranch *branch_hvbf_bj_m    = newtree->Branch("hvbf_bj_m",    &hvbf_bj_m,     "hvbf_bj_m/F");
+        TBranch *branch_hvbf_bj_Rapidity  = newtree->Branch("hvbf_bj_Rapidity",  &hvbf_bj_Rapidity,   "hvbf_bj_Rapidity/F");
 
 	TBranch *branch_hvbf_jj_deta = newtree->Branch("hvbf_jj_deta", &hvbf_jj_deta,  "hvbf_jj_deta/F");
 	TBranch *branch_hvbf_jj_dphi = newtree->Branch("hvbf_jj_dphi", &hvbf_jj_dphi,  "hvbf_jj_dphi/F");
@@ -896,7 +898,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t hvbf_wjj_e =-999,   hvbf_wjj_pt =-999,   hvbf_wjj_eta =-999, hvbf_wjj_Rapidity =-999, hvbf_wjj_phi =-999,   hvbf_wjj_m =-999;
 	Float_t hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999,hvbf_topWm=-999;
 	Float_t hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999;
-	Float_t hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999, hvbf_lvjj_Rapidity=-999,  hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,   hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999;
+	Float_t hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999, hvbf_lvjj_Rapidity=-999,  hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,   hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999,hvbf_lvjj_ZeppenField=-999;
 	Float_t hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999;
 	Float_t hvbf_lv_e=-999,   hvbf_lv_pt=-999,   hvbf_lv_eta=-999, hvbf_lv_Rapidity=-999, hvbf_lv_phi=-999,   hvbf_lv_m=-999,   hvbf_lv_mT=-999;
 	Float_t hvbf_l_e=-999,   hvbf_l_pt=-999,   hvbf_l_eta=-999,   hvbf_l_phi=-999;
@@ -961,6 +963,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_hvbf_lvjj_phi  = newtree->Branch("hvbf_lvjj_phi",  &hvbf_lvjj_phi,   "hvbf_lvjj_phi/F");
 	TBranch *branch_hvbf_lvjj_m    = newtree->Branch("hvbf_lvjj_m",    &hvbf_lvjj_m,     "hvbf_lvjj_m/F");
 	TBranch *branch_hvbf_lvjj_y    = newtree->Branch("hvbf_lvjj_y",    &hvbf_lvjj_y,     "hvbf_lvjj_y/F");
+
+        TBranch *branch_hvbf_lvjj_ZeppenField    = newtree->Branch("hvbf_lvjj_ZeppenField",    &hvbf_lvjj_ZeppenField,     "hvbf_lvjj_ZeppenField/F");
 
        TBranch *branch_hvbf_jjj_m    = newtree->Branch("hvbf_jjj_m",    &hvbf_jjj_m,     "hvbf_jjj_m/F");
         TBranch *branch_hvbf_lvj_m    = newtree->Branch("hvbf_lvj_m",    &hvbf_lvj_m,     "hvbf_lvj_m/F");
@@ -2248,6 +2252,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		//cout<<" jets size   "<<jets.size()<<"   jetsNum   "<<jetsNum<<endl;
 		TLorentzVector hvbf_ajp(0,0,0,0), hvbf_bjp(0,0,0,0);
 		TLorentzVector hwjj_ajp(0,0,0,0), hwjj_bjp(0,0,0,0);
+                TLorentzVector htopwjj_ajp(0,0,0,0), htopwjj_bjp(0,0,0,0);
+
 		float hbest_detatagjj = 0; // float best_mtagjj =0;
 		float hbest_mjj = 0; // float best_mjj =0;
 
@@ -2306,12 +2312,16 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			hvbf_aj_pt     = (hvbf_ajp).Pt();
 			hvbf_aj_eta    = (hvbf_ajp).Eta();
 			hvbf_aj_phi    = (hvbf_ajp).Phi();
+                        hvbf_aj_Rapidity    = (hvbf_ajp).Rapidity();
+
 			//vbf_aj_m      = (i_p).M();
 			//hvbf_jj_m      = sqrt((hwjj_ajp+hwjj_bjp).M2());
 			hvbf_bj_e      = (hvbf_bjp).E();
 			hvbf_bj_pt     = (hvbf_bjp).Pt();
 			hvbf_bj_eta    = (hvbf_bjp).Eta();
 			hvbf_bj_phi    = (hvbf_bjp).Phi();
+                        hvbf_bj_Rapidity    = (hvbf_bjp).Rapidity();
+
 			// vbf_bj_m      = (j_p).M();
 			hvbf_jj_deta   =fabs(hvbf_aj_eta-hvbf_bj_eta);
 			hvbf_jj_dphi   = getDeltaPhi(hvbf_aj_phi,hvbf_bj_phi);
@@ -2421,6 +2431,9 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
                 hvbf_jjj_m      = (hvbf_ajp+hwjj_ajp+hwjj_bjp).M();
                 hvbf_lvj_m      = (lepton+nutrino+hvbf_bjp).M();
+
+                hvbf_lvjj_Rapidity      = (lepton+nutrino+hwjj_ajp+hwjj_bjp).Rapidity();
+                hvbf_lvjj_ZeppenField = fabs(hvbf_lvjj_Rapidity - 0.5*(hvbf_aj_Rapidity+hvbf_bj_Rapidity));
 
 
 
@@ -4355,12 +4368,14 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		branch_hvbf_aj_eta->Fill();
 		branch_hvbf_aj_phi->Fill();
 		branch_hvbf_aj_m->Fill();
+                branch_hvbf_aj_Rapidity->Fill();
 
 		branch_hvbf_bj_e->Fill();
 		branch_hvbf_bj_pt->Fill();
 		branch_hvbf_bj_eta->Fill();
 		branch_hvbf_bj_phi->Fill();
-		branch_hvbf_bj_m->Fill();
+		branch_hvbf_bj_m->Fill(); 
+                branch_hvbf_bj_Rapidity->Fill();
 
 		branch_hvbf_jj_deta->Fill();
 		branch_hvbf_jj_dphi->Fill();
@@ -4393,6 +4408,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		branch_hvbf_lvjj_pt->Fill();
 		branch_hvbf_lvjj_eta->Fill();
 		branch_hvbf_lvjj_Rapidity->Fill();
+                branch_hvbf_lvjj_ZeppenField->Fill();
 
 		branch_hvbf_lvjj_phi->Fill();
 		branch_hvbf_lvjj_m->Fill();
