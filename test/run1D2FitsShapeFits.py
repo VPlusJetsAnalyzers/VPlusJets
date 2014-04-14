@@ -13,7 +13,9 @@ def runCommand(cmd, bn, interf = 0, reuse = False):
     elif interf == 1:
         cmd += [ '--interference', str(interf) ]
 
-    cmd += ['--bn', bn, bn+'.txt']
+    cmd += ['--bn', bn]
+    if not opts.noParams:
+        cmd.append(bn+'.txt')
     if reuse:
         cmd += ['--ws', bn+'.root']
     print ' '.join(cmd)
@@ -35,11 +37,15 @@ parser.add_option('--sideband', dest='sb', type='int',
                   help='use sideband dataset and model instead')
 parser.add_option('--xrootd', dest='xrootd', action='store_true',
                   help='use xrootd file opening.')
+parser.add_option('--noParams', dest='noParams', action='store_true',
+                  help='do not use initial starting values for parameters')
 parser.add_option('--altConfig',
                   dest='altConfig',
                   help='which config to select look at HWW2DConfig.py for ' +\
                       'an example.  Use the file name minus the .py extension.'
                   )
+parser.add_option('--fixToZero', dest='fixToZero', action='store_true',
+                  help='fixLowParametersToZero')
 
 (opts, args) = parser.parse_args()
 
@@ -74,6 +80,8 @@ for component in components:
     cmd2 = list(cmd)
     cmd2[cmd2.index(mjjConfig)] = 'HWW1D2FitsConfig_mWW'
     cmd2.extend(['--mjj', mjjConfig])
+    if (component == 'WpJ') and opts.fixToZero:
+        cmd2.append('--fixToZero')
     bn = '1D2FitsParameters/%sHWW%iParameters' % (component, opts.mH)
     if opts.sb:
         bn += '_sideband%i' % opts.sb

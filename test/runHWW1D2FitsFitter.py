@@ -340,6 +340,7 @@ if opts.toy and opts.genConfig:
     if opts.xc:
         iFiles = [ 
             opts.xc if (fn.find('WpJ')>=0) else fn for fn in mWWArgs ]
+    print 'generating with:',opts.genConfig
     (fitter_gen,pars_gen) = prepFitter(opts.genConfig, iFiles)
     genPdf = fitter_gen.makeConstrainedFitter()
 
@@ -583,7 +584,8 @@ parIter = params_mWW.createIterator()
 p = parIter.Next()
 while p:
     if not p.isConstant():
-        p.setRange(p.getVal()-p.getError()*15, p.getVal()+p.getError()*15)
+        p.setRange(max(p.getVal()-p.getError()*15,p.getMin()), 
+                   min(p.getVal()+p.getError()*15,p.getMax()))
     # else:
     #     p.setRange(p.getVal()-p.getError()*3., p.getVal()+p.getError()*3.)
     p = parIter.Next()

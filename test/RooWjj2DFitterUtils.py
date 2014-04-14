@@ -619,7 +619,8 @@ class Wjj2DFitterUtils:
                                      ws.var(var).getMax()))
             offset.setVal(ws.var(var).getMin())
             offset.setError(offset.getVal()*0.2)
-            width = ws.factory("width_%s[5, 0, 1000]" % idString)
+            width = ws.factory("width_%s[5, %f, 1000]" % \
+                                   (idString,offset.getMin()*0.1))
             width.setVal(offset.getVal()*0.2)
             width.setError(width.getVal()*0.2)
             factoryStatement = "RooErfPdf::%s(%s, offset_%s, width_%s, 1)"%\
@@ -732,7 +733,7 @@ class Wjj2DFitterUtils:
             offset.setVal(ws.var(var).getMax())
             offset.setError(offset.getVal()*0.2)
             offset.setConstant(False)
-            width = ws.factory("width_%s[50, 0, 1000]" % idString)
+            width = ws.factory("width_%s[50, 5, 1000]" % idString)
             width.setVal(offset.getVal()*0.2)
             width.setError(width.getVal()*0.2)
             factoryStatement = "RooErfPdf::%s(%s, offset_%s, width_%s, -1)"%\
@@ -794,8 +795,10 @@ class Wjj2DFitterUtils:
             parSet = []
             parList = RooArgList('parList')
             for i in range(0, auxModel):
-                parSet.append('a%i_%s' % (i+1, idString))
-                a = ws.factory('%s[0.01, 0., 1.]' % parSet[-1])
+                parSet.append('a%i_%s' % (i, idString))
+                a = ws.factory('%s[0.001, 0., 10.]' % parSet[-1])
+                if i==0:
+                    a.setVal(0.9)
                 a.setConstant(False)
                 parList.add(a)
                 # print varSet[-1]
@@ -807,6 +810,27 @@ class Wjj2DFitterUtils:
             # getattr(ws, 'import')(pdf)
             #ws.Print()
             ws.factory(factoryStatement)
+        elif model == 39:
+            #Nth order Bernstein polynomial where n is passed in as the auxModel
+            #fixing all even coeffiencts to zero
+            pdf = self.analyticPdf(ws, var, 38, pdfName, idString, 
+                                   auxModel)
+            for i in range(0, auxModel):
+                if i%2 == 1:
+                    parameter = ws.var('a%i_%s' % (i, idString))
+                    parameter.setVal(0.)
+                    parameter.setConstant()
+        elif model == 40:
+            #Nth order Bernstein polynomial where n is passed in as the auxModel
+            #fixing all odd coeffiencts to zero
+            pdf = self.analyticPdf(ws, var, 38, pdfName, idString, 
+                                   auxModel)
+            for i in range(0, auxModel):
+                if i%2 == 0:
+                    parameter = ws.var('a%i_%s' % (i, idString))
+                    parameter.setVal(0.)
+                    parameter.setConstant()
+            
         elif model== 108:
             # expA+expB
             cA = ws.factory("cA_%s[-0.05,-1.0,0.0]" % idString)

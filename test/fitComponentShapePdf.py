@@ -53,6 +53,8 @@ parser.add_option('--overrideModel', dest='overrideModel', type='int',
                   help='override the model number')
 parser.add_option('--overrideAux', dest='overrideAux', type='int',
                   help='override the aux model number')
+parser.add_option('--fixToZero', dest='fixToZero', action='store_true',
+                  help='fixLowParametersToZero')
 
 (opts, args) = parser.parse_args()
 
@@ -291,7 +293,8 @@ if fitter.ws.var('sigma_%s_fit_mlvjj_tail%s' % (compName,extraTag)):
 if fitter.ws.var('sigma_%s_fit_mlvjj_core%s' % (compName,extraTag)):
     fitter.ws.var('sigma_%s_fit_mlvjj_core%s' % \
                       (compName,extraTag)).setVal(opts.mH*0.1)
-if fitter.ws.var('width_%s_fit_mlvjj%s' % (compName,extraTag)):
+if (compName in ['ggH','qqH']) and \
+        fitter.ws.var('width_%s_fit_mlvjj%s' % (compName,extraTag)):
     fitter.ws.var('width_%s_fit_mlvjj%s' % \
                       (compName,extraTag)).setVal(HWWSignalShapes.HiggsWidth[int(opts.mH)])
 
@@ -299,7 +302,8 @@ params = sigPdf.getParameters(data)
 parCopy = params.snapshot()
 for filename in args:
     parCopy.readFromFile(filename)
-    params.assignValueOnly(parCopy)
+
+params.__assign__(parCopy)
 
 params.Print('v')
 parCopy.IsA().Destructor(parCopy)
@@ -478,9 +482,27 @@ sigFile.Close()
 
 parIter = finalPars.createIterator()
 p = parIter.Next()
+fixCnt = 0
 while p:
     if not p.isConstant():
-        p.setRange(p.getVal()-p.getError()*20., p.getVal()+p.getError()*20.)
+        p.setRange(max(p.getVal()-p.getError()*20., p.getMin()),
+                   min(p.getVal()+p.getError()*20., p.getMax()))
+        if (p.getError() > abs(p.getVal()*10)):
+            fixCnt += 1
+            print p.GetName(), 'is not significantly deviated from zero',
+            print '(%f' % (p.getVal()/p.getError()), 'sigma),',
+            print 'consider fixing it to zero.'
+            if opts.fixToZero:
+                print 'fixing',p.GetName(),'to zero'
+                p.setVal(0.0)
+                p.setConstant()
+        # elif (fixCnt > 1) and opts.fixToZero:
+        #     print 'fixing',p.GetName(),'to zero'
+        #     p.setVal(0.0)
+        #     p.setConstant()
+        else:
+            fixCnt = 0
+            
     p = parIter.Next()
 
 if opts.makeConstant:

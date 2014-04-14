@@ -15,7 +15,8 @@ cp.SetGridy()
 
 for fname in args:
     print fname
-    fname_parts = fname.split('_')
+    fname_minusPath = fname.split('/')[-1]
+    fname_parts = fname_minusPath.split('_')
     f = TFile(fname)
     match = re.search(r'\d+', fname_parts[0])
     mH = int(match.group(0))

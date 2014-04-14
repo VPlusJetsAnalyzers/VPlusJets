@@ -56,8 +56,8 @@ SignalCenter = basis_ws.var('mean_ggH_fit_mlvjj_core_mu').getVal()
 SignalWidth = basis_ws.var('sigma_ggH_fit_mlvjj_core_mu').getVal()
 Z = 1.5
 
-SigWindLow = SignalCenter - SignalWidth*Z
-SigWindHigh = SignalCenter + SignalWidth*Z
+SigWindLow = max(SignalCenter - SignalWidth*Z, variable.getMin())
+SigWindHigh = min(SignalCenter + SignalWidth*Z, variable.getMax())
 
 print "%.1f sigma signal window: [%.1f, %.1f]" % (Z, SigWindLow, SigWindHigh)
 # onlyWpJCurve = pulls.subtractCurves(pulls.clipCurve(WpJCurve),
@@ -100,7 +100,7 @@ for model in args:
                             n_WpJ,
                             r.RooArgSet(var_))
     modelDataHist = ws_.pdf('WpJ').generateBinned(r.RooArgSet(ws_.var(varName)),
-                                                  n_WpJ, True)
+                                                  n_WpJ+0.5, True)
     # modelDataHist.Print()
     modelHist = modelDataHist.createHistogram("%sHist" % model, 
                                               ws_.var(varName))

@@ -42,6 +42,8 @@ parser.add_option('-m', '--mode',
                   )
 parser.add_option('--unbinned', dest='binned', action='store_false',
                   help='unbinned m_lvjj fit instead of binned ML.')
+parser.add_option('--fixToZero', dest='fixToZero', action='store_true',
+                  help='fixLowParametersToZero')
 
 (opts, args) = parser.parse_args()
 
@@ -63,6 +65,8 @@ for mH in masspts:
         cmd.append('--xrootd')
     if opts.modeConfig:
         cmd.extend(['--altConfig', opts.modeConfig])
+    if opts.fixToZero:
+        cmd.append('--fixToZero')
     if opts.doShape:
         runCommand(cmd, 'HWW%s_%s_shapes.txt' % (mH, flavStr))
         # runCommand(['python', 'fixErfParams.py', '1D2FitsParameters/WpJHWW%sParameters_%smWW.txt' % (mH, 'el_' if opts.isElectron else '')])

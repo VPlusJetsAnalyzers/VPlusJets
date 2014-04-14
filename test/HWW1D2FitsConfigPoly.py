@@ -4,7 +4,9 @@ import HWWSignalShapes
 
 import HWW1D2FitsConfig
 
-mu2Pars = dict(HWW1D2FitsConfig.mu2Pars)
+import copy
+
+mu2Pars = copy.deepcopy(HWW1D2FitsConfig.mu2Pars)
 
 polyOrders = {
     170 : 6,
@@ -14,15 +16,30 @@ polyOrders = {
     250 : 6,
     300 : 6,
     350 : 6,
-    400 : 5,
-    450 : 5,
-    500 : 5,
-    550 : 6,
-    600 : 6,
+    400 : 6,
+    450 : 7,
+    500 : 7,
+    550 : 7,
+    600 : 7,
+}
+
+polyModels = {
+    170 : 23,
+    180 : 23,
+    190 : 23,
+    200 : 23,
+    250 : 23,
+    300 : 23,
+    350 : 23,
+    400 : 38,
+    450 : 38,
+    500 : 38,
+    550 : 38,
+    600 : 38,
 }
 
 for mass in mu2Pars:
-    mu2Pars[mass][5]['WpJ'] = (mu2Pars[mass][5]['WpJ'][0], 23, 
+    mu2Pars[mass][5]['WpJ'] = (mu2Pars[mass][5]['WpJ'][0], polyModels[mass], 
                                mu2Pars[mass][5]['WpJ'][2], polyOrders[mass])
 el2Pars = dict(mu2Pars)
 

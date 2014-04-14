@@ -1,3 +1,3 @@
-power2_diboson_fit_mlvjj = 1.8845 +/- 0.64571 C L(-4.57269 - 8.34161)
-power_diboson_fit_mlvjj = -2.24807 +/- 1.9577 C L(-21.8251 - 17.329)
-n_diboson = 162.6 +/- 12.8 C
+power2_diboson_fit_mlvjj = 2.2453 +/- 0.39395 C L(-20 - 20)
+power_diboson_fit_mlvjj = -2.98291 +/- 1.1897 C L(-30 - 30)
+n_diboson = 712.5 +/- 26.7 C

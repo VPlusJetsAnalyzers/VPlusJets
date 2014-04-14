@@ -1,8 +1,6 @@
 #!/bin/bash
-BASEDIR=/uscms/home/pdudero/data/HWW/HWWmvaScan131024
-JAKESRCDIR=/uscms_data/d2/andersj/Wjj/2013/CMSSW_6_1_2/src/ElectroWeakAnalysis/VPlusJets/test/
-MYSRCDIR=/uscms/home/pdudero/work/CMSSW_6_1_2/src/ElectroWeakAnalysis/VPlusJets/test/Limits/
-executable=${MYSRCDIR}/batchit.sh
+JAKESRCDIR=$(pwd)
+executable=${JAKESRCDIR}/batchit.sh
 
 printheader() {
 cat >$submit <<EOF
@@ -11,57 +9,82 @@ Universe = vanilla
 Requirements = Memory > 250 && FileSystemDomain=="fnal.gov" && Disk > 500000 && Arch=="X86_64"
 Notification = ERROR
 Should_Transfer_Files = YES
-transfer_input_files = $JAKESRCDIR/HWWFitting.tar.gz,$MYSRCDIR/runScanBatch.sh
+transfer_input_files = $JAKESRCDIR/HWWFitting.tar.gz,$JAKESRCDIR/runScanBatch.sh
 WhenToTransferOutput = ON_EXIT
 EOF
 }
 
 printargs() {
-    echo "Error = fitmu_M=${masspt}_MVA${cutval}.stderr" >>$submit
-    echo "Output = fitmu_M=${masspt}_MVA${cutval}.stdout" >>$submit
-    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runHiggsNew.py --doShapes --doFit --expLimit 20 --obsLimit --xrootd $masspt ${modeArg}" >>$submit
+    echo "Error = fitmu_HWW${masspt}_${cutval}.stderr" >>$submit
+    echo "Output = fitmu_HWW${masspt}_${cutval}.stdout" >>$submit
+    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runHiggsNew.py --doShapes --doFit --expLimit 20 --obsLimit --xrootd $masspt ${modeArg}${mvaArg}${unbinned}${fixZeros}" >>$submit
     echo "Queue" >>$submit
-    echo "Error = fitel_M=${masspt}_MVA${cutval}.stderr" >>$submit
-    echo "Output = fitel_M=${masspt}_MVA${cutval}.stdout" >>$submit
-    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runHiggsNew.py --doShapes --doFit --electrons --expLimit 20 --obsLimit --xrootd $masspt ${modeArg}" >>$submit
+    echo "Error = fitel_HWW${masspt}_${cutval}.stderr" >>$submit
+    echo "Output = fitel_HWW${masspt}_${cutval}.stdout" >>$submit
+    echo "Arguments = $JAKESRCDIR ./runScanBatch.sh ./runHiggsNew.py --doShapes --doFit --electrons --expLimit 20 --obsLimit --xrootd $masspt ${modeArg}${mvaArg}${unbinned}${fixZeros}" >>$submit
     echo "Queue" >>$submit
 }
+
+mode=""
+mvaVal=0.0
+unbinned=""
+binnedLabel=""
+
+while getopts "M:F:U" opt ; do
+    case $opt in
+	M)
+	    mvaVal=$OPTARG
+	    ;;
+	F)
+	    mode=$OPTARG
+	    ;;
+	U)
+	    unbinned=" --unbinned "
+	    binnedLabel="unbinned"
+	    ;;
+	?)
+	    echo "invalid option"
+	    exit
+	    ;;
+    esac
+done
+
+shift $((OPTIND -1))
+
+if [ "$#" -gt 0 ] ; then
+    masses=$@
+else
+    masses="170 180 190 200 250 300 350 400 450 500 550 600"
+fi
+echo "masses: $masses"
+
+python pyroot_logon.py
 
 echo -n "tarring ... "
 tar czf HWWFitting.tar.gz -T filesForHWWFit.txt -X excludeForHWWFit.txt
 echo "done"
 
-modeArg="--mode HWW1D2FitsConfig"
-cutval=NomFits19Feb2014
+modeArg="--mode HWW1D2FitsConfig${mode}"
+mvaArg=""
+DateString=$(date "+%d%b%Y")
+if [ $(echo "$mvaVal > 0.1" | bc) -eq 1 ] ; then
+    mvaArg=" --mva ${mvaVal}"
+fi
+cutval=HWW${mode}Fits${DateString}${binnedLabel}_mva${mvaVal}
 cutdir=${cutval}
-submit=submit_cut=${cutval}.txt
+submit=submit_${cutval}.txt
 mkdir -p $cutdir
 cd $cutdir
 printheader
-for masspt in 170 180 190 200 250 300 350 400 450 500 550 600
-# for masspt in 450 500 550
+for masspt in $masses
 do
+  fixZeros=""
+  # if [ $masspt -gt 401 ] ; then
+  #   if [ "$mode" == "Poly" ] ; then
+  #     fixZeros=" --fixToZero"
+  #   fi
+  # fi
   printargs
 done
 condor_submit $submit
 cd -
-
-
-# do
-#   outputfile="explimvscutval-M=${masspt}_${channel}.tab"
-#   echo "#Cutval	explim" >$outputfile
-#   for cutvalue in `ls -d $BASEDIR/cutvalue=0.* | egrep -o "cutvalue=[0-9.]+" | egrep -o "[0-9.]+"`
-#     do
-#     LOGFILE=$BASEDIR/cutvalue=${cutvalue}/limit*${channel}*${masspt}*log
-#     explim=""
-#     if stat -t $LOGFILE >/dev/null 2>&1
-#     then
-# 	explim=`grep -h "Expected 50" $LOGFILE | egrep -o "r < [0-9.]+" | egrep -o "[0-9.]+"`
-#     fi
-#     if [ "$explim" = "" ]
-#     then
-# 	explim=-1
-#     fi
-#     echo "$cutvalue	$explim" >>$outputfile
-#   done
-# done

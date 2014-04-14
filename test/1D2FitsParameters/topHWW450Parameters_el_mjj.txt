@@ -1,6 +1,6 @@
-f_top_Mass2j_PFCor_core = 0.36283 +/- 0.039192 C L(-0.0290862 - 0.754755)
-mean_top_Mass2j_PFCor_core = 86.129 +/- 0.62732 C L(79.8559 - 92.4023)
-mean_top_Mass2j_PFCor_tail = 98.808 +/- 2.2632 C L(76.1765 - 121.44)
-sigma_top_Mass2j_PFCor_core = 8.2255 +/- 0.85511 C L(-0.325648 - 16.7766)
-sigma_top_Mass2j_PFCor_tail = 38.641 +/- 3.5360 C L(3.28099 - 74.002)
-n_top = 1011.6 +/- 31.8 C
+f_top_Mass2j_PFCor_core = 0.38330 +/- 0.022772 C L(0 - 1)
+mean_top_Mass2j_PFCor_core = 85.780 +/- 0.37303 C L(-10000 - 1000)
+mean_top_Mass2j_PFCor_tail = 96.040 +/- 1.5429 C L(-10000 - 1000)
+sigma_top_Mass2j_PFCor_core = 7.8994 +/- 0.43524 C L(0 - 5000)
+sigma_top_Mass2j_PFCor_tail = 38.887 +/- 2.3901 C L(0 - 5000)
+n_top = 1370.4 +/- 37.0 C
