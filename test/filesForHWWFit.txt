@@ -4,6 +4,7 @@ Limits/ggHtable8tev.txt
 Limits/vbfHtable8tev.txt
 Limits/ggHtable7tev.txt
 Limits/vbfHtable7tev.txt
+ComplexPoleWeights/
 EffTable2012
 EffTableDir
 pyroot_logon.py
