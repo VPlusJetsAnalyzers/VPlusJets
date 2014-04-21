@@ -8,6 +8,8 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('-H', '--mH', dest='mH', type='float',
                   help='Higgs Mass Point')
+parser.add_option('-o', '--output', dest='outfilename', default='output.root',
+                  help='output file name')
 (opts, args) = parser.parse_args()
 
 import pyroot_logon
@@ -24,7 +26,8 @@ import HWWSignalShapes
 
 # files = ['dcap://cmsdca.fnal.gov:24136/pnfs/fnal.gov/usr/cms/WAX/11/store/user/lnujj/PatTuples_8TeV_53X-v1/shuai/GluGluToHToWWToLAndTauNuQQ_M-350_8TeV-powheg-pythia6/SQWaT_PAT_53X_ggH350_central/829f288d768dd564418efaaf3a8ab9aa/pat_53x_v03_60_1_cPR.root']
 
-files = [ x.rstrip() for x in open(args[0]) ]
+# files = [ x.rstrip() for x in open(args[0]) ]
+files = args
 
 print files[0]
 
@@ -39,7 +42,7 @@ def resetVars():
     Running_wgt[0] = -999.
     Higgs_i = -1
 
-outputFile = TFile('output.root', 'recreate')
+outputFile = TFile(opts.outfilename, 'recreate')
 outTree = TTree("outTree", "outTree")
 
 Higgs_mass = array('d', [0.])
@@ -61,7 +64,7 @@ for (eventN,event) in enumerate(events):
     source = handle.product()
     genParts = source.hepeup()
 
-    if (eventN % 100 == 0):
+    if (eventN % 10000 == 0):
         print "Record:",eventN,
         print "Run:",event.object().id().run(),
         print "event:",event.object().id().event()
@@ -80,13 +83,14 @@ for (eventN,event) in enumerate(events):
             # print "id:", genParts.IDUP.at(parti),
             # print "mass:", Higgs_mass[0],
             # print "status:", genParts.ISTUP[parti]
+            break
 
-        if (genParts.MOTHUP.at(parti).first >= Higgs_i) and \
-                (genParts.MOTHUP.at(parti).second < Higgs_i):
-            tmpID = abs(genParts.IDUP.at(parti))
-            if not (tmpID in decayCnts):
-                decayCnts[tmpID] = 0
-            decayCnts[tmpID] += 1
+        # if (genParts.MOTHUP.at(parti).first >= Higgs_i) and \
+        #         (genParts.MOTHUP.at(parti).second < Higgs_i):
+        #     tmpID = abs(genParts.IDUP.at(parti))
+        #     if not (tmpID in decayCnts):
+        #         decayCnts[tmpID] = 0
+        #     decayCnts[tmpID] += 1
             # print eventN, "parti:", parti, 
             # print "id:", genParts.IDUP.at(parti),
             # print "status:", genParts.ISTUP[parti],

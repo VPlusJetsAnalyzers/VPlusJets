@@ -78,11 +78,34 @@ class Wjj2DFitterUtils:
                 veto = True
 
         return veto
-            
+
+    def MyRunningWidthBW(self, mww, mH, gamma):
+        #running width BW without normalizations
+        numerator = (mww*mww*gamma/mH)
+        denominator = (mww*mww-mH*mH)*(mww*mww-mH*mH) + \
+            (mww*mww*gamma/mH)*(mww*mww*gamma/mH)
+        pdf = numerator/denominator
+        return pdf
+
+    def lineshapeWidthReweight(self, point, meanSM, gammaSM, Cprime):
+        weight2 = self.MyRunningWidthBW(point,meanSM,gammaSM*Cprime)/ \
+            self.MyRunningWidthBW(point,meanSM,gammaSM);
+        return weight2;
+
+    def IntfRescale(self, curIntfRw,cPrime,BRnew):
+
+        curIoverS = curIntfRw - 1
+        newWeight = 1 + ((1-BRnew)*curIoverS)/cPrime
+        # if newWeight < 0: 
+        #     newWeight = 0.01
+        ratio = newWeight/curIntfRw
+
+        return ratio
+
     # generator function for looping over an event tree and applying the cuts
     def TreeLoopFromFile(self, fname, noCuts = False,
                          cutOverride = None, CPweight = False, 
-                         interference = 0):
+                         interference = 0, BRnew = 0, Cprime = 1):
 
         # open file and get tree
         treeFile = TFile.Open(fname)
@@ -115,12 +138,29 @@ class Wjj2DFitterUtils:
         varsRemaining = 4-len(self.pars.var)
         ExtraDrawCP = False
         ExtraDrawInterf = False
+        CPWHist = None
+        AvgCPW = 1.0
         if CPweight:
-            if hasattr(theTree, 'complexpolewtggH%i' % self.pars.mHiggs):
+            CPWFile = TFile.Open('ComplexPoleWeights/CPSHiggs%dShapes.root' % \
+                                     (self.pars.mHiggs))
+            if CPWFile:
+                CPWFile.ls()
+                CPWHist = CPWFile.Get('ratio_HWW%d' % (self.pars.mHiggs))
+                CPWHist.SetDirectory(0)
+                avgCPS = CPWFile.Get('avgCPS')
+                avgCPS.GetEntry(0)
+                AvgCPW = avgCPS.avgcps
+                fr = CPWFile.Get('unbinnedFit_HWW%d_newCPS' % self.pars.mHiggs)
+                SM_H_mean = fr.floatParsFinal().find('mH').getVal()
+                SM_H_width = fr.floatParsFinal().find('Gamma').getVal()
+            if not CPWHist and hasattr(theTree, 'complexpolewtggH%i' % \
+                                           self.pars.mHiggs):
                 extraDraw += ':(complexpolewtggH%i/avecomplexpolewtggH%i)' % \
                              (self.pars.mHiggs, self.pars.mHiggs)
-                varsRemaining -= 1
-                ExtraDrawCP = True
+            else:
+                extraDraw += ':W_H_mass_gen'
+            varsRemaining -= 1
+            ExtraDrawCP = True
         if interference == 1:
             extraDraw += ':interferencewtggH%i' % self.pars.mHiggs
             varsRemaining -= 1
@@ -195,13 +235,21 @@ class Wjj2DFitterUtils:
                 elif interference == 3:
                     iwt = getattr(theTree,
                                   'interferencewt_downggH%i' % self.pars.mHiggs)
+                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
                 else:
                     iwt = 1.
                 row = [ v.EvalInstance() for v in rowVs ]
+                if CPWHist:
+                    cpw = CPWHist.Interpolate(theTree.W_H_mass_gen)/AvgCPW
+                    cpw *= self.lineshapeWidthReweight(theTree.W_H_mass_gen, 
+                                                       SM_H_mean, SM_H_width,
+                                                       Cprime/(1-BRnew))
+                effWgt *= Cprime*(1-BRnew)
                 yield (row, effWgt, cpw, iwt)
         else:
             for rowi in range(0, theTree.GetSelectedRows()):
                 effWgt = theTree.GetW()[rowi]
+                effWgt *= Cprime*(1-BRnew)
                 row = []
                 for vi in range(0, len(self.pars.var)):
                     row.append(getattr(theTree, 'GetV%i' % (vi+1))()[rowi])
@@ -210,10 +258,25 @@ class Wjj2DFitterUtils:
                 if ExtraDrawCP:
                     cpw = getattr(theTree, 'GetV%i' % (vi+1))()[rowi]
                     vi += 1
+                    if CPWHist:
+                        W_H_mass_gen = cpw
+                        cpw = CPWHist.Interpolate(W_H_mass_gen)/AvgCPW
+                        # print 'W_H_mass_gen: %.3f cpw: %.3f AvgCPW: %.3f' % \
+                        #     (W_H_mass_gen, cpw, AvgCPW),
+                        cpw *= self.lineshapeWidthReweight(W_H_mass_gen, 
+                                                           SM_H_mean, 
+                                                           SM_H_width,
+                                                           Cprime/(1-BRnew))
+                        # print 'Cprime: %.2f BRnew: %.2f new cpw: %.3f' % \
+                        #     (Cprime, BRnew, cpw),
                 iwt = 1.
                 if ExtraDrawInterf:
                     iwt = getattr(theTree, 'GetV%i' % (vi+1))()[rowi]
+                    # print 'iwt: %.3f' % iwt,
+                    iwt *= self.IntfRescale(iwt,Cprime,BRnew)
+                    # print 'new iwt: %.3f' % iwt
                     vi += 1
+                # print 'cpw: %.3f iwt: %.3f effWgt: %.3f' % (cpw, iwt, effWgt)
                 yield (row, effWgt, cpw, iwt)
                 
 
@@ -224,7 +287,8 @@ class Wjj2DFitterUtils:
     # from a file fill a 2D histogram
     def File2Hist(self, fname, histName, noCuts = False, 
                   cutOverride = None, CPweight = False,
-                  doWeights = True, interference = 0):
+                  doWeights = True, interference = 0, Cprime = 1,
+                  BRnew = 0.):
         theHist = self.newEmptyHist(histName)
 
         print 'filename:',fname
@@ -235,7 +299,9 @@ class Wjj2DFitterUtils:
                                                              noCuts, 
                                                              cutOverride,
                                                              CPweight,
-                                                             interference):
+                                                             interference,
+                                                             Cprime = Cprime,
+                                                             BRnew = BRnew):
             #print 'entry:',v1val,v2val,effWgt
             if not doEffWgt:
                 effWgt = 1.0
@@ -277,7 +343,8 @@ class Wjj2DFitterUtils:
     # from a file fill and return a RooDataSet
     def File2Dataset(self, fnames, dsName, ws, noCuts = False, 
                      weighted = False, CPweight = False, cutOverride = None,
-                     interference = 0, additionalWgt = 1.0):
+                     interference = 0, additionalWgt = 1.0, Cprime = 1,
+                     BRnew = 0.):
         if ws.data(dsName):
             return ws.data(dsName)
 
@@ -292,6 +359,10 @@ class Wjj2DFitterUtils:
                 print 'and CP weight',
             if interference in [1,2,3]:
                 print 'and interference',
+            if Cprime < 1.:
+                print 'using Cprime = %.2f' % (Cprime),
+            if BRnew > 0.:
+                print 'using BRnew = %.2f' % (BRnew),
             print
         else:
             ds = RooDataSet(dsName, dsName, cols)
@@ -309,7 +380,8 @@ class Wjj2DFitterUtils:
                     self.TreeLoopFromFile(fname, noCuts,
                                           CPweight = CPweight,
                                           cutOverride = cutOverride,
-                                          interference = interference):
+                                          interference = interference,
+                                          Cprime = Cprime, BRnew = BRnew):
                 inRange = True
                 for (i,v) in enumerate(obs):
                     inRange = (inRange and ws.var(v).inRange(row[i], ''))

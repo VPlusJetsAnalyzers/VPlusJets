@@ -55,6 +55,12 @@ parser.add_option('--overrideAux', dest='overrideAux', type='int',
                   help='override the aux model number')
 parser.add_option('--fixToZero', dest='fixToZero', action='store_true',
                   help='fixLowParametersToZero')
+parser.add_option('--Cprime', dest='Cprime', type='float',
+                  help='Cprime value')
+parser.add_option('--BRnew', dest='BRnew', type='float',
+                  help='BRnew value')
+parser.add_option('--refit', dest='refit', action='store_true',
+                  help='refit parameters')
 
 (opts, args) = parser.parse_args()
 
@@ -205,11 +211,19 @@ for (ifile, (filename, ngen, xsec)) in enumerate(files):
         scale = 1.0
     if in_ws and in_ws.data('data%i' % ifile):
         getattr(fitter.ws, 'import')(in_ws.data('data%i' % ifile))
-    tmpData = fitter.utils.File2Dataset(filename, 'data%i' % ifile, fitter.ws,
-                                        weighted = weighted, CPweight = cpw,
-                                        cutOverride = cutOverride,
-                                        interference = opts.interference,
-                                        additionalWgt = scale)
+    dataArgs  = {'fnames': filename, 
+                 'dsName': 'data%i' % ifile, 
+                 'ws': fitter.ws,
+                 'weighted': weighted, 
+                 'CPweight': cpw,
+                 'cutOverride': cutOverride,
+                 'interference': opts.interference,
+                 'additionalWgt': scale}
+    if opts.Cprime != None:
+        dataArgs['Cprime'] = opts.Cprime
+    if opts.BRnew != None:
+        dataArgs['BRnew'] = opts.BRnew
+    tmpData = fitter.utils.File2Dataset(**dataArgs)
 
     tmpData.Print()
     print filename,'effective integrated lumi:',ngen/xsec
@@ -303,7 +317,10 @@ parCopy = params.snapshot()
 for filename in args:
     parCopy.readFromFile(filename)
 
-params.__assign__(parCopy)
+if opts.refit or opts.makeConstant:
+    params.assignValueOnly(parCopy)
+else:
+    params.__assign__(parCopy)
 
 params.Print('v')
 parCopy.IsA().Destructor(parCopy)
