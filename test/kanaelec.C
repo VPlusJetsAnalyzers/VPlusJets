@@ -472,9 +472,11 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 	Float_t effwt = 1.0, puwt = 1.0, puwt_up = 1.0, puwt_down = 1.0;
  
-	genwt = 1.0; // in case the ntuple doesn't have it.
+	Float_t genwt = 1.0; // in case the ntuple doesn't have it.
 
 	TBranch * branch_effwt          =  newtree->Branch("effwt",       &effwt,        "effwt/F");
+        TBranch * branch_genwt          =  newtree->Branch("genwt",       &genwt,        "genwt/F");
+
 	TBranch * branch_puwt           =  newtree->Branch("puwt",        &puwt,         "puwt/F");
 	TBranch * branch_puwt_up        =  newtree->Branch("puwt_up",     &puwt_up,      "puwt_up/F");
 	TBranch * branch_puwt_down      =  newtree->Branch("puwt_down",   &puwt_down,    "puwt_down/F");
@@ -1766,7 +1768,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		mvavbf160el = 999; mvavbf170el = 999; mvavbf180el = 999; mvavbf190el = 999; mvavbf200el = 999; mvavbf250el = 999; mvavbf300el = 999; mvavbf350el = 999; mvavbf400el = 999; mvavbf450el = 999; mvavbf500el = 999; mvavbf550el = 999; mvavbf600el = 999;
 
 
-		effwt = 1.0; puwt = 1.0; puwt_up = 1.0; puwt_down = 1.0;
+		effwt = 1.0; puwt = 1.0; puwt_up = 1.0; puwt_down = 1.0; genwt=1.0;
 		qgld_Spring11[0]= -1;       qgld_Spring11[1]= -1;       qgld_Spring11[2]= -1;       qgld_Spring11[3]= -1;       qgld_Spring11[4]= -1;       qgld_Spring11[5]= -1;
 		qgld_Summer11[0]= -1;       qgld_Summer11[1]= -1;       qgld_Summer11[2]= -1;       qgld_Summer11[3]= -1;       qgld_Summer11[4]= -1;       qgld_Summer11[5]= -1;
 		qgld_Summer11CHS[0]= -1;    qgld_Summer11CHS[1]= -1;    qgld_Summer11CHS[2]= -1;    qgld_Summer11CHS[3]= -1;    qgld_Summer11CHS[4]= -1;    qgld_Summer11CHS[5]= -1;
@@ -1963,7 +1965,12 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			eleHLTEff.GetEfficiency(W_electron_pt, W_electron_eta) *
 			eleMHTEff.GetEfficiency(event_met_pfmet, 0) *
 			eleWMtEff.GetEfficiency(W_mt, W_electron_eta);
-  		 effwt *= (genwt >= 0) ? 1 : -1; 
+
+                effwt *= (W_genwt >= 0) ? 1 : -1;
+                genwt=W_genwt;
+
+                cout<<"   :"<<genwt<<"    "<<effwt<<"   "<<endl;
+
 		// Pile up Re-weighting
 		if (wda>20120999) { // MC samples
 			//      puwt      =    LumiWeights_.weight3D(event_mcPU_nvtx[0], event_mcPU_nvtx[1], event_mcPU_nvtx[2]);
@@ -4214,6 +4221,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		branch_vbf600el->Fill();
 
 		branch_effwt->Fill();
+                branch_genwt->Fill();
+
 		branch_puwt->Fill();
 		branch_puwt_up->Fill();
 		branch_puwt_down->Fill();

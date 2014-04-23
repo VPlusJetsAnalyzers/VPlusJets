@@ -49,6 +49,7 @@ struct sortPt
 
 void kanamuon::myana(double myflag, bool isQCD, int runflag)
 {
+
   //Prepare the histogram for the cut-flow control : 8 presel + 12 sel
   const int n_step = 20;
   TH1F* h_events          = new TH1F("h_events", "h_events", n_step, 0, n_step);
@@ -439,8 +440,9 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 	Float_t effwt = 1.0, puwt = 1.0, puwt_up = 1.0, puwt_down = 1.0;
 
-	genwt = 1.0; // in case the ntuple doesn't have it.
+	Float_t  genwt = 1.0; // in case the ntuple doesn't have it.
 
+        TBranch * branch_genwt          =  newtree->Branch("genwt",       &genwt,        "genwt/F");
 	TBranch * branch_effwt          =  newtree->Branch("effwt",       &effwt,        "effwt/F");
 	TBranch * branch_puwt           =  newtree->Branch("puwt",        &puwt,         "puwt/F");
 	TBranch * branch_puwt_up        =  newtree->Branch("puwt_up",     &puwt_up,      "puwt_up/F");
@@ -1685,7 +1687,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		mvavbf160mu = 999; mvavbf170mu = 999; mvavbf180mu = 999; mvavbf190mu = 999; mvavbf200mu = 999; mvavbf250mu = 999; mvavbf300mu = 999; mvavbf350mu = 999; mvavbf400mu = 999; mvavbf450mu = 999; mvavbf500mu = 999; mvavbf550mu = 999; mvavbf600mu = 999;
 
 
-		effwt = 1.0; puwt = 1.0; puwt_up = 1.0; puwt_down = 1.0;
+		effwt = 1.0; puwt = 1.0; puwt_up = 1.0; puwt_down = 1.0; genwt=1.0;
 		qgld_Spring11[0]= -1;       qgld_Spring11[1]= -1;       qgld_Spring11[2]= -1;       qgld_Spring11[3]= -1;       qgld_Spring11[4]= -1;       qgld_Spring11[5]= -1;
 		qgld_Summer11[0]= -1;       qgld_Summer11[1]= -1;       qgld_Summer11[2]= -1;       qgld_Summer11[3]= -1;       qgld_Summer11[4]= -1;       qgld_Summer11[5]= -1;
 		qgld_Summer11CHS[0]= -1;    qgld_Summer11CHS[1]= -1;    qgld_Summer11CHS[2]= -1;    qgld_Summer11CHS[3]= -1;    qgld_Summer11CHS[4]= -1;    qgld_Summer11CHS[5]= -1;
@@ -1881,7 +1883,10 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			muIDEff.GetEfficiency(W_muon_pt, W_muon_eta) * 
 			muHLTEff.GetEfficiency(W_muon_pt, W_muon_eta);
 
-		effwt *= (genwt >= 0) ? 1 : -1;
+                effwt *= (W_genwt >= 0) ? 1 : -1;
+		genwt=W_genwt;
+
+		cout<<"   :"<<genwt<<"    "<<effwt<<"   "<<endl;
 
 		// Pile up Re-weighting
 		if (wda>20120999) { // MC samples
@@ -4113,6 +4118,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					branch_vbf600mu->Fill();
 
 					branch_effwt->Fill();
+                                        branch_genwt->Fill();
+
 					branch_puwt->Fill();
 					branch_puwt_up->Fill();
 					branch_puwt_down->Fill();
