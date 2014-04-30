@@ -140,25 +140,31 @@ class Wjj2DFitterUtils:
         ExtraDrawInterf = False
         CPWHist = None
         AvgCPW = 1.0
+        CPWFile = TFile.Open('ComplexPoleWeights/CPSHiggs%dShapes.root' % \
+                                 (self.pars.mHiggs))
+        if CPWFile:
+            CPWFile.ls()
+            avgCPS = CPWFile.Get('avgCPS')
+            avgCPS.GetEntry(0)
+            AvgCPW = avgCPS.avgcps
+            fr = CPWFile.Get('unbinnedFit_HWW%d_newCPS' % self.pars.mHiggs)
+            SM_H_mean = fr.floatParsFinal().find('mH').getVal()
+            SM_H_width = fr.floatParsFinal().find('Gamma').getVal()
         if CPweight:
-            CPWFile = TFile.Open('ComplexPoleWeights/CPSHiggs%dShapes.root' % \
-                                     (self.pars.mHiggs))
             if CPWFile:
-                CPWFile.ls()
                 CPWHist = CPWFile.Get('ratio_HWW%d' % (self.pars.mHiggs))
                 CPWHist.SetDirectory(0)
-                avgCPS = CPWFile.Get('avgCPS')
-                avgCPS.GetEntry(0)
-                AvgCPW = avgCPS.avgcps
-                fr = CPWFile.Get('unbinnedFit_HWW%d_newCPS' % self.pars.mHiggs)
-                SM_H_mean = fr.floatParsFinal().find('mH').getVal()
-                SM_H_width = fr.floatParsFinal().find('Gamma').getVal()
+
             if not CPWHist and hasattr(theTree, 'complexpolewtggH%i' % \
                                            self.pars.mHiggs):
                 extraDraw += ':(complexpolewtggH%i/avecomplexpolewtggH%i)' % \
                              (self.pars.mHiggs, self.pars.mHiggs)
-            else:
+            elif hasattr(theTree, 'W_H_mass_gen'):
                 extraDraw += ':W_H_mass_gen'
+            else:
+                extraDraw += ':(complexpolewtggH%i/avecomplexpolewtggH%i)' % \
+                             (self.pars.mHiggs, self.pars.mHiggs)
+                CPWHist = None
             varsRemaining -= 1
             ExtraDrawCP = True
         if interference == 1:
@@ -229,9 +235,11 @@ class Wjj2DFitterUtils:
                 if interference == 1:
                     iwt = getattr(theTree, 
                                   'interferencewtggH%i' % self.pars.mHiggs)
+                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
                 elif interference == 2:
                     iwt = getattr(theTree, 
                                   'interferencewt_upggH%i' % self.pars.mHiggs)
+                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
                 elif interference == 3:
                     iwt = getattr(theTree,
                                   'interferencewt_downggH%i' % self.pars.mHiggs)

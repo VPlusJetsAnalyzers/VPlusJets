@@ -181,7 +181,7 @@ def theConfig(mu2Pars, el2Pars, **kwargs):
                       }
     pars.exclude = {'Mass2j_PFCor' : (66., 66.+32.)}
     pars.doExclude = True
-    pars.blind = True
+    pars.blind = False
 
     pars.binData = False
     # pars.binData = True
