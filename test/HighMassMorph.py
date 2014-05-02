@@ -29,15 +29,22 @@ def morphSignalShape(basis_m, morph_m, target_m, Cprime = None,
 
         new_ws = morphShapes(f_basis.Get('w_mWW'), f_morph.Get('w_mWW'), alpha)
 
-        data = new_ws.data("")
-        while data:
-            # print data
-            # print "data:",data.GetName(),data.IsA().GetName()
-            if data.IsA().GetName() == 'RooDataSet':
-                data.SetName('data_unbinned')
+        # data = new_ws.data("")
+        # while data:
+        #     # print data
+        #     # print "data:",data.GetName(),data.IsA().GetName()
+        #     if data.IsA().GetName() == 'RooDataSet':
+        #         data.SetName('data_unbinned')
+        #     else:
+        #         data.SetName('data_obs')
+        #     data = new_ws.data("")
+
+        dataList = new_ws.allData()
+        for d in dataList:
+            if d.IsA().GetName() == 'RooDataSet':
+                d.SetName('data_unbinned')
             else:
-                data.SetName('data_obs')
-            data = new_ws.data("")
+                d.SetName('data_obs')
             
         # new_ws.Print()
         new_ws.writeToFile(outFilename)
@@ -107,13 +114,15 @@ if __name__ == '__main__':
     import sys
     lowpoint = 0
 
+    r.gInterpreter.GenerateDictionary("list< RooAbsData* >",
+                                      'list;RooAbsData.h')
     directory = 'HighMassFittingFiles'
 
-    # morphSignalShape(350, 400, 390, Cprime = 1.0,
-    #                  BRnew = 0.0, inputDirectory = directory, 
-    #                  outputDirectory = '.', showPlots = True)
+    morphSignalShape(350, 400, 390, Cprime = 1.0,
+                     BRnew = 0.0, inputDirectory = directory, 
+                     outputDirectory = '.', showPlots = True)
 
-    # sys.exit(0)
+    sys.exit(0)
 
 
     for mass in masses:
