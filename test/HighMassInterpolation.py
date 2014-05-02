@@ -38,6 +38,8 @@ def rewriteParamFile(pfn, suffix):
 masses = range(170,300,5)
 masses.extend(range(300,400,10))
 masses.extend(range(400,600,20))
+mcmasses = [170, 180, 190, 200, 250, 300,
+            350, 400, 450, 500, 550, 600]
 
 cprimes = [0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
 new_BRs = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
