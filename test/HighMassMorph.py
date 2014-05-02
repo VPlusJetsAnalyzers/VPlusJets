@@ -118,11 +118,11 @@ if __name__ == '__main__':
                                       'list;RooAbsData.h')
     directory = 'HighMassFittingFiles'
 
-    morphSignalShape(350, 400, 390, Cprime = 1.0,
-                     BRnew = 0.0, inputDirectory = directory, 
-                     outputDirectory = '.', showPlots = True)
+    # morphSignalShape(350, 400, 390, Cprime = 1.0,
+    #                  BRnew = 0.0, inputDirectory = directory, 
+    #                  outputDirectory = '.', showPlots = True)
 
-    sys.exit(0)
+    # sys.exit(0)
 
 
     for mass in masses:
