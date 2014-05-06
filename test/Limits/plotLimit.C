@@ -24,7 +24,9 @@
 //#define ADD7TEV
 #undef ADD7TEV
 
-#define YMAX 5.0
+#define YMAX 20.0
+
+//======================================================================
 
 ////CMS Preliminary label and lumi -- upper left corner
 void cmsLumi(bool prelim)
@@ -40,6 +42,8 @@ void cmsLumi(bool prelim)
 #ifdef ADD7TEV
   float lumiel=intlumipbinv_el+5020;
   float lumimu=intlumipbinv_mu+5020;
+  //float lumiel=LUMINOSITY*1000+5020;
+  //float lumimu=LUMINOSITY*1000+5020;
 #else
   float lumiel=intlumipbinv_el;
   float lumimu=intlumipbinv_mu;
@@ -55,19 +59,23 @@ void cmsLumi(bool prelim)
 
   if (LUMINOSITY > 0.) {
     latex.SetTextAlign(11); // align left
-
+#if 1
     if (lumiel==lumimu)
-      latex.DrawLatex(0.5,0.96,Form("#scale[0.5]{#int} #font[12]{L} dt = %.1f fb^{-1}", LUMINOSITY));
+      latex.DrawLatex(0.5,0.96,Form("#scale[0.5]{#int} #font[12]{L} dt = %.1f fb^{-1}", lumiel/1000.));
     else
       latex.DrawLatex(0.4,0.96,Form("#scale[0.5]{#int} #font[12]{L} dt = %.1f fb^{-1}(#mu)/%.1f fb^{-1}(#it{e})",
 				    (lumimu)/1000.,(lumiel)/1000.));
-
-    //latex.DrawLatex(0.4,0.96,Form("#scale[0.5]{#int} #font[12]{L} dt = %.1f fb^{-1}(#it{e})",LUMINOSITY));
+#else
+    latex.DrawLatex(0.4,0.96,Form("#scale[0.5]{#int} #font[12]{L} dt = %.1f fb^{-1}(#it{e})",lumiel/1000.));
+    //latex.DrawLatex(0.4,0.96,Form("#scale[0.5]{#int} #font[12]{L} dt = %.1f fb^{-1}(#mu)",lumimu/1000.));
+#endif
     //latex.DrawLatex(0.45,0.96,Form("#scale[0.5]{#int} #font[12]{L} dt = %.1f fb^{-1} (scaled)", LUMINOSITY));
   }
   latex.SetTextAlign(11); // align left
   latex.DrawLatex(0.18,0.96,prelim ? "CMS preliminary" : "CMS");
 }
+
+//======================================================================
 
 void plotLimit(TString limitFile = "limit-cfginfo.tab",
 	       bool plotObs = true,
@@ -128,8 +136,6 @@ void plotLimit(TString limitFile = "limit-cfginfo.tab",
   if (plotObs)
     mg->Add(obslim, "L");
 
-  TCanvas *c1 = new TCanvas("c1","c1",800,600);
-
   mg->Draw("AH");
   //mg->GetXaxis()->SetRangeUser(0., double(npts));
 
@@ -170,6 +176,17 @@ void plotLimit(TString limitFile = "limit-cfginfo.tab",
   cmsLumi(plotPrelim);
 
   gPad->Update();
+}
+
+//======================================================================
+
+void plotLimit2(TString limitFile = "limit-cfginfo.tab",
+		bool plotObs = true,
+		bool plotPrelim=true)
+{
+  TCanvas *c1 = new TCanvas("c1","c1",800,600);
+
+  plotLimit(limitFile,plotObs,plotPrelim);
 
   TString output1=limitFile, output2=limitFile;
 
@@ -178,4 +195,5 @@ void plotLimit(TString limitFile = "limit-cfginfo.tab",
 
   gPad->SaveAs(output1.Data());
   gPad->SaveAs(output2.Data());
+
 }
