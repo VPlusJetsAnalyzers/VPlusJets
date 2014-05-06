@@ -9,8 +9,8 @@
 //#define SEVENTEV
 #undef SEVENTEV
 
-//#define DO_INTERP
-#undef DO_INTERP
+#define DO_INTERP
+//#undef DO_INTERP
 
 namespace{ // makes all constants contained herein "file-private" to avoid link errors from multiple linked includes
 
@@ -104,7 +104,7 @@ const double mutrigeff      = 1.0;
 const double eltrigeff      = 1.0;
 const double sigtrigeffunc  = 0.01;
 const double siglepteffunc  = 0.02;
-const double siglumiunc     = 0.044;
+const double siglumiunc     = 0.026;
 
 const double W2qqBR    = 0.6770;
 const double W2taunuBR = 0.1125;
@@ -126,6 +126,7 @@ const int masspts[NUMMASSPTS] = {
 //--------------------------------------------------
 
 const int interpolatedmasspts[] = {
+#if 0
   172,174,176,178,    // 170-180
   182,184,186,188,    // 180-190
 
@@ -140,6 +141,11 @@ const int interpolatedmasspts[] = {
   262,264,266,268,270,
   272,274,276,278,280,
   282,284,286,288,290,
+#else // interpolated masses for high mass paper 2014
+  175,185,195,
+  205,210,215,220,225,230,235,240,245,255,260,265,270,275,280,285,290,
+#endif
+
   295,                // 250-300
   305,310,315,320,325,
   330,335,340,345,    // 300-350
@@ -171,7 +177,8 @@ const char *inputfilesfmtstr[NUMCHAN] = {
   "HWW%dlnujj_muon_2jets_1D2Fit_output.root",
   //"HWWlnujjH%d_muon_3jets_output.root",
 };
-const char *perlrecapturefmt = "(.*/)?HWW([0-9]{3})lnujj_(.*?)_([23])jets_.*?.root";
+//const char *perlrecapturefmt = "(.*/)?HWW([0-9]{3})lnujj_(.*?)_([23])jets_.*?.root";
+const char *perlrecapturefmt = "(.*/)?HWW([0-9]{3})lnujj_([a-z]+)_.*?.root";
 #endif
 
 const char *dataobjname = "theData";
