@@ -46,9 +46,9 @@ TString par2latex(const TString& parname)
 
 float parmin(const TString& parname)
 {
-  if (parname.EqualTo("lZ") )  return -0.1;
-  if (parname.EqualTo("dkg") ) return -0.5;
-  if (parname.EqualTo("dg1") ) return -0.1;
+  if (parname.EqualTo("lZ") )  return -0.03;
+  if (parname.EqualTo("dkg") ) return -0.2;
+  if (parname.EqualTo("dg1") ) return -0.08;
 
   return -999;
 }
@@ -57,9 +57,9 @@ float parmin(const TString& parname)
 
 float parmax(const TString& parname)
 {
-  if (parname.EqualTo("lZ") )  return 0.1;
-  if (parname.EqualTo("dkg") ) return 0.5;
-  if (parname.EqualTo("dg1") ) return 0.1;
+  if (parname.EqualTo("lZ") )  return 0.03;
+  if (parname.EqualTo("dkg") ) return 0.25;
+  if (parname.EqualTo("dg1") ) return 0.08;
 
   return -999;
 }
@@ -68,9 +68,9 @@ float parmax(const TString& parname)
 
 float parinc(const TString& parname)
 {
-  if (parname.EqualTo("lZ") )  return 0.001;
-  if (parname.EqualTo("dkg") ) return 0.01;
-  if (parname.EqualTo("dg1") ) return 0.002;
+  if (parname.EqualTo("lZ") )  return 0.00025;
+  if (parname.EqualTo("dkg") ) return 0.0015;
+  if (parname.EqualTo("dg1") ) return 0.0005;
 
   return -999;
 }
@@ -399,11 +399,13 @@ void fillGraphsFromFilesDeltaNLL( const TString& par1name,
 				  const TString& par2name,
 				  const vector<TString>& fnames,
 				  vector<string>&  keys,
-				  map<string,TGraph2D *>& m_graphs)
+				  map<string,TGraph2D *>& m_graphs,
+				  TGraph **graphobsmin)
 {
   keys.push_back("exp68");
   keys.push_back("exp95");
   keys.push_back("exp99");
+  keys.push_back("obs68");
   keys.push_back("obs95");
 
   TGraph2D *grobs = new TGraph2D();
@@ -414,8 +416,6 @@ void fillGraphsFromFilesDeltaNLL( const TString& par1name,
 
   grobs->SetName("graph2Dobs95");
   grexp->SetName("graph2Dexp95");
-
-  Int_t nobs=0, nexp=0;
 
   for( size_t i=0; i<fnames.size(); i++) {
     
@@ -436,16 +436,26 @@ void fillGraphsFromFilesDeltaNLL( const TString& par1name,
     t->SetBranchAddress(par1name, &par1);
     t->SetBranchAddress(par2name, &par2);
 
+    Int_t nobs=0, nexp=0;
+
     for (size_t j = 0, n = t->GetEntries(); j < n; ++j) {
       t->GetEntry(j);
-      printf ("%d\r",j);
+      //printf ("%d\r",j);
       if( !iToy)             grobs->SetPoint(nobs++,par1,par2,2*deltaNLL);
       else if (iToy == -1)   grexp->SetPoint(nexp++,par1,par2,2*deltaNLL);
       else {
 	cerr << "Unexpected value for iToy, = " << iToy << endl;
 	exit(-1);
       }
+      //printf ("%d\t%f\t%f\t%f\n",nexp-1,par1,par2,2*deltaNLL);
     } // tree entry loop
+
+    if (nobs && !nexp) {
+      TCanvas *canv = new TCanvas("min","min",100,100);
+      double mindnll = t->GetMinimum("deltaNLL");
+      t->Draw(Form("%s:%s",par2name.Data(),par1name.Data()),Form("deltaNLL-%g<0.0001",mindnll));
+      *graphobsmin = (TGraph*)gPad->GetPrimitive("Graph"); 
+    }
 
     f->Close();
     delete f;
@@ -453,10 +463,20 @@ void fillGraphsFromFilesDeltaNLL( const TString& par1name,
   } // file loop
   cout << endl;
 
+  double *x = grexp->GetX();
+  double *y = grexp->GetY();
+  double *z = grexp->GetZ();
+
   m_graphs["exp68"] = (TGraph2D*)grexp->Clone("graph2Dexp68");
   m_graphs["exp99"] = (TGraph2D*)grexp->Clone("graph2Dexp99");
 
+  m_graphs["obs68"] = (TGraph2D*)grobs->Clone("graph2Dobs68");
+
+
 #if 0
+  for(int i=0; i<grexp->GetN(); i++)
+    printf ("%d\t%f\t%f\t%f\n",i,x[i],y[i],z[i]);
+
   TCanvas *canv = new TCanvas("tester","tester",500,500);
   cout << grexp->GetN()<<" points. " <<endl;
   grexp->Draw("TRI"); // cont 5z list");
@@ -519,11 +539,10 @@ void collectContours(map<string,TGraph2D *>& m_graphs,
 //======================================================================
 // "Brazilian Flag" style
 
-void
+TCanvas *
 draw2DLimitBFstyle(map<string,TList *>& m_contours,
 		     const TString& par1,
 		     const TString& par2,
-		     const TString& plotprefix,
 		     TLegend *legend)
 {
 
@@ -673,19 +692,15 @@ draw2DLimitBFstyle(map<string,TList *>& m_contours,
   finalPlot->Update();
   finalPlot->Modified();
   finalPlot->Update();
-  finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
-  finalPlot->Print(Form("%s.eps",plotprefix.Data()));
-  finalPlot->Print(Form("%s.png",plotprefix.Data()));
-
+  return finalPlot;
 }                                                  // draw2DlimitBFstyle
 
 //======================================================================
 
-void
+TCanvas *
 draw2DLimitContours(map<string,TList *>& m_contours,
 		    const TString& par1,
 		    const TString& par2,
-		    const TString& plotprefix,
 		    TLegend *legend)
 {
 
@@ -769,12 +784,29 @@ draw2DLimitContours(map<string,TList *>& m_contours,
       curv=(TGraph *)(contLevel->After(curv));
     }
   }
-
   
+  contLevel = m_contours["obs68"];
+
+  if (contLevel) {
+    cout << "Drawing obs68" << endl;
+
+    curv = (TGraph*)(contLevel->First());
+
+    for (int i=0; i<contLevel->GetSize(); i++) {
+      curv->Draw("SAME C");
+      curv->SetLineWidth(2);
+      curv->SetLineStyle(2);
+      if (!i) legend->AddEntry(curv,"Observed 68% C.L.","L");
+      curv=(TGraph *)(contLevel->After(curv));
+    }
+  }
+
+#if 0  
   TGraph *SMpoint = new TGraph(1);
   SMpoint->SetPoint(1,0,0);
   SMpoint->Draw("SAME Po");
-  
+#endif
+
   // smLabel = TPaveText(0,
   //                     m_contours["-2s"]->GetYaxis()->GetXmax()/8,
   //                     m_contours["-2s"]->GetXaxis()->GetXmax()/3->5,
@@ -815,23 +847,22 @@ draw2DLimitContours(map<string,TList *>& m_contours,
   finalPlot->Update();
   finalPlot->Modified();
   finalPlot->Update();
-  finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
-  finalPlot->Print(Form("%s.eps",plotprefix.Data()));
-  //finalPlot->Print(Form("%s.png",plotprefix.Data()));
+  return finalPlot;
 
 }                                                 // draw2DlimitContours
 
 //======================================================================
+// "Brazilian Flag" style
 
 void
-draw1DLimit(map<string,TGraph2D *> m_graphs,
-	    const TString& parname,
-	    const TString& plotprefix,
-	    int      npts,
-	    double   boundScale,   // used to exclude region closest to SM from plotting
-	    double   exclusionlimit,
-	    bool     isX,
-	    TLegend *legend)
+draw1DLimitBFstyle(map<string,TGraph2D *> m_graphs,
+		   const TString& parname,
+		   const TString& plotprefix,
+		   int      npts,
+		   double   boundScale,   // used to exclude region closest to SM from plotting
+		   double   exclusionlimit,
+		   bool     isX,
+		   TLegend *legend)
 {
   TCanvas *c1 = new TCanvas(Form("%slimit",parname.Data()),
 			    Form("%slimit",parname.Data()),
@@ -1033,11 +1064,13 @@ void atgcplotLimit(const string& fileglob)
 
   // get names of coupling parameters from root filename
   //
-  if (fnames[0].Contains("lz",TString::kIgnoreCase)) {       par1 = TString("lZ");
-    if (fnames[0].Contains("dkg",TString::kIgnoreCase))      par2 = TString("dkg");
-    else if (fnames[0].Contains("dg1",TString::kIgnoreCase)) par2 = TString("dg1");
-  } else if  (fnames[0].Contains("dkg",TString::kIgnoreCase) &&
-	      fnames[0].Contains("dg1",TString::kIgnoreCase)) {
+  if (fnames[0].Contains("dkglz",TString::kIgnoreCase)) {
+    par1 = TString("lZ");
+    par2 = TString("dkg");
+  } else if (fnames[0].Contains("dg1lz",TString::kIgnoreCase)) {
+    par1 = TString("lZ");
+    par2 = TString("dg1");
+  } else if  (fnames[0].Contains("dkgdg1",TString::kIgnoreCase)) {
     par1 = TString("dkg");
     par2 = TString("dg1");
   } 
@@ -1057,6 +1090,7 @@ void atgcplotLimit(const string& fileglob)
   vector<string> keys;
   map<string,double> m_contourlevels;
   map<string,TGraph2D *> m_graphs;
+  TGraph *graphobsmin = 0;
 
   if (method.EqualTo("asympCLs")) {
     fillGraphsFromFilesAsymp   (par1,par2,fnames,keys,m_graphs);
@@ -1064,10 +1098,11 @@ void atgcplotLimit(const string& fileglob)
       m_contourlevels[keys[i]] = 1;
   }
   if (method.EqualTo("deltaNLL")) {
-    fillGraphsFromFilesDeltaNLL(par1,par2,fnames,keys,m_graphs);
+    fillGraphsFromFilesDeltaNLL(par1,par2,fnames,keys,m_graphs,&graphobsmin);
     m_contourlevels["exp68"] = 2.3;
     m_contourlevels["exp95"] = 5.99;
     m_contourlevels["exp99"] = 9.21;
+    m_contourlevels["obs68"] = 2.3;
     m_contourlevels["obs95"] = 5.99;
   }
   else if (fnames.size() == 1) {  
@@ -1113,21 +1148,40 @@ void atgcplotLimit(const string& fileglob)
 
   map<string,TList *> m_contours;
 
+#if 1
   collectContours(m_graphs,keys,m_contourlevels,m_contours);
+#endif
 
-  TLegend *legend = new TLegend(0.212,0.686,0.554,0.917,"","NDC");
+  TLegend *legend = new TLegend(0.212,0.72,0.554,0.94,"","NDC");
   legend->SetFillStyle(0);
   legend->SetBorderSize(0);
   legend->SetHeader("CMS Preliminary");
   //legend->SetHeader("CMS");
   legend->SetTextFont(42);
+  legend->SetTextSize(0.03);
 
-  TString plotprefix=Form("%s_%s_2dlimit_%s",par1.Data(),par2.Data(),method.Data());
-
+  TCanvas *finalPlot;
+#if 1
   if (method.EqualTo("deltaNLL"))
-    draw2DLimitContours(m_contours,par1,par2,plotprefix,legend);
+    finalPlot = draw2DLimitContours(m_contours,par1,par2,legend);
   else
-    draw2DLimitBFstyle(m_contours,par1,par2,plotprefix,legend);
+    finalPlot = draw2DLimitBFstyle(m_contours,par1,par2,legend);
+#endif
+
+  if(graphobsmin) {
+    graphobsmin->Print();
+    graphobsmin->SetMarkerStyle(8);
+    graphobsmin->Draw("SAME Po");
+  }
+  TString plotprefix=Form("%s_%s_2dlimit_%s",
+			  par1.Data(),
+			  par2.Data(),
+			  method.Data());
+
+  finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
+  finalPlot->Print(Form("%s.eps",plotprefix.Data()));
+  //finalPlot->Print(Form("%s.png",plotprefix.Data()));
+#endif
 
 #if 0
   plotprefix=Form("%s_1dlimit_%s",par1.Data(),method.Data());
@@ -1136,5 +1190,5 @@ void atgcplotLimit(const string& fileglob)
   plotprefix=Form("%s_1dlimit_%s",par2.Data(),method.Data());
   draw1DLimit(m_graphs,par2,plotprefix,1000,0.15,exclusion_limit,false,legend);
 #endif
-#endif
+
 }
