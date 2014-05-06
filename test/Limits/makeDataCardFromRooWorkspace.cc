@@ -293,16 +293,17 @@ makeDataCardFiles(char *rootfn,
 //     cout << "\"" << subStr << "\" ";
 //   }
 
-  if ((subStrL->GetEntriesFast()!=5)) {
+  if ((subStrL->GetEntriesFast()!=4)) {
     cerr << "root filename doesn't match expected format, " << TString(rootfn) << endl;
     exit(-1);
   }
 
   int massgev  = ((TObjString *)subStrL->At(2))->GetString().Atoi();
   TString flav = ((TObjString *)subStrL->At(3))->GetString();
-  int njets    = ((TObjString *)subStrL->At(4))->GetString().Atoi();
+  //int njets    = ((TObjString *)subStrL->At(4))->GetString().Atoi();
 
-  cout<<"MH="<<massgev<<"GeV "<<flav<<" "<<njets<<"jets"<<endl;
+  cout<<"MH="<<massgev<<"GeV "<<flav // <<" "<<njets<<"jets"
+      <<endl;
 
   for (imass=0; imass<NUMMASSPTS; imass++) {
     int mass = masspts[imass];
@@ -310,9 +311,10 @@ makeDataCardFiles(char *rootfn,
   }
 
 #ifdef DO_INTERP
+  int mass = 0;
   if (imass==NUMMASSPTS) {
     for (imass=0; ; imass++) {
-      int mass = interpolatedmasspts[imass];
+      mass = interpolatedmasspts[imass];
       if (mass == massgev) break;
       if (mass < 0) break;
     }
