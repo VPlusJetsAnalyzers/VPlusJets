@@ -22,6 +22,9 @@ PREFIX=ATGC_WVsemilep
 #DC=datacard_8TeV_ATGC
 DC=wv_semil
 
+# buildWVworkspace.py found in 
+# https://github.com/lgray/CombinedEWKAnalysis/blob/master/CommonTools/test/buildWVworkspace.py
+#
 buildws()
 {
     plane=$1
