@@ -8,12 +8,13 @@
 const int masspts[NUMMASSPTS] = { 150 };
 
 #define NUMCHAN 2
-#define ELORMUCHAR 9
+#define ELORMUCHAR 15
 
 const char *channames[NUMCHAN] = {
-  "WVsemilepElboosted",
+  //"WVsemilepElboosted",
+  "WVsemileptonic_elboosted",
   //"eldijet",
-  "WVsemilepMuboosted",
+  "WVsemileptonic_muboosted",
   //"mudijet",
 };
 
@@ -23,14 +24,14 @@ const double mutrigeff      = 1.;
 const double eltrigeff      = 1.;
 const double sigtrigeffunc  = 0.01;
 const double siglepteffunc  = 0.02;
-const double siglumiunc     = 0.044;
+const double siglumiunc     = 0.026;
 const double signal_xs_unc  = 0.034;
 
 // for cut-and-count limits:
 const double dijetptmingev  = 350.;
 
-const float LAMBDAZ_MIN = -0.03;
-const float LAMBDAZ_MAX =  0.03;
+const float LAMBDAZ_MIN = -0.06;
+const float LAMBDAZ_MAX =  0.06;
 const float LAMBDAZ_INC = 0.001; //  61 pts
 
 const float dKG_MIN =  -0.12;
