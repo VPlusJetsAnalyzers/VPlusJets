@@ -12,4 +12,4 @@ eval `scram runtime -sh`
 #fi
 cd -
 echo "$*"
-`$*`
+eval "$*"
