@@ -11,7 +11,7 @@ ADDTLFILES=",$cmbscript1,$cmbscript2"
 
 if [ $# -lt 1 ]
 then
-    echo "Usage: $0 <fileglob> ( e.g., datacard*.txt, qtree*.root, etc.)"
+    echo "Usage: $0 <fileglob> ( e.g., datacard*.txt)"
     exit
 fi
 
