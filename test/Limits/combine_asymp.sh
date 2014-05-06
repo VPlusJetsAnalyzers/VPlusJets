@@ -6,20 +6,18 @@ then
     exit
 fi
 
-#for mass in 170 180 190 200 250 300 350 400 450 500 550 600
-#for mass in 180 250 400
 for datacard in $*
 do
   DIR=`dirname $datacard`
-  COMBINE_ARGS="-v0 -n HWW2lnujjObs -M Asymptotic --minosAlgo stepping --rMin=0.1 --rMax=10"
-# COMBINE_ARGS="-v4 -n HWW2lnujjObs -M Asymptotic --minosAlgo stepping"
+#  COMBINE_ARGS="-v0 -M Asymptotic --minosAlgo stepping --rMin=0.1 --rMax=10 -t -1 --toysFreq"
+  COMBINE_ARGS="-v4 -M Asymptotic --minosAlgo stepping"
 
   file=`basename $datacard .txt`
   suffix=${file##datacard_}
   mass=`ls $datacard | egrep -o "M=[0-9]+" | egrep -o "[0-9]+"`
   if [[ "$mass" -ne "" ]]
   then
-      COMBINE_ARGS="$COMBINE_ARGS -m ${mass}"
+      COMBINE_ARGS="$COMBINE_ARGS -m ${mass} -n ${suffix}"
   fi
 #
 # "tee" used per recommendation from Giovanni, since it captures the stdout/stderr better than straight redirection;
