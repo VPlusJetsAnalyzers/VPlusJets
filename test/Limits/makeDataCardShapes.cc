@@ -258,9 +258,10 @@ makeDataCardFiles(char *rootfn,
   }
 
 #ifdef DO_INTERP
+  int mass = 0;
   if (imass==NUMMASSPTS) {
     for (imass=0; ; imass++) {
-      int mass = interpolatedmasspts[imass];
+      mass = interpolatedmasspts[imass];
       if (mass == massgev) break;
       if (mass < 0) break;
     }
