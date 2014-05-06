@@ -15,7 +15,13 @@ cp.SetGridy()
 
 for fname in args:
     print fname
-    fname_parts = fname.split('_')
+    fname_minusPath = fname.split('/')[-1]
+    fname_path = '/'.join(fname.split('/')[0:-1])
+    fname_parts = fname_minusPath.split('_')
+    if len(fname_path) > 0:
+        fname_path += '/'
+    print 'filename:', fname_minusPath, 'path:', fname_path
+
     f = TFile(fname)
     match = re.search(r'\d+', fname_parts[0])
     mH = int(match.group(0))
@@ -54,5 +60,7 @@ for fname in args:
     cp.cd()
     mWW_pull.Draw('ap')
     gPad.Update()
-    gPad.Print('%s_%s_mWW_pull.pdf' % (fname_parts[0], fname_parts[1]))
-    gPad.Print('%s_%s_mWW_pull.png' % (fname_parts[0], fname_parts[1]))
+    gPad.Print('%s%s_%s_mWW_pull.pdf' % (fname_path, fname_parts[0], 
+                                         fname_parts[1]))
+    gPad.Print('%s%s_%s_mWW_pull.png' % (fname_path, fname_parts[0], 
+                                         fname_parts[1]))

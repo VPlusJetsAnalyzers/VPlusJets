@@ -1,6 +1,6 @@
 #!/bin/bash
 # BASEDIR=/uscms/home/pdudero/data/HWW/HWWmvaScan131024
-JAKESRCDIR=/uscms_data/d2/andersj/Wjj/2013/CMSSW_6_1_2/src/ElectroWeakAnalysis/VPlusJets/test/
+JAKESRCDIR=$(pwd)
 MYSRCDIR=/uscms/home/pdudero/work/CMSSW_6_1_2/src/ElectroWeakAnalysis/VPlusJets/test/Limits/
 executable=${MYSRCDIR}/batchit.sh
 
@@ -23,14 +23,19 @@ printargs() {
     echo "Queue" >>$submit
 }
 
+rm HWWFitting.tar.gz
+echo -n "tarring ... "
+tar czf HWWFitting.tar.gz -T filesForHWWFit.txt -X excludeForHWWFit.txt
+echo "done"
+
 cutval=0.0
-cutdir=toyFit${cutval}Sig_allGen
+cutdir=toyFit${cutval}Sig_binned
 submit=submit_${cutdir}.txt
 mkdir -p $cutdir
 cd $cutdir
 printheader
 # for masspt in 170 180 190 200 250 300 350 400 450 500 550 600
-for masspt in 180 200 300 400 600
+for masspt in 180 200 300 400 500 600
 do
   for (( start=0; start<=450; start+=50 ))
   do

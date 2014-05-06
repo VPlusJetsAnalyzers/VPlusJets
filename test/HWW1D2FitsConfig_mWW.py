@@ -37,8 +37,8 @@ def theConfig(**kwargs):
     pars.signals = pars_mjj.signals
     pars.yieldConstraints = pars_mjj.yieldConstraints
     #pars.yieldConstraints = {}
-    # pars.constrainShapes = []
-    pars.constrainShapes = ['WpJ']
+    pars.constrainShapes = []
+    # pars.constrainShapes = ['WpJ']
 
     pars.Njets = kwargs['Nj']
     pars.mHiggs = kwargs['mH']
@@ -118,7 +118,10 @@ def theConfig(**kwargs):
     pars.doExclude = False
     pars.blind = pars_mjj.blind
 
-    pars.binData = pars_mjj.binData
-    pars.binData = True
+    # pars.binData = pars_mjj.binData
+    if ('binned' in kwargs):
+        pars.binData = kwargs['binned']
+    else:
+        pars.binData = True
 
     return pars

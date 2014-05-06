@@ -43,10 +43,14 @@ parser.add_option('--genConfig',
                   help='which config to select look at HWW2DConfig.py for ' +\
                       'an example.  Use the file name minus the .py extension.'
                   )
-parser.add_option('--xc', dest='xc', action='store_true',
+parser.add_option('--xc', dest='xc',
                   help='use cross-check background to generate')
 parser.add_option('--sideband', dest='sb', type='int',
                   help='use sideband dataset and model instead')
+parser.add_option('--unbinned', dest='binned', action='store_false',
+                  help='unbinned m_lvjj fit instead of binned ML.')
+parser.add_option('--qRooFit', dest='qRF', action='store_true',
+                  help='quiet RooFit warnings.')
 
 (opts, args) = parser.parse_args()
 
@@ -59,7 +63,7 @@ import RooWjj2DFitter
 from ROOT import TCanvas, RooFit, RooLinkedListIter, TMath, RooRandom, TFile, \
     RooDataHist, RooMsgService, TStopwatch, RooAbsPdf, TBox, kBlack, kRed, \
     kBlue, kOrange, kDashed, RooAbsCollection, RooArgSet, RooStats, Double, \
-    RooAbsReal, RooAbsData, TH1F
+    RooAbsReal, RooAbsData, TH1F, RooArgList
 import pulls
 
 timer = TStopwatch()
@@ -68,12 +72,15 @@ timer.Start()
 #RooAbsPdf.defaultIntegratorConfig().setEpsRel(1e-9)
 #RooAbsPdf.defaultIntegratorConfig().setEpsAbs(1e-9)
 if not opts.debug:
-    RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
-    RooMsgService.instance().addStream(RooFit.ERROR,
-                                       RooFit.Prefix(True), 
-                                       RooFit.ClassName('RooExpPoly'),
-                                       RooFit.OutputFile('/dev/null'))
-    RooMsgService.instance().Print('v')
+    if opts.qRF:
+        RooMsgService.instanc().setGlobalKillBelow(RooFit.FATAL)
+    else:
+        RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
+    # RooMsgService.instance().addStream(RooFit.ERROR,
+    #                                    RooFit.Prefix(True), 
+    #                                    RooFit.ClassName('RooExpPoly'),
+    #                                    RooFit.OutputFile('/dev/null'))
+    # RooMsgService.instance().Print('v')
 
 if hasattr(opts, "seed") and (opts.seed >= 0):
     print "random seed:", opts.seed
@@ -263,12 +270,12 @@ if opts.sb > 0:
 elif opts.sb < 0:
     sb = 'low'
     configArgs['sideband'] = sb
-pars_mWW = HWW1D2FitsConfig_mWW.theConfig(**configArgs)
-pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
+if opts.binned != None:
+    configArgs['binned'] = opts.binned
+# pars_mWW = HWW1D2FitsConfig_mWW.theConfig(**configArgs)
+# pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
 
-if opts.toy:
-    pars_mWW.blind = False
-sb = None
+# sb = None
 
 def prepFitter(config = opts.modeConfig, initFiles = mWWArgs):
     theArgs = dict(configArgs)
@@ -276,6 +283,9 @@ def prepFitter(config = opts.modeConfig, initFiles = mWWArgs):
     theArgs['initFile'] = initFiles    
     pars_mWW = HWW1D2FitsConfig_mWW.theConfig(**theArgs)
     pars_mWW.yieldConstraints['WpJ'] = fitter.ws.var('WpJ_nrm').getError()
+
+    if opts.binned == False:
+        pars_mWW.constrainShapes = []
 
     if opts.toy or opts.sb:
         pars_mWW.blind = False
@@ -315,9 +325,11 @@ def prepFitter(config = opts.modeConfig, initFiles = mWWArgs):
     fitter_mWW.ws.var('r_signal').setRange(-3., 9.)
     fitter_mWW.ws.var('r_signal').setConstant(False)
 
-    return fitter_mWW
+    return fitter_mWW, pars_mWW
 
-fitter_mWW = prepFitter()
+(fitter_mWW,pars_mWW) = prepFitter()
+if opts.toy:
+    pars_mWW.blind = False
 totalPdf_mWW = fitter_mWW.makeFitter()
 
 fitter_gen = fitter_mWW
@@ -327,9 +339,9 @@ if opts.toy and opts.genConfig:
     iFiles = mWWArgs
     if opts.xc:
         iFiles = [ 
-            fn.replace('mWW', 'mWW_syst_p') if (fn.find('WpJ') >= 0) else fn \
-                for fn in mWWArgs ]
-    fitter_gen = prepFitter(opts.genConfig, iFiles)
+            opts.xc if (fn.find('WpJ')>=0) else fn for fn in mWWArgs ]
+    print 'generating with:',opts.genConfig
+    (fitter_gen,pars_gen) = prepFitter(opts.genConfig, iFiles)
     genPdf = fitter_gen.makeConstrainedFitter()
 
 mWWCut = '((%s>%.0f)&&(%s<%.0f))' % \
@@ -380,9 +392,12 @@ if opts.toy and not opts.ws:
                            RooFit.Name('data_obs'),
                            RooFit.Extended())
     if fitter_mWW.pars.binData:
+        unbinned_data = data
+        unbinned_data.SetName('data_unbinned')
+        getattr(fitter_mWW.ws, 'import')(unbinned_data)
         data = RooDataHist('data_obs', 'data_obs', fitter_mWW.ws.set('obsSet'),
                            data)
-    data.Print('v')
+    data.Print()
     getattr(fitter_mWW.ws, 'import')(data)
 else:
     fitter_mWW.loadDataFromWorkspace(fitter.ws, mWWCut)
@@ -436,7 +451,8 @@ if opts.doLimit:
     upperHist.Draw()
     c_upper.Update()
 
-    TMath.Quantiles(len(uppers), len(qs), uppersArray, qs, probs)
+    if len(uppers) > 4:
+        TMath.Quantiles(len(uppers), len(qs), uppersArray, qs, probs)
     # nquants = upperHist.GetQuantiles(len(qs), qs, probs)
     print 'sensible expected 95%% CL upper limit quantiles for %i toys: [' % len(uppers),
     for q in qs:
@@ -498,6 +514,7 @@ sigPdf.plotOn(plot_mWW, RooFit.Range('plotRange'),
 plot_mWW.getCurve().SetTitle("H(%i)#times%.0f" % (opts.mH, sigScaler))
 
 leg_mWW = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot_mWW)
+plot_mWW.addObject(leg_mWW)
 
 plot_mWW_withErrs = fitter_mWW.stackedPlot(pars_mWW.var[0])
 plot_mWW_withErrs.SetName('%s_plot_with_errors' % (pars_mWW.var[0]))
@@ -512,8 +529,8 @@ if fr_mWW:
                         RooFit.FillColor(kOrange+1),
                         RooFit.FillStyle(3001))
     plot_mWW_withErrs.getCurve().SetTitle('Fit errors')
-    errs = plot_mWW_withErrs.getCurve('fitErrors')
-    (upper, lower) = pulls.splitErrCurve(errs)
+    # errs = plot_mWW_withErrs.getCurve('fitErrors')
+    # (upper, lower) = pulls.splitErrCurve(errs)
 
 sigPdf.plotOn(plot_mWW_withErrs, RooFit.Range('plotRange'),
               RooFit.NormRange('plotRange'),
@@ -530,7 +547,6 @@ plot_mWW_withErrs.addObject(leg_mWW_withErrs)
 # lower.Print('v')
 
 c_mWW = TCanvas('c_mWW', pars_mWW.var[0] + ' plot')
-plot_mWW.addObject(leg_mWW)
 plot_mWW.Draw()
 # if blinder:
 #     plot_mWW.setInvisible('theData', True)
@@ -542,9 +558,11 @@ c_mWW_err.Update()
 
 (chi2_mWW, ndf_mWW) = pulls.computeChi2(plot_mWW.getHist('theData'), 
                                         plot_mWW.getObject(1))
+nFreeFitParams = 0
 if fr_mWW:
-    ndf_mWW -= fr_mWW.floatParsFinal().getSize() - \
+    nFreeFitParams = fr_mWW.floatParsFinal().getSize() - \
         fitter_mWW.ws.set('constraintSet').getSize()
+    ndf_mWW -= nFreeFitParams
 pull_mWW = pulls.createPull(plot_mWW.getHist('theData'), 
                             plot_mWW.getObject(1))
 cp_mWW = TCanvas('cp_mWW', pars_mWW.var[0] + ' mWW pull')
@@ -566,38 +584,47 @@ parIter = params_mWW.createIterator()
 p = parIter.Next()
 while p:
     if not p.isConstant():
-        p.setRange(p.getVal()-p.getError()*8., p.getVal()+p.getError()*8.)
+        p.setRange(max(p.getVal()-p.getError()*15,p.getMin()), 
+                   min(p.getVal()+p.getError()*15,p.getMax()))
     # else:
     #     p.setRange(p.getVal()-p.getError()*3., p.getVal()+p.getError()*3.)
     p = parIter.Next()
 
 
-bkgHisto = full_pdf.createHistogram("HWW%snujj_bkg" % mode,
-                                    fitter_mWW.ws.var(pars_mWW.var[0]))
-bkgHisto.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto.Integral())
-bkgHisto.Print()
-bkgHisto.SetName("HWW%snujj_bkg" % mode)
-# c_debug = TCanvas('c_debug', 'debug')
 c_bkg = TCanvas('c_bkg', 'histograms')
 c_bkg.cd()
+
+TH1F.SetDefaultSumw2(True)
+bkgHisto = full_pdf.createHistogram("HWW%snujj_bkg" % mode,
+                                    fitter_mWW.ws.var(pars_mWW.var[0]))
+bkgHisto.Print()
+bkgHisto.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto.Integral())
+bkgHisto.Print()
+
+# for bi in range(1, bkgHisto.GetNbinsX()+1):
+#     print bi, 'content:', bkgHisto.GetBinContent(bi), '+/-', bkgHisto.GetBinError(bi)
+# print
+
+bkgHisto.SetName("HWW%snujj_bkg" % mode)
+# c_debug = TCanvas('c_debug', 'debug')
 bkgHisto.Draw()
-if fr_mWW:
-    bkgHisto_up = fitter_mWW.utils.newEmptyHist(
-        'HWW%snujj_bkg_%sbkgshapeUp' % (mode, mode), 1)
-    bkgHisto_up = pulls.curveToHist(upper, bkgHisto_up)
-    bkgHisto_up.Print()
-    bkgHisto_up.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_up.Integral())
-    bkgHisto_up.SetLineColor(kOrange+2)
-    bkgHisto_up.SetLineStyle(kDashed)
-    bkgHisto_dwn = fitter_mWW.utils.newEmptyHist(
-        'HWW%snujj_bkg_%sbkgshapeDown' % (mode, mode), 1)
-    bkgHisto_dwn = pulls.curveToHist(lower, bkgHisto_dwn)
-    bkgHisto_dwn.Print()
-    bkgHisto_dwn.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_dwn.Integral())
-    bkgHisto_dwn.SetLineColor(kOrange+4)
-    bkgHisto_dwn.SetLineStyle(kDashed)
-    bkgHisto_up.Draw('same')
-    bkgHisto_dwn.Draw('same')
+# if fr_mWW:
+#     bkgHisto_up = fitter_mWW.utils.newEmptyHist(
+#         'HWW%snujj_bkg_%sbkgshapeUp' % (mode, mode), 1)
+#     bkgHisto_up = pulls.curveToHist(upper, bkgHisto_up)
+#     bkgHisto_up.Print()
+#     bkgHisto_up.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_up.Integral())
+#     bkgHisto_up.SetLineColor(kOrange+2)
+#     bkgHisto_up.SetLineStyle(kDashed)
+#     bkgHisto_dwn = fitter_mWW.utils.newEmptyHist(
+#         'HWW%snujj_bkg_%sbkgshapeDown' % (mode, mode), 1)
+#     bkgHisto_dwn = pulls.curveToHist(lower, bkgHisto_dwn)
+#     bkgHisto_dwn.Print()
+#     bkgHisto_dwn.Scale(full_pdf.expectedEvents(fitter_mWW.ws.set('obsSet'))/bkgHisto_dwn.Integral())
+#     bkgHisto_dwn.SetLineColor(kOrange+4)
+#     bkgHisto_dwn.SetLineStyle(kDashed)
+#     bkgHisto_up.Draw('same')
+#     bkgHisto_dwn.Draw('same')
 
 c_bkg.Update()
 ggHPdf = fitter_mWW.ws.pdf('ggH')
@@ -640,7 +667,21 @@ dataHisto.SetMarkerStyle(20)
 dataHisto.SetName('HWW%snujj_data_obs' % mode)
 dataHisto.Draw('same')
 dataHisto.Print()
+# obs = RooArgList(fitter_mWW.ws.var(pars_mWW.var[0]))
+# bkgf = full_pdf.asTF(obs,RooArgList(params_mWW),RooArgSet(obs))
+# bkgf.SetLineColor(2)
+# bkgf.SetLineWidth(3)
+# bkgf.Draw('same')
 c_bkg.Update()
+
+print 'histogram chi2 test:'
+pval = dataHisto.Chi2Test(bkgHisto, 'uwpchi2')
+print 'chi2:',pval,'n fit params:',nFreeFitParams,
+print 'ndf:',dataHisto.GetNbinsX()-nFreeFitParams-1,
+print 'p-value:',TMath.Prob(pval, dataHisto.GetNbinsX()-nFreeFitParams-1)
+# chi2f = dataHisto.Chisquare(bkgf)
+# print 'chi2f:', chi2f
+print
 
 fitter_mWW.ws.saveSnapshot('nullFitSnapshot', fitter_mWW.ws.allVars())
 
@@ -710,9 +751,9 @@ plot_mWW.Write()
 pull_mWW.Write()
 plot_mWW_withErrs.Write()
 bkgHisto.Write()
-if fr_mWW:
-    bkgHisto_up.Write()
-    bkgHisto_dwn.Write()
+# if fr_mWW:
+#     bkgHisto_up.Write()
+#     bkgHisto_dwn.Write()
 qqHHisto.Write()
 ggHHisto.Write()
 for histo in interf:

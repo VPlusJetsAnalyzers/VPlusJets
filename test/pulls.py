@@ -1,13 +1,15 @@
+import ROOT as r
+
 def createPull(theData, curve, curveUp = None, curveDown = None):
     return createResid(theData, curve, curveUp, curveDown, True)
         
 def createResid(theData, curve, curveUp = None, curveDown = None,
                 normalize = False):
-    from ROOT import TGraphErrors, TMath
+    # from ROOT import TGraphErrors, TMath
 
-    pullGraph = TGraphErrors(theData.GetN())
+    pullGraph = r.TGraphErrors(theData.GetN())
 
-
+    Npull = 0
     # print 'normalize',normalize
 
     for datapt in range(0, theData.GetN()):
@@ -32,27 +34,49 @@ def createResid(theData, curve, curveUp = None, curveDown = None,
                 
         
         if (binN > curveN):
-            errN = TMath.Sqrt((theData.GetEYlow()[datapt]*(binmax-binmin))**2 \
+            errN = r.TMath.Sqrt((theData.GetEYlow()[datapt]*(binmax-binmin))**2 \
                                   + diffUp**2)
         else:
-            errN = TMath.Sqrt((theData.GetEYhigh()[datapt]*(binmax-binmin))**2 \
+            errN = r.TMath.Sqrt((theData.GetEYhigh()[datapt]*(binmax-binmin))**2 \
                                   + diffDown**2)
 
         pull = 0.
+        flagit=False
+        if errN <= 0:
+            continue
+        if abs(errN - binN) < 0.01:
+            # print 'suspicious point at',theData.GetX()[datapt],
+            # print 'binN',binN,
+            # print 'errN',errN,
+            # print 'curveN',curveN
+            flagit=True
+
         if normalize:
             if (errN > 0):
                 pull = (binN - curveN)/errN
+                if (pull < -4):
+                    print 'suspicious point at',theData.GetX()[datapt],
+                    print 'binN',binN,
+                    print 'errN',errN,
+                    print 'curveN',curveN
+                    if flagit:
+                        continue
                 errN = 1.
+                
         elif not normalize:
-            pull = binN - curveN
+            if (errN > 0):
+                pull = (binN - curveN)/(binmax-binmin)
+            errN /= (binmax-binmin)
 
         # print 'bin: (', binmin, ',', binmax, ') N:', binN, '+/-', errN,
         # print 'curve N:', curveN
         # print 'pull:', pull, 'errN:',errN
 
-        pullGraph.SetPoint(datapt, theData.GetX()[datapt], pull)
-        pullGraph.SetPointError(datapt, 0., errN)
+        pullGraph.SetPoint(Npull, theData.GetX()[datapt], pull)
+        pullGraph.SetPointError(Npull, 0., errN)
+        Npull += 1
 
+    pullGraph.Set(Npull)
     return pullGraph
 
 def computeChi2(theData, curve):
@@ -64,12 +88,12 @@ def computeChi2(theData, curve):
     return (chi2, pullGraph.GetN())
 
 def splitErrCurve(curve):
-    from ROOT import RooCurve
+    # from ROOT import RooCurve
 
-    upperCurve = RooCurve()
+    upperCurve = r.RooCurve()
     upperCurve.SetName('%s_upper' % curve.GetName())
 
-    lowerCurve = RooCurve()
+    lowerCurve = r.RooCurve()
     lowerCurve.SetName('%s_lower' % curve.GetName())
 
     lastx = curve.GetX()[0]
@@ -107,7 +131,7 @@ def splitErrCurve(curve):
 
 def curveToHist(curve, hist, debug = False):
     from math import sqrt
-    from ROOT import gPad
+    # from ROOT import gPad
     #hist.Sumw2()
     for binx in range(1, hist.GetNbinsX()+1):
         low = hist.GetBinLowEdge(binx)
@@ -118,7 +142,63 @@ def curveToHist(curve, hist, debug = False):
         print 'drawing background histogram...'
         curve.Draw('al')
         hist.Draw('same')
-        gPad.Update()
-        gPad.WaitPrimitive()
+        r.gPad.Update()
+        r.gPad.WaitPrimitive()
 
     return hist
+
+from array import array
+
+def subtractCurves(curve, mcurve, loX = None, hiX = None, debug = False,
+                   scale = 1.):
+
+    # subCurve = r.RooCurve("%s_minus_%s" % (curve.GetName(), mcurve.GetName()), 
+    #                       "%s_minus_%s" % (curve.GetName(), mcurve.GetName()),
+    #                       curve, mcurve, 1., -1.)
+    # return subCurve
+    subCurve = r.RooCurve(curve)
+    idxs = array('i', [0]*subCurve.GetN())
+    r.TMath.BubbleLow(len(idxs), subCurve.GetX(), idxs)
+    if loX == None:
+        loX = subCurve.GetX()[idxs[0]]
+    if hiX == None:
+        hiX = subCurve.GetX()[idxs[-1]]
+    # print 'range for x:',loX, hiX
+    outn = 0;
+    for n in range(0, subCurve.GetN()):
+        x = subCurve.GetX()[n]
+        y = subCurve.GetY()[n]
+        if debug:
+            print '(',x,',',y,')', mcurve.interpolate(x),
+        y -= mcurve.interpolate(x)
+        y *= scale
+        if debug:
+            print 'new y:',y
+        if (abs(x -loX) <= 1e-6) or (abs(x-hiX) <= 1e-6):
+            y = 0.
+        else:
+            subCurve.SetPoint(outn,x,y)
+            outn += 1
+
+    subCurve.Set(outn)
+    return subCurve
+
+def clipCurve(curve):
+    if (curve.GetX()[0] == curve.GetX()[1]) and (curve.GetY()[0] < 1e-6):
+        curve.RemovePoint(0)
+    if (curve.GetX()[curve.GetN()-1] == curve.GetX()[curve.GetN()-2]) and \
+            (curve.GetY()[curve.GetN()-1] < 1e-6):
+        curve.RemovePoint(curve.GetN()-1)
+
+    return curve
+
+def scaleCurve(curve, scale = 1.0):
+    idxs = array('i', [0]*curve.GetN())
+    r.TMath.BubbleLow(len(idxs), curve.GetX(), idxs)
+    idys = array('i', [0]*curve.GetN())
+    r.TMath.BubbleLow(len(idys), curve.GetY(), idys)
+    scalef = r.TF2("scalef", "%f*y" % (scale), curve.GetX()[idxs[0]],
+                   curve.GetX()[idxs[-1]], curve.GetY()[idys[0]],
+                   curve.GetY()[idys[-1]])
+    curve.Apply(scalef)
+    return curve

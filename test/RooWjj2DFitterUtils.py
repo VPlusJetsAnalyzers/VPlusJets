@@ -78,11 +78,34 @@ class Wjj2DFitterUtils:
                 veto = True
 
         return veto
-            
+
+    def MyRunningWidthBW(self, mww, mH, gamma):
+        #running width BW without normalizations
+        numerator = (mww*mww*gamma/mH)
+        denominator = (mww*mww-mH*mH)*(mww*mww-mH*mH) + \
+            (mww*mww*gamma/mH)*(mww*mww*gamma/mH)
+        pdf = numerator/denominator
+        return pdf
+
+    def lineshapeWidthReweight(self, point, meanSM, gammaSM, Cprime):
+        weight2 = self.MyRunningWidthBW(point,meanSM,gammaSM*Cprime)/ \
+            self.MyRunningWidthBW(point,meanSM,gammaSM);
+        return weight2;
+
+    def IntfRescale(self, curIntfRw,cPrime,BRnew):
+
+        curIoverS = curIntfRw - 1
+        newWeight = 1 + ((1-BRnew)*curIoverS)/cPrime
+        # if newWeight < 0: 
+        #     newWeight = 0.01
+        ratio = newWeight/curIntfRw
+
+        return ratio
+
     # generator function for looping over an event tree and applying the cuts
     def TreeLoopFromFile(self, fname, noCuts = False,
                          cutOverride = None, CPweight = False, 
-                         interference = 0):
+                         interference = 0, BRnew = 0, Cprime = 1):
 
         # open file and get tree
         treeFile = TFile.Open(fname)
@@ -115,12 +138,35 @@ class Wjj2DFitterUtils:
         varsRemaining = 4-len(self.pars.var)
         ExtraDrawCP = False
         ExtraDrawInterf = False
+        CPWHist = None
+        AvgCPW = 1.0
+        CPWFile = TFile.Open('ComplexPoleWeights/CPSHiggs%dShapes.root' % \
+                                 (self.pars.mHiggs))
+        if CPWFile:
+            CPWFile.ls()
+            avgCPS = CPWFile.Get('avgCPS')
+            avgCPS.GetEntry(0)
+            AvgCPW = avgCPS.avgcps
+            fr = CPWFile.Get('unbinnedFit_HWW%d_newCPS' % self.pars.mHiggs)
+            SM_H_mean = fr.floatParsFinal().find('mH').getVal()
+            SM_H_width = fr.floatParsFinal().find('Gamma').getVal()
         if CPweight:
-            if hasattr(theTree, 'complexpolewtggH%i' % self.pars.mHiggs):
+            if CPWFile:
+                CPWHist = CPWFile.Get('ratio_HWW%d' % (self.pars.mHiggs))
+                CPWHist.SetDirectory(0)
+
+            if not CPWHist and hasattr(theTree, 'complexpolewtggH%i' % \
+                                           self.pars.mHiggs):
                 extraDraw += ':(complexpolewtggH%i/avecomplexpolewtggH%i)' % \
                              (self.pars.mHiggs, self.pars.mHiggs)
-                varsRemaining -= 1
-                ExtraDrawCP = True
+            elif hasattr(theTree, 'W_H_mass_gen'):
+                extraDraw += ':W_H_mass_gen'
+            else:
+                extraDraw += ':(complexpolewtggH%i/avecomplexpolewtggH%i)' % \
+                             (self.pars.mHiggs, self.pars.mHiggs)
+                CPWHist = None
+            varsRemaining -= 1
+            ExtraDrawCP = True
         if interference == 1:
             extraDraw += ':interferencewtggH%i' % self.pars.mHiggs
             varsRemaining -= 1
@@ -189,19 +235,29 @@ class Wjj2DFitterUtils:
                 if interference == 1:
                     iwt = getattr(theTree, 
                                   'interferencewtggH%i' % self.pars.mHiggs)
+                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
                 elif interference == 2:
                     iwt = getattr(theTree, 
                                   'interferencewt_upggH%i' % self.pars.mHiggs)
+                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
                 elif interference == 3:
                     iwt = getattr(theTree,
                                   'interferencewt_downggH%i' % self.pars.mHiggs)
+                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
                 else:
                     iwt = 1.
                 row = [ v.EvalInstance() for v in rowVs ]
+                if CPWHist:
+                    cpw = CPWHist.Interpolate(theTree.W_H_mass_gen)/AvgCPW
+                    cpw *= self.lineshapeWidthReweight(theTree.W_H_mass_gen, 
+                                                       SM_H_mean, SM_H_width,
+                                                       Cprime/(1-BRnew))
+                effWgt *= Cprime*(1-BRnew)
                 yield (row, effWgt, cpw, iwt)
         else:
             for rowi in range(0, theTree.GetSelectedRows()):
                 effWgt = theTree.GetW()[rowi]
+                effWgt *= Cprime*(1-BRnew)
                 row = []
                 for vi in range(0, len(self.pars.var)):
                     row.append(getattr(theTree, 'GetV%i' % (vi+1))()[rowi])
@@ -210,10 +266,25 @@ class Wjj2DFitterUtils:
                 if ExtraDrawCP:
                     cpw = getattr(theTree, 'GetV%i' % (vi+1))()[rowi]
                     vi += 1
+                    if CPWHist:
+                        W_H_mass_gen = cpw
+                        cpw = CPWHist.Interpolate(W_H_mass_gen)/AvgCPW
+                        # print 'W_H_mass_gen: %.3f cpw: %.3f AvgCPW: %.3f' % \
+                        #     (W_H_mass_gen, cpw, AvgCPW),
+                        cpw *= self.lineshapeWidthReweight(W_H_mass_gen, 
+                                                           SM_H_mean, 
+                                                           SM_H_width,
+                                                           Cprime/(1-BRnew))
+                        # print 'Cprime: %.2f BRnew: %.2f new cpw: %.3f' % \
+                        #     (Cprime, BRnew, cpw),
                 iwt = 1.
                 if ExtraDrawInterf:
                     iwt = getattr(theTree, 'GetV%i' % (vi+1))()[rowi]
+                    # print 'iwt: %.3f' % iwt,
+                    iwt *= self.IntfRescale(iwt,Cprime,BRnew)
+                    # print 'new iwt: %.3f' % iwt
                     vi += 1
+                # print 'cpw: %.3f iwt: %.3f effWgt: %.3f' % (cpw, iwt, effWgt)
                 yield (row, effWgt, cpw, iwt)
                 
 
@@ -224,7 +295,8 @@ class Wjj2DFitterUtils:
     # from a file fill a 2D histogram
     def File2Hist(self, fname, histName, noCuts = False, 
                   cutOverride = None, CPweight = False,
-                  doWeights = True, interference = 0):
+                  doWeights = True, interference = 0, Cprime = 1,
+                  BRnew = 0.):
         theHist = self.newEmptyHist(histName)
 
         print 'filename:',fname
@@ -235,7 +307,9 @@ class Wjj2DFitterUtils:
                                                              noCuts, 
                                                              cutOverride,
                                                              CPweight,
-                                                             interference):
+                                                             interference,
+                                                             Cprime = Cprime,
+                                                             BRnew = BRnew):
             #print 'entry:',v1val,v2val,effWgt
             if not doEffWgt:
                 effWgt = 1.0
@@ -277,7 +351,8 @@ class Wjj2DFitterUtils:
     # from a file fill and return a RooDataSet
     def File2Dataset(self, fnames, dsName, ws, noCuts = False, 
                      weighted = False, CPweight = False, cutOverride = None,
-                     interference = 0, additionalWgt = 1.0):
+                     interference = 0, additionalWgt = 1.0, Cprime = 1,
+                     BRnew = 0.):
         if ws.data(dsName):
             return ws.data(dsName)
 
@@ -292,6 +367,10 @@ class Wjj2DFitterUtils:
                 print 'and CP weight',
             if interference in [1,2,3]:
                 print 'and interference',
+            if Cprime < 1.:
+                print 'using Cprime = %.2f' % (Cprime),
+            if BRnew > 0.:
+                print 'using BRnew = %.2f' % (BRnew),
             print
         else:
             ds = RooDataSet(dsName, dsName, cols)
@@ -309,7 +388,8 @@ class Wjj2DFitterUtils:
                     self.TreeLoopFromFile(fname, noCuts,
                                           CPweight = CPweight,
                                           cutOverride = cutOverride,
-                                          interference = interference):
+                                          interference = interference,
+                                          Cprime = Cprime, BRnew = BRnew):
                 inRange = True
                 for (i,v) in enumerate(obs):
                     inRange = (inRange and ws.var(v).inRange(row[i], ''))
@@ -380,7 +460,7 @@ class Wjj2DFitterUtils:
                        )
         elif model==1:
             # power-law model
-            ws.factory("power_%s[-2., -30., 30.]" % idString)
+            ws.factory("power_%s[-4., -30., 30.]" % idString)
             ws.factory("RooPowerLaw::%s(%s, power_%s)" % \
                            (pdfName, var, idString)
                        )
@@ -410,7 +490,7 @@ class Wjj2DFitterUtils:
             fcore = ws.factory("f_%s_core[0.5, 0, 1]" % idString)
             if systMult:
                 fcore.setConstant()
-                kappa = ws.factory("RooPowerLaw::func_kappa_%s(kappa_%s[1.0], %s[0.])" % (fcore.GetName(), fcore.GetName(), systMult))
+                kappa = ws.factory("RooPowerFunction::func_kappa_%s(kappa_%s[1.0], %s[0.])" % (fcore.GetName(), fcore.GetName(), systMult))
                 fcore = ws.factory("prod::func_%s(%s, %s)" % (fcore.GetName(), fcore.GetName(), kappa.GetName()))
             ws.factory("SUM::%s(%s * %s_core, %s_tail)" % \
                            (pdfName, fcore.GetName(), pdfName, pdfName)
@@ -479,7 +559,7 @@ class Wjj2DFitterUtils:
             self.analyticPdf(ws, var, 23, pdfName, idString, 3)
         elif model == 12:
             # 2 parameter power law
-            ws.factory("power_%s[2, -30, 30]" % idString)
+            ws.factory("power_%s[4, -30, 30]" % idString)
             ws.factory("power2_%s[0, -20, 20]" % idString)
             ws.factory("EXPR::%s('1./TMath::Power(@0,@1+@2*log(@0/@3))', %s, power_%s, power2_%s, 8000)" % \
                            (pdfName, var, idString, idString)
@@ -619,7 +699,8 @@ class Wjj2DFitterUtils:
                                      ws.var(var).getMax()))
             offset.setVal(ws.var(var).getMin())
             offset.setError(offset.getVal()*0.2)
-            width = ws.factory("width_%s[5, 0, 1000]" % idString)
+            width = ws.factory("width_%s[5, %f, 1000]" % \
+                                   (idString,offset.getMin()*0.1))
             width.setVal(offset.getVal()*0.2)
             width.setError(width.getVal()*0.2)
             factoryStatement = "RooErfPdf::%s(%s, offset_%s, width_%s, 1)"%\
@@ -725,12 +806,14 @@ class Wjj2DFitterUtils:
         elif model == 33:
             # erf model turning off
             theShift = 0.2
-            offset = ws.factory("offset_%s[500, %f, %f]" % \
-                                    (idString, ws.var(var).getMax()*theShift+ws.var(var).getMin()*(1-theShift), 
-                                     ws.var(var).getMax()*2))
+            # offset = ws.factory("offset_%s[500, %f, %f]" % \
+            #                         (idString, 0.), 
+            #                          ws.var(var).getMax()*2))
+            offset = ws.factory("offset_%s[500]" % (idString))
             offset.setVal(ws.var(var).getMax())
             offset.setError(offset.getVal()*0.2)
-            width = ws.factory("width_%s[50, 0, 1000]" % idString)
+            offset.setConstant(False)
+            width = ws.factory("width_%s[50, 5, 1000]" % idString)
             width.setVal(offset.getVal()*0.2)
             width.setError(width.getVal()*0.2)
             factoryStatement = "RooErfPdf::%s(%s, offset_%s, width_%s, -1)"%\
@@ -792,8 +875,10 @@ class Wjj2DFitterUtils:
             parSet = []
             parList = RooArgList('parList')
             for i in range(0, auxModel):
-                parSet.append('a%i_%s' % (i+1, idString))
-                a = ws.factory('%s[0.01, 0., 1.]' % parSet[-1])
+                parSet.append('a%i_%s' % (i, idString))
+                a = ws.factory('%s[0.001, 0., 10.]' % parSet[-1])
+                if i==0:
+                    a.setVal(0.9)
                 a.setConstant(False)
                 parList.add(a)
                 # print varSet[-1]
@@ -805,6 +890,27 @@ class Wjj2DFitterUtils:
             # getattr(ws, 'import')(pdf)
             #ws.Print()
             ws.factory(factoryStatement)
+        elif model == 39:
+            #Nth order Bernstein polynomial where n is passed in as the auxModel
+            #fixing all even coeffiencts to zero
+            pdf = self.analyticPdf(ws, var, 38, pdfName, idString, 
+                                   auxModel)
+            for i in range(0, auxModel):
+                if i%2 == 1:
+                    parameter = ws.var('a%i_%s' % (i, idString))
+                    parameter.setVal(0.)
+                    parameter.setConstant()
+        elif model == 40:
+            #Nth order Bernstein polynomial where n is passed in as the auxModel
+            #fixing all odd coeffiencts to zero
+            pdf = self.analyticPdf(ws, var, 38, pdfName, idString, 
+                                   auxModel)
+            for i in range(0, auxModel):
+                if i%2 == 0:
+                    parameter = ws.var('a%i_%s' % (i, idString))
+                    parameter.setVal(0.)
+                    parameter.setConstant()
+            
         elif model== 108:
             # expA+expB
             cA = ws.factory("cA_%s[-0.05,-1.0,0.0]" % idString)

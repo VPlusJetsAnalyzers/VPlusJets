@@ -49,6 +49,7 @@ struct sortPt
 
 void kanamuon::myana(double myflag, bool isQCD, int runflag)
 {
+
   //Prepare the histogram for the cut-flow control : 8 presel + 12 sel
   const int n_step = 20;
   TH1F* h_events          = new TH1F("h_events", "h_events", n_step, 0, n_step);
@@ -103,9 +104,11 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
   else if (myflag == 20120001 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
-      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root", h_events, h_events_weighted);
-      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
+      //InitCounters( inDataDir + "mu_SingleMuon2012_pt1.root", h_events, h_events_weighted);
+      //myChain->Add( inDataDir + "mu_SingleMuon2012_pt1.root");
+      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
+      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
 
     } else {
       InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
@@ -116,17 +119,14 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
   else if (myflag == 20120002 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
-      // InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root", h_events, h_events_weighted);
-      // myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_19p3invfb.root");
-      // Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_19p3invfb");
-      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
-      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
+      InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root", h_events, h_events_weighted);
+      myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v2_fb.root");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
       
     } else  {        
-      // InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
-      // myChain->Add( inQCDDir + "QCDmu.root");
-      // Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
+       InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
+       myChain->Add( inQCDDir + "QCDmu.root");
+       Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
     }
   }
   else if (!isQCD) {
@@ -440,8 +440,9 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 	Float_t effwt = 1.0, puwt = 1.0, puwt_up = 1.0, puwt_down = 1.0;
 
-	genwt = 1.0; // in case the ntuple doesn't have it.
+	Float_t  genwt = 1.0; // in case the ntuple doesn't have it.
 
+        TBranch * branch_genwt          =  newtree->Branch("genwt",       &genwt,        "genwt/F");
 	TBranch * branch_effwt          =  newtree->Branch("effwt",       &effwt,        "effwt/F");
 	TBranch * branch_puwt           =  newtree->Branch("puwt",        &puwt,         "puwt/F");
 	TBranch * branch_puwt_up        =  newtree->Branch("puwt_up",     &puwt_up,      "puwt_up/F");
@@ -848,7 +849,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t vbf_lvjj_e=-999,   vbf_lvjj_pt=-999,   vbf_lvjj_eta=-999,   vbf_lvjj_phi=-999,   vbf_lvjj_m=-999,   vbf_lvjj_y=-999;   
 	// VBF Higgs  
 	Float_t hvbf_wjj_e =-999,   hvbf_wjj_pt =-999,   hvbf_wjj_eta =-999,   hvbf_wjj_phi =-999,   hvbf_wjj_m =-999, hvbf_wjj_Rapidity =-999;
-	Float_t hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999;
+	Float_t hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999,hvbf_topWm=-999;
 	Float_t hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999;
 	Float_t hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999,   hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,hvbf_lvjj_Rapidity=-999, hvbf_lvjj_ZeppenField = -999,  hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999;
 	Float_t hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999;
@@ -892,6 +893,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_hvbf_wjj_eta   = newtree->Branch("hvbf_wjj_eta",   &hvbf_wjj_eta,    "hvbf_wjj_eta/F");
 	TBranch *branch_hvbf_wjj_phi   = newtree->Branch("hvbf_wjj_phi",   &hvbf_wjj_phi,    "hvbf_wjj_phi/F");
 	TBranch *branch_hvbf_wjj_m     = newtree->Branch("hvbf_wjj_m",     &hvbf_wjj_m,      "hvbf_wjj_m/F");
+        TBranch *branch_hvbf_topWm     = newtree->Branch("hvbf_topWm",     &hvbf_topWm,      "hvbf_topWm/F");
+
 	TBranch *branch_hvbf_wjj_Rapidity     = newtree->Branch("hvbf_wjj_Rapidity",     &hvbf_wjj_Rapidity,      "hvbf_wjj_Rapidity/F");
 
 
@@ -1288,15 +1291,19 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	// For MVA analysis
 
 	// the training input variables
-	const char* hvbf_inputVars[] = { "hvbf_lvjj_Rapidity", "hvbf_aj_pt", "hvbf_bj_pt", "hvbf_waj_pt", "hvbf_wbj_pt", "hvbf_event_met_pfmet", "hvbf_wjj_ang_hs", "hvbf_wjj_ang_phib", "hvbf_jj_deta", "hvbf_jj_dphi", "hvbf_jj_m" };
+//	const char* hvbf_inputVars[] = { "hvbf_lvjj_Rapidity", "hvbf_aj_pt", "hvbf_bj_pt", "hvbf_waj_pt", "hvbf_wbj_pt", "hvbf_event_met_pfmet", "hvbf_wjj_ang_hs", "hvbf_wjj_ang_phib", "hvbf_jj_deta", "hvbf_jj_dphi", "hvbf_jj_m" };
+
+     const char* hvbf_inputVars[] = { "W_muon_charge", "hvbf_aj_pt", "hvbf_bj_pt", "hvbf_wjj_deta", "hvbf_wjj_m", "hvbf_jj_dphi", "hvbf_jj_m", "hvbf_lvjj_ZeppenField" };
 
 	std::vector<std::string> hvbf_inputVarsMVA;
-	for (int i=0; i<11; ++i) hvbf_inputVarsMVA.push_back( hvbf_inputVars[i] );
+	for (int i=0; i<8; ++i) hvbf_inputVarsMVA.push_back( hvbf_inputVars[i] );
 	ReadLikelihoodvbf126mu mvaReader126mu( hvbf_inputVarsMVA );
 
 
 	//const char* inputVars[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
-        const char* inputVars1[] = { "ptlvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs"};
+        //const char* inputVars1[] = { "ptlvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs"};
+          const char* inputVars1[] = { "W_muon_charge", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
+
 	std::vector<std::string> inputVarsMVA1;
 	for (int i=0; i<5; ++i) inputVarsMVA1.push_back( inputVars1[i] );
 
@@ -1639,7 +1646,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Long64_t nbytes = 0, nb = 0;
 	for (Long64_t jentry=0; jentry<nentries;jentry++) {
 		//Long64_t ientry = LoadTree(jentry);
-		//if (ientry < 0) break;
+		//if (ientry <0) break;
 		if(jentry%100000==0){cout<< "jentry: " << jentry << endl;}
 		nb = newtree->GetEntry(jentry);   nbytes += nb;
 		// Cut variable definitions
@@ -1680,7 +1687,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		mvavbf160mu = 999; mvavbf170mu = 999; mvavbf180mu = 999; mvavbf190mu = 999; mvavbf200mu = 999; mvavbf250mu = 999; mvavbf300mu = 999; mvavbf350mu = 999; mvavbf400mu = 999; mvavbf450mu = 999; mvavbf500mu = 999; mvavbf550mu = 999; mvavbf600mu = 999;
 
 
-		effwt = 1.0; puwt = 1.0; puwt_up = 1.0; puwt_down = 1.0;
+		effwt = 1.0; puwt = 1.0; puwt_up = 1.0; puwt_down = 1.0; genwt=1.0;
 		qgld_Spring11[0]= -1;       qgld_Spring11[1]= -1;       qgld_Spring11[2]= -1;       qgld_Spring11[3]= -1;       qgld_Spring11[4]= -1;       qgld_Spring11[5]= -1;
 		qgld_Summer11[0]= -1;       qgld_Summer11[1]= -1;       qgld_Summer11[2]= -1;       qgld_Summer11[3]= -1;       qgld_Summer11[4]= -1;       qgld_Summer11[5]= -1;
 		qgld_Summer11CHS[0]= -1;    qgld_Summer11CHS[1]= -1;    qgld_Summer11CHS[2]= -1;    qgld_Summer11CHS[3]= -1;    qgld_Summer11CHS[4]= -1;    qgld_Summer11CHS[5]= -1;
@@ -1769,8 +1776,22 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 		vbf_event = 0; vbf_aj_id = -1; vbf_bj_id = -1; vbf_waj_id = -1; vbf_wbj_id = -1;
 		vbf_wjj_ang_ha   = 999; vbf_wjj_ang_hb = 999; vbf_wjj_ang_hs = 999; vbf_wjj_ang_phi = 999; vbf_wjj_ang_phia = 999; vbf_wjj_ang_phib = 999;
-		hvbf_event = 0;
-		fourJets=0;
+
+//hVBF 
+         hvbf_wjj_e =-999,   hvbf_wjj_pt =-999,   hvbf_wjj_eta =-999,   hvbf_wjj_phi =-999,   hvbf_wjj_m =-999, hvbf_wjj_Rapidity =-999;
+         hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999,hvbf_topWm=-999;
+         hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999;
+         hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999,   hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,hvbf_lvjj_Rapidity=-999, hvbf_lvjj_ZeppenField = -999,  hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999;
+         hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999;
+         hvbf_lv_e=-999,   hvbf_lv_pt=-999,   hvbf_lv_eta=-999,   hvbf_lv_phi=-999,  hvbf_lv_Rapidity=-999,  hvbf_lv_m=-999,   hvbf_lv_mT=-999;
+         hvbf_l_e=-999,   hvbf_l_pt=-999,   hvbf_l_eta=-999,   hvbf_l_phi=-999;
+         hvbf_l_MET_deltaphi=-999, hvbf_lW_hW_deltaphi=-999, hvbf_event_met_pfmet=-999,hvbf_event_met_pfmetPhi =-999, WJets_weight=1.0;
+
+        hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1,fourJets=0;
+
+        hvbf_wjj_ang_ha   = 999, hvbf_wjj_ang_hb = 999, hvbf_wjj_ang_hs = 999,hvbf_wjj_ang_phi = 999, hvbf_wjj_ang_phia = 999, hvbf_wjj_ang_phib = 999;
+
+
 		//VBF diboson event
 		vbf_diboson_event = 0;
 		vbf_diboson_deltaeta_Wjj = -999; vbf_diboson_deltaphi_MET_leadingWjet = -999; vbf_diboson_dijetpt = -999;
@@ -1862,7 +1883,10 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			muIDEff.GetEfficiency(W_muon_pt, W_muon_eta) * 
 			muHLTEff.GetEfficiency(W_muon_pt, W_muon_eta);
 
-		effwt *= (genwt >= 0) ? 1 : -1;
+                effwt *= (W_genwt >= 0) ? 1 : -1;
+		genwt=W_genwt;
+
+		cout<<"   :"<<genwt<<"    "<<effwt<<"   "<<endl;
 
 		// Pile up Re-weighting
 		if (wda>20120999) { // MC samples
@@ -2152,13 +2176,16 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 			// Fill the trained MVA output 
 			std::vector<double> mvaInputVal1;
-			mvaInputVal1.push_back( ptlvjj );
+			//mvaInputVal1.push_back( ptlvjj );
 			mvaInputVal1.push_back( W_muon_charge );   ///////different for electron and muon
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
 			//mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
-			mvaInputVal1.push_back( ang_ha );
+			//mvaInputVal1.push_back( ang_ha );
 			mvaInputVal1.push_back( ang_hb );
 			mvaInputVal1.push_back( ang_hs );
+                        mvaInputVal1.push_back( ang_phi );
+                        mvaInputVal1.push_back( ang_phib );
+
 
 			mva2j170mu = (float) mvaReader2j170mu.GetMvaValue( mvaInputVal1 );
 			mva2j180mu = (float) mvaReader2j180mu.GetMvaValue( mvaInputVal1 );
@@ -2759,6 +2786,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		//cout<<" jets size   "<<jets.size()<<"   jetsNum   "<<jetsNum<<endl;
 		TLorentzVector hvbf_ajp(0,0,0,0), hvbf_bjp(0,0,0,0);
 		TLorentzVector hwjj_ajp(0,0,0,0), hwjj_bjp(0,0,0,0); 
+                TLorentzVector htopwjj_ajp(0,0,0,0), htopwjj_bjp(0,0,0,0);
+
 		float hbest_detatagjj = 0; // float best_mtagjj =0;
 		float hbest_mjj = 0; // float best_mjj =0;
 
@@ -2774,7 +2803,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		     float hvbf_wjj_deta=-999; Float_t hvbf_wjj_dphi=-999;
 		     float hvbf_lvjj_e =-999,   hvbf_lvjj_pt =-999,   hvbf_lvjj_eta=-999,  hvbf_lvjj_phi =-999, hvbf_lvjj_m =-999, hvbf_lvj_m=-999;
 		 */
-
+		//	float hvbf_topWm=-999;
 
 
 		float hjess = 1.0; 
@@ -2853,6 +2882,48 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				}
 			}// loop over reco jets upto Nmax                                                     
 		} // loop of insuring having allready two tagjets
+//top 
+
+
+              if (htag_i_id!=-1&& htag_j_id!=-1)
+                {
+                   int hnbjet = 0;
+                   int hnbnot = 0;
+                   int bindex[2] = {-1,-1};
+                   int nbindex[2] = {-1,-1};
+                   for ( int k=0; k < (int) jets.size(); ++k)
+                      {
+                       if (fabs(jets.at(k)->Eta()) > 4.7) continue;
+                         if ( k!=htag_i_id && k!= htag_j_id )
+                        	{
+				Float_t *tmp1btagCSV = (Float_t*) jetsbtagCSV.GetValue(jets[k]);
+				Float_t btagCSV = *tmp1btagCSV;
+				//cout<<"  "<<btagCSV<<endl;
+				if (btagCSV>btcsvm) 
+					{
+                                         bindex[hnbjet]=k;
+					 hnbjet++; 
+					} 
+				else 
+				{
+                                nbindex[hnbnot]=k;
+				hnbnot++; 
+				}
+			}
+			if((hnbnot ==2) && (hnbjet==2))
+			break;
+			}// k loop over Nmax
+      //cout<<"no of non bjets  "<<hnbnot<<" 1st  " <<nbindex[0]<<" 2nd  "<<nbindex[1]<<"no of b jets  "<<hnbjet<<" 1st  "<<bindex[0]<<" 2nd  "<<bindex[1]<<endl;
+
+			if(((hnbjet==1) || (hnbjet==2))&& (hnbnot==2) )
+                          { 
+				htopwjj_ajp.SetPtEtaPhiE (jets.at(nbindex[0])->Pt(), jets.at(nbindex[0])->Eta(), jets.at(nbindex[0])->Phi(),jets.at(nbindex[0])->E());
+                                htopwjj_bjp.SetPtEtaPhiE (jets.at(nbindex[1])->Pt(), jets.at(nbindex[1])->Eta(), jets.at(nbindex[1])->Phi(),jets.at(nbindex[1])->E());
+                                        hvbf_topWm = (htopwjj_ajp+htopwjj_bjp).M();
+		        }
+                } // loop of insuring having allready two tagjets
+               // cout<<"hvbf_topWm  "<<hvbf_topWm<<endl;
+
 		//cout<<hwjj_a_id<<"     "<<hwjj_b_id<<endl;
 		if (hwjj_a_id!=-1 && hwjj_b_id!=-1)
 		{            //    two W jets
@@ -3056,19 +3127,14 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					// Fill the trained MVA output 
 					//if(hvbf_event==1){
 					std::vector<double> hvbf_mvaInputVal;
-					hvbf_mvaInputVal.push_back( hvbf_lvjj_Rapidity );
+					hvbf_mvaInputVal.push_back( W_muon_charge );
 					hvbf_mvaInputVal.push_back( hvbf_aj_pt);
 					hvbf_mvaInputVal.push_back( hvbf_bj_pt );  
-					//mvaInputVal.push_back( JetPFCor_QGLikelihood[0] );
-					//mvaInputVal.push_back( JetPFCor_QGLikelihood[1] );
-					hvbf_mvaInputVal.push_back( hvbf_waj_pt );
-					hvbf_mvaInputVal.push_back( hvbf_wbj_pt );
-					hvbf_mvaInputVal.push_back( hvbf_event_met_pfmet );
-					hvbf_mvaInputVal.push_back( hvbf_wjj_ang_hs );
-					hvbf_mvaInputVal.push_back( hvbf_wjj_ang_phib );
-					hvbf_mvaInputVal.push_back( hvbf_jj_deta );
+					hvbf_mvaInputVal.push_back( hvbf_wjj_deta );
+					hvbf_mvaInputVal.push_back( hvbf_wjj_m );
 					hvbf_mvaInputVal.push_back( hvbf_jj_dphi );
 					hvbf_mvaInputVal.push_back( hvbf_jj_m );
+					hvbf_mvaInputVal.push_back( hvbf_lvjj_ZeppenField );
 
 					mva126mu = (float) mvaReader126mu.GetMvaValue( hvbf_mvaInputVal );
 					//cout<<"  mva126mu "<<mva126mu<<endl;
@@ -4052,6 +4118,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					branch_vbf600mu->Fill();
 
 					branch_effwt->Fill();
+                                        branch_genwt->Fill();
+
 					branch_puwt->Fill();
 					branch_puwt_up->Fill();
 					branch_puwt_down->Fill();
@@ -4223,6 +4291,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					branch_hvbf_wjj_eta->Fill();
 					branch_hvbf_wjj_phi->Fill();
 					branch_hvbf_wjj_m->Fill();
+                                        branch_hvbf_topWm->Fill();
+
 					branch_hvbf_wjj_Rapidity->Fill();
 
 					branch_hvbf_waj_e->Fill();

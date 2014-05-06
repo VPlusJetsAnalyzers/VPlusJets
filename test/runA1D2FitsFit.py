@@ -37,8 +37,17 @@ parser.add_option('--genConfig',
                   help='which config to select look at HWW2DConfig.py for ' +\
                       'an example.  Use the file name minus the .py extension.'
                   )
-parser.add_option('--xc', dest='xc', action='store_true',
+parser.add_option('--xc', dest='xc',
                   help='use cross-check background to generate')
+parser.add_option('--WpJ', dest='WpJ',
+                  help='use WpJ background to fit')
+parser.add_option('-m', '--mode', 
+                  dest='modeConfig',
+                  help='which config to select look at HWW2DConfig.py for ' +\
+                      'an example.  Use the file name minus the .py extension.'
+                  )
+parser.add_option('--unbinned', dest='binned', action='store_false',
+                  help='unbinned m_lvjj fit instead of binned ML.')
 
 (opts, args) = parser.parse_args()
 
@@ -82,11 +91,17 @@ if opts.reuse != None:
         wsname = opts.reuse
     commonCmd += [ '--ws', wsname ]
 
+if opts.modeConfig:
+    commonCmd.extend(['-m', opts.modeConfig])
+
 if opts.genConfig:
     commonCmd.extend(['--genConfig', opts.genConfig])
 
 if opts.xc:
-    commonCmd.append('--xc')
+    commonCmd.extend(['--xc',opts.xc])
+
+if opts.binned==False:
+    commonCmd.append('--unbinned')
 
 searchString = '*HWW%iParameters' % opts.mH
 if opts.sb:
@@ -102,6 +117,12 @@ else:
 inputPars = [ '1D2FitsParameters/%s' % n for n in fnmatch.filter(
         os.listdir('1D2FitsParameters/'), searchString ) 
               ]
+if opts.WpJ:
+    for fn in inputPars:
+        if (fn.find('WpJ')>=0) and fn.endswith('_mWW.txt'):
+            print 'replacing',fn,'with',opts.WpJ
+            inputPars[inputPars.index(fn)] = opts.WpJ
+
 #print inputPars
 muCmd = list(commonCmd) + inputPars
 

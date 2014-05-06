@@ -1,4 +1,4 @@
-c_top_fit_mlvjj = -0.0317930 +/- 0.0060663 C L(-0.0924556 - 0.0288696)
-offset_top_fit_mlvjj = 244.17 +/- 9.8025 C L(146.148 - 342.199)
-width_top_fit_mlvjj = 51.858 +/- 4.3225 C L(8.63232 - 95.0831)
-n_top = 1120.4 +/- 33.5 C
+c_top_fit_mlvjj = -0.0229469 +/- 0.0097291 C L(-10 - 10)
+offset_top_fit_mlvjj = 244.79 +/- 95.352 C L(82.5 - 245)
+width_top_fit_mlvjj = 60.640 +/- 9.5088 C L(0 - 1000)
+n_top = 1054.4 +/- 32.5 C

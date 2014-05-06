@@ -35,6 +35,15 @@ parser.add_option('--toy', dest='toy', action='store_true',
 parser.add_option('--toyOut', dest='toyOut', help='filename for toy output')
 parser.add_option('--injectS', type='float', dest='sigInject',
                   help='amount of signal to inject')
+parser.add_option('-m', '--mode', 
+                  dest='modeConfig',
+                  help='which config to select look at HWW2DConfig.py for ' +\
+                      'an example.  Use the file name minus the .py extension.'
+                  )
+parser.add_option('--unbinned', dest='binned', action='store_false',
+                  help='unbinned m_lvjj fit instead of binned ML.')
+parser.add_option('--fixToZero', dest='fixToZero', action='store_true',
+                  help='fixLowParametersToZero')
 
 (opts, args) = parser.parse_args()
 
@@ -54,6 +63,10 @@ for mH in masspts:
         cmd.extend(['--mva', str(opts.mvaCut)])
     if opts.xrootd:
         cmd.append('--xrootd')
+    if opts.modeConfig:
+        cmd.extend(['--altConfig', opts.modeConfig])
+    if opts.fixToZero:
+        cmd.append('--fixToZero')
     if opts.doShape:
         runCommand(cmd, 'HWW%s_%s_shapes.txt' % (mH, flavStr))
         # runCommand(['python', 'fixErfParams.py', '1D2FitsParameters/WpJHWW%sParameters_%smWW.txt' % (mH, 'el_' if opts.isElectron else '')])
@@ -61,6 +74,10 @@ for mH in masspts:
         cmd = ['python', 'runA1D2FitsFit.py', '--mH', str(mH)]
         if opts.isElectron:
             cmd.append('--electrons')
+        if opts.modeConfig:
+            cmd.extend(['-m', opts.modeConfig])
+        if opts.binned==False:
+            cmd.append('--unbinned')
         if opts.mvaCut:
             cmd.extend(['--mva', str(opts.mvaCut)])
         if opts.xrootd:

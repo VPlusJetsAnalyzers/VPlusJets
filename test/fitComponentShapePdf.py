@@ -47,6 +47,20 @@ parser.add_option('--rateSyst', dest='RateSyst', type='int',
                   help='do a rate systematic in region of +/- 10% of mH')
 parser.add_option('--xrootd', dest='xrootd', action='store_true',
                   help='use xrootd file opening.')
+parser.add_option('--nativeBins', dest='nativeBins', action='store_true',
+                  help='don\'t use plot bins.')
+parser.add_option('--overrideModel', dest='overrideModel', type='int',
+                  help='override the model number')
+parser.add_option('--overrideAux', dest='overrideAux', type='int',
+                  help='override the aux model number')
+parser.add_option('--fixToZero', dest='fixToZero', action='store_true',
+                  help='fixLowParametersToZero')
+parser.add_option('--Cprime', dest='Cprime', type='float',
+                  help='Cprime value')
+parser.add_option('--BRnew', dest='BRnew', type='float',
+                  help='BRnew value')
+parser.add_option('--refit', dest='refit', action='store_true',
+                  help='refit parameters')
 
 (opts, args) = parser.parse_args()
 
@@ -60,13 +74,14 @@ import RooWjj2DFitter
 import HWWSignalShapes
 
 from ROOT import RooFit, TCanvas, RooArgSet, TFile, RooAbsReal, RooAbsData, \
-    RooHist, TMath, kRed, kDashed, kOrange, RooMsgService, RooDataSet
+    RooHist, TMath, kRed, kDashed, kOrange, RooMsgService, RooDataSet, \
+    RooCmdArg, TH1F
 
 from array import array
 
 import pulls
 
-RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
+RooMsgService.instance().setGlobalKillBelow(RooFit.ERROR)
 
 configArgs = {'Nj': opts.Nj, 'mH': opts.mH, 'isElectron': opts.isElectron,
               'initFile' : args}
@@ -119,6 +134,14 @@ if opts.altModel:
     convModels  = getattr(pars, '%sConvModelsAlt' % opts.component)
 # if opts.sb:
 #     pars.cuts = pars.SidebandCuts
+
+if opts.overrideModel:
+    print 'overriding models', models
+    models = [ opts.overrideModel ]
+if opts.overrideAux:
+    print 'overriding aux model'
+    setattr(pars, '%sAuxModels' % opts.component, [opts.overrideAux])
+
 compName = opts.component
 morphingPdf = False
 if models[0] == -2:
@@ -188,11 +211,19 @@ for (ifile, (filename, ngen, xsec)) in enumerate(files):
         scale = 1.0
     if in_ws and in_ws.data('data%i' % ifile):
         getattr(fitter.ws, 'import')(in_ws.data('data%i' % ifile))
-    tmpData = fitter.utils.File2Dataset(filename, 'data%i' % ifile, fitter.ws,
-                                        weighted = weighted, CPweight = cpw,
-                                        cutOverride = cutOverride,
-                                        interference = opts.interference,
-                                        additionalWgt = scale)
+    dataArgs  = {'fnames': filename, 
+                 'dsName': 'data%i' % ifile, 
+                 'ws': fitter.ws,
+                 'weighted': weighted, 
+                 'CPweight': cpw,
+                 'cutOverride': cutOverride,
+                 'interference': opts.interference,
+                 'additionalWgt': scale}
+    if opts.Cprime != None:
+        dataArgs['Cprime'] = opts.Cprime
+    if opts.BRnew != None:
+        dataArgs['BRnew'] = opts.BRnew
+    tmpData = fitter.utils.File2Dataset(**dataArgs)
 
     tmpData.Print()
     print filename,'effective integrated lumi:',ngen/xsec
@@ -276,7 +307,8 @@ if fitter.ws.var('sigma_%s_fit_mlvjj_tail%s' % (compName,extraTag)):
 if fitter.ws.var('sigma_%s_fit_mlvjj_core%s' % (compName,extraTag)):
     fitter.ws.var('sigma_%s_fit_mlvjj_core%s' % \
                       (compName,extraTag)).setVal(opts.mH*0.1)
-if fitter.ws.var('width_%s_fit_mlvjj%s' % (compName,extraTag)):
+if (compName in ['ggH','qqH']) and \
+        fitter.ws.var('width_%s_fit_mlvjj%s' % (compName,extraTag)):
     fitter.ws.var('width_%s_fit_mlvjj%s' % \
                       (compName,extraTag)).setVal(HWWSignalShapes.HiggsWidth[int(opts.mH)])
 
@@ -284,7 +316,11 @@ params = sigPdf.getParameters(data)
 parCopy = params.snapshot()
 for filename in args:
     parCopy.readFromFile(filename)
+
+if opts.refit or opts.makeConstant:
     params.assignValueOnly(parCopy)
+else:
+    params.__assign__(parCopy)
 
 params.Print('v')
 parCopy.IsA().Destructor(parCopy)
@@ -309,7 +345,7 @@ fr = None
 if models[0] >= 0:
     fr = sigPdf.fitTo(data, RooFit.Save(), 
                       RooFit.SumW2Error(False),
-                      RooFit.Hesse(False),
+                      # RooFit.Hesse(False),
                       RooFit.Minimizer("Minuit2", "minimize"),
                       # RooFit.Minos(True),
                       # RooFit.InitialHesse(True)
@@ -325,15 +361,36 @@ plots = []
 chi2s = []
 ndfs = []
 
+dhists = []
+fhists = []
+hchi2s = []
+
+TH1F.SetDefaultSumw2(True)
+
 for (i,m) in enumerate(models):
     par = obs[i]
     c1 = TCanvas('c%i' % i, par)
+    binArg = RooFit.Bins(fitter.ws.var(par).getBins('plotBins'))
+    if opts.nativeBins:
+        binArg = RooCmdArg.none()
     sigPlot = fitter.ws.var(par).frame(RooFit.Name('%s_Plot' % par),
                                        RooFit.Range('plotRange'),
-                                       RooFit.Bins(fitter.ws.var(par).getBins('plotBins')))
-    # dataHist = RooAbsData.createHistogram(data,'dataHist_%s' % par,
-    #                                       fitter.ws.var(par),
-    #                                       RooFit.Binning('%sBinning' % par))
+                                       binArg
+                                       )
+    dataHist = RooAbsData.createHistogram(data,'dataHist_%s' % par,
+                                          fitter.ws.var(par))
+    fitHist = sigPdf.createHistogram('sigHist_%s' % par,
+                                     fitter.ws.var(par))
+    fitHist.Scale(dataHist.Integral()/fitHist.Integral())
+    #this will let it ignore empty bins
+    for bin in range(1, dataHist.GetNbinsX()+1):
+        if dataHist.GetBinContent(bin) < 1e-9:
+            dataHist.SetBinContent(bin, fitHist.GetBinContent(bin))
+            dataHist.SetBinError(bin, 1.0)
+    h_chi2 = dataHist.Chi2Test(fitHist, 'wwpchi2')
+    fhists.append(fitHist)
+    dhists.append(dataHist)
+    hchi2s.append(h_chi2)
     # theData = RooHist(dataHist, 1., 1, RooAbsData.SumW2, 1.0, True)
     # theData.SetName('theData')
     # theData.SetTitle('data')
@@ -442,9 +499,27 @@ sigFile.Close()
 
 parIter = finalPars.createIterator()
 p = parIter.Next()
+fixCnt = 0
 while p:
     if not p.isConstant():
-        p.setRange(p.getVal()-p.getError()*10., p.getVal()+p.getError()*10.)
+        p.setRange(max(p.getVal()-p.getError()*20., p.getMin()),
+                   min(p.getVal()+p.getError()*20., p.getMax()))
+        if (p.getError() > abs(p.getVal()*10)):
+            fixCnt += 1
+            print p.GetName(), 'is not significantly deviated from zero',
+            print '(%f' % (p.getVal()/p.getError()), 'sigma),',
+            print 'consider fixing it to zero.'
+            if opts.fixToZero:
+                print 'fixing',p.GetName(),'to zero'
+                p.setVal(0.0)
+                p.setConstant()
+        # elif (fixCnt > 1) and opts.fixToZero:
+        #     print 'fixing',p.GetName(),'to zero'
+        #     p.setVal(0.0)
+        #     p.setConstant()
+        else:
+            fixCnt = 0
+            
     p = parIter.Next()
 
 if opts.makeConstant:
@@ -488,6 +563,11 @@ finalPars.IsA().Destructor(finalPars)
 params.IsA().Destructor(params)
 
 print '%i free parameters in the fit' % ndf
+
+for (i,chi2) in enumerate(hchi2s):
+    print 'histogram chi2:',chi2,'ndf:',dhists[i].GetNbinsX()-ndf-1,
+    print 'p-value:', TMath.Prob(chi2, dhists[i].GetNbinsX()-ndf-1)
+
 chi2 = 0
 print 'chi2: (',
 for c in chi2s:
@@ -496,6 +576,8 @@ for c in chi2s:
         print '%.2f +' % c,
     else:
         print '%.2f )' % c,
+    ndf += 1
+
 bins = 0
 for b in ndfs:
     bins += b

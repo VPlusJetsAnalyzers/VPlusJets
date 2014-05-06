@@ -33,7 +33,7 @@ int main(int argc, char ** argv) {
   // Read each event and write them out again.
   while ( reader.readEvent() ) {
     ++neve;
-    if (neve%1000 == 0) std::cout << "event: " << neve << std::endl;
+    if (neve%10000 == 0) std::cout << "event: " << neve << std::endl;
     Higgs_mass = -999.;
     Higgs_i = -1;
 
