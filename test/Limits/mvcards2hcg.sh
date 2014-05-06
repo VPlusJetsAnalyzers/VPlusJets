@@ -6,8 +6,9 @@ then
     exit
 fi
 
-TGTDIR=/uscms_data/d2/pdudero/SVN/hcg/highmass-ichep2012/hwwlvqq
+#TGTDIR=/uscms_data/d2/pdudero/SVN/hcg/highmass-ichep2012/hwwlvqq
 #TGTDIR=/uscms_data/d2/pdudero/SVN/hcg/hcp2012/hwwlvqq
+TGTDIR=/uscms_data/d2/pdudero/SVN/hcg/highmass2014/hwwlvqq
 
 BEAMENERGYTEV=8
 
@@ -18,9 +19,12 @@ do
   suffix=${file##datacard_}
   mass=`ls $datacard | egrep -o "M=[0-9]+" | egrep -o "[0-9]+"`
 #
-  echo "sed 's#TeV-.*\.root#TeV.root#g' $datacard >$TGTDIR/$mass/hwwlvjj_shape_${BEAMENERGYTEV}TeV.txt"
-  echo "mv hwwlvjj.input_$suffix.root $TGTDIR/$mass/hwwlvjj.input_${BEAMENERGYTEV}TeV.root"
+#  echo "sed 's#TeV-.*\.root#TeV.root#g' $datacard >$TGTDIR/$mass/cpsq10_brnew00/hwwlvjj_shape_${BEAMENERGYTEV}TeV.txt"
+  rootfile=`grep -o "/uscms.*root" $datacard`
 #
-  sed 's#TeV-.*\.root#TeV.root#g' $datacard >$TGTDIR/$mass/hwwlvjj_shape_${BEAMENERGYTEV}TeV.txt
-  cp -p ${DIR}/hwwlvjj.input_$suffix.root $TGTDIR/$mass/hwwlvjj.input_${BEAMENERGYTEV}TeV.root
+  echo "sed 's#/uscms.*/HWW#HWW#g' $datacard >$TGTDIR/$mass/cpsq10_brnew00/hwwlvjj_shape_${BEAMENERGYTEV}TeV.txt"
+  sed 's#/uscms.*/HWW#HWW#g' $datacard >$TGTDIR/$mass/cpsq10_brnew00/hwwlvjj_shape_${BEAMENERGYTEV}TeV.txt
+
+  echo "cp -p $rootfile $TGTDIR/$mass/cpsq10_brnew00"
+  cp -p $rootfile  $TGTDIR/$mass/cpsq10_brnew00
 done
