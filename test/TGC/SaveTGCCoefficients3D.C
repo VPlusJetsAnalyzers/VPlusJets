@@ -18,15 +18,15 @@ void drawCoeffProfiles1pair(char *infile,
 
   for (int i=0; i<=nmax; i++) {
 
-    if (!tr->GetLeaf(Form("p%d",i))) continue;
-
     TString hname(Form("%s_p%d_%s_%s",proc,i,varx,vary));
 
     TProfile2D* prof2d = new TProfile2D(hname,"",nptsx,xmin,xmax,nptsy,ymin,ymax);
     prof2d->SetTitle(Form("%s;%s;%s;p%d",hname.Data(),varx,vary,i));
 
-    cout << "Drawing " << TString(hname)<<endl;
-    tr->Draw(Form("p%d:%s:%s>>%s",i,trvary,trvarx,hname.Data()),"","goff");
+    if (tr->GetLeaf(Form("p%d",i))) {
+      cout << "Drawing " << TString(hname)<<endl;
+      tr->Draw(Form("p%d:%s:%s>>%s",i,trvary,trvarx,hname.Data()),"","goff");
+    }
 
     outgraphs.push_back(prof2d);
   }
@@ -50,7 +50,7 @@ void SaveTGCCoefficients3D(){
 
    ////// ---- second process lambda:dg1 combination --------
 
-   drawCoeffProfiles1pair("ww_root_lambda-g1.root","ww",
+   drawCoeffProfiles1pair("ww_root_lambda-g1z.root","ww",
 			  "lambda","dg1",
 			  "lambda","dg1",
 			  nLZ_pts,   LZ_MIN-( LZ_INC/2.),  LZ_MAX+( LZ_INC/2.),
@@ -60,7 +60,7 @@ void SaveTGCCoefficients3D(){
    ////// ---- third process dkg:dg1 combination --------
 
 
-   drawCoeffProfiles1pair("ww_root_kappa-g1.root", "ww",
+   drawCoeffProfiles1pair("ww_root_kappa-g1z.root", "ww",
 			  "dkg","dg1",
 			  "dkappa","dg1",
 			  ndKG_pts, dKG_MIN-(dKG_INC/2.), dKG_MAX+(dKG_INC/2.),
@@ -77,7 +77,7 @@ void SaveTGCCoefficients3D(){
 
    ////// ---- second process lambda:dg1 combination --------
 
-   drawCoeffProfiles1pair("wz_root_lambda-g1.root","wz",
+   drawCoeffProfiles1pair("wz_root_lambda-g1z.root","wz",
 			  "lambda","dg1",
 			  "lambda","dg1",
 			  nLZ_pts,   LZ_MIN-( LZ_INC/2.),  LZ_MAX+( LZ_INC/2.),
@@ -87,7 +87,7 @@ void SaveTGCCoefficients3D(){
    ////// ---- third process dkg:dg1 combination --------
 
 
-   drawCoeffProfiles1pair("wz_root_kappa-g1.root", "wz",
+   drawCoeffProfiles1pair("wz_root_kappa-g1z.root", "wz",
 			  "dkg","dg1",
 			  "dkappa","dg1",
 			  ndKG_pts, dKG_MIN-(dKG_INC/2.), dKG_MAX+(dKG_INC/2.),
