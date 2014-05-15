@@ -27,7 +27,8 @@ def morphSignalShape(basis_m, morph_m, target_m, Cprime = None,
         print 'for basis:',basis_m,'morphed with:',morph_m,'to target:',target_m,
         print 'alpha',alpha
 
-        new_ws = morphShapes(f_basis.Get('w_mWW'), f_morph.Get('w_mWW'), alpha)
+        new_ws = morphShapes(f_basis.Get('w_mWW'), f_morph.Get('w_mWW'), alpha,
+                             verbose=showPlots)
 
         # data = new_ws.data("")
         # while data:
@@ -39,12 +40,15 @@ def morphSignalShape(basis_m, morph_m, target_m, Cprime = None,
         #         data.SetName('data_obs')
         #     data = new_ws.data("")
 
+        # fragile hack that deals with problems in the RooWorkspace copy
+        # constructor not naming the data.
         dataList = new_ws.allData()
         for d in dataList:
-            if d.IsA().GetName() == 'RooDataSet':
-                d.SetName('data_unbinned')
-            else:
-                d.SetName('data_obs')
+            if len(d.GetName()) < 1:
+                if d.IsA().GetName() == 'RooDataSet':
+                    d.SetName('data_unbinned')
+                else:
+                    d.SetName('data_obs')
             
         # new_ws.Print()
         new_ws.writeToFile(outFilename)
@@ -56,7 +60,7 @@ def morphSignalShape(basis_m, morph_m, target_m, Cprime = None,
 
 pdfs = ['ggH_extended', 'qqH_extended', 'ggH_extended_interf_ggHUp',
         'ggH_extended_interf_ggHDown']
-def morphShapes(ws_basis, ws_morph, alpha):
+def morphShapes(ws_basis, ws_morph, alpha, verbose = False):
     # print ws_basis
     # ws_basis.Print()
 
@@ -69,17 +73,20 @@ def morphShapes(ws_basis, ws_morph, alpha):
             parameter = pIter.Next()
             while parameter:
                 pb = parameter.getVal()
-                # print parameter.GetName(), pb,
+                if verbose:
+                    print parameter.GetName(), pb,
                 try:
                     pm = ws_morph.var(parameter.GetName()).getVal()
                     pnew = pb + (pm-pb)*alpha
-                    # print 'and',pm,'->',pnew,
+                    if verbose:
+                        print 'and',pm,'->',pnew,
                     morphSpace.var(parameter.GetName()).setVal(pnew)
                 except TypeError:
                     morphSpace.var(parameter.GetName()).setVal(pb)
                 finally:
                     parameter = pIter.Next()
-                    # print
+                    if verbose:
+                        print
 
     return morphSpace
 
@@ -118,11 +125,11 @@ if __name__ == '__main__':
                                       'list;RooAbsData.h')
     directory = 'HighMassFittingFiles'
 
-    # morphSignalShape(350, 400, 390, Cprime = 1.0,
-    #                  BRnew = 0.0, inputDirectory = directory, 
-    #                  outputDirectory = '.', showPlots = True)
+#     morphSignalShape(250, 200, 225, Cprime = 1.0,
+#                      BRnew = 0.0, inputDirectory = directory, 
+#                      outputDirectory = '.', showPlots = True)
 
-    # sys.exit(0)
+#     sys.exit(0)
 
 
     for mass in masses:

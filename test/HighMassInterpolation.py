@@ -38,6 +38,7 @@ def rewriteParamFile(pfn, suffix):
 masses = range(170,300,5)
 masses.extend(range(300,400,10))
 masses.extend(range(400,600,20))
+# masses = range(225,250,5)
 mcmasses = [170, 180, 190, 200, 250, 300,
             350, 400, 450, 500, 550, 600]
 
@@ -72,6 +73,8 @@ if __name__ == '__main__':
                       dest='outputDir', default='HighMassFittingFiles',
                       help='directory with the nomiminal fit results'
                       )
+    parser.add_option('--noParams', dest='noParams', action='store_true',
+                      help='no parameter starting values.')
     (opts, args) = parser.parse_args()
 
     import os
@@ -108,6 +111,8 @@ if __name__ == '__main__':
                                                                    opts.mH, 
                                                                    flavorTag)
                #pn = None
+               if opts.noParams == True:
+                   pn = None
                subCmd = list(cmd) + ['--comp', component, 
                                      '--Cprime', str(cprime), 
                                      '--BRnew', str(BR_new)]
@@ -119,9 +124,10 @@ if __name__ == '__main__':
                    paramFilename = runCommand(subCmd, bn, paramsName = pn)
                    paramFiles.append(paramFilename)
 
-           oldFile = r.TFile.Open('%s/%s' % (opts.inputDir, filename))
-           old_ws = oldFile.Get('w_mWW')
-           for paramFilename in paramFiles:
-               rewriteParamFile(paramFilename, paramTag)
-               old_ws.allVars().readFromFile(paramFilename)
-           old_ws.writeToFile('%s/HWW%dlnujj_%s_1D2Fit_output_Cprime_%.1f_BRnew_%.1f.root' % (opts.outputDir, opts.mH, fileTag, cprime, BR_new))
+           if not opts.noexec:
+               oldFile = r.TFile.Open('%s/%s' % (opts.inputDir, filename))
+               old_ws = oldFile.Get('w_mWW')
+               for paramFilename in paramFiles:
+                   rewriteParamFile(paramFilename, paramTag)
+                   old_ws.allVars().readFromFile(paramFilename)
+               old_ws.writeToFile('%s/HWW%dlnujj_%s_1D2Fit_output_Cprime_%.1f_BRnew_%.1f.root' % (opts.outputDir, opts.mH, fileTag, cprime, BR_new))
