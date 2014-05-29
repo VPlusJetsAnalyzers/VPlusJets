@@ -3,6 +3,8 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('-b', action='store_true', dest='noX', default=False,
                   help='no X11 windows')
+parser.add_option('-p', action='store_false', dest='prelim', default=True,
+                  help='turn off the preliminary portion of the CMS label')
 (opts, args) = parser.parse_args()
 
 import pyroot_logon
@@ -29,36 +31,46 @@ for fname in args:
     cs.cd()
     cs.SetLogy(False)
     mjj_plot.Draw()
+    pyroot_logon.cmsLabel(cs, lumi = 19.2, prelim = opts.prelim)
     gPad.Update()
-    gPad.Print('%s_%s_mjj_stacked.pdf' % (fname_parts[0], fname_parts[1]))
-    gPad.Print('%s_%s_mjj_stacked.png' % (fname_parts[0], fname_parts[1]))
+    gPad.Print('%s%s_%s_mjj_stacked.pdf' % (fname_path,fname_parts[0],
+                                            fname_parts[1]))
+    gPad.Print('%s%s_%s_mjj_stacked.png' % (fname_path,fname_parts[0],
+                                            fname_parts[1]))
 
     mjj_pull = f.Get('Mass2j_PFCor_pull')
     cp.cd()
     mjj_pull.Draw('ap')
+    pyroot_logon.cmsLabel(cp, lumi = 19.2, prelim = opts.prelim)
     gPad.Update()
-    gPad.Print('%s_%s_mjj_pull.pdf' % (fname_parts[0], fname_parts[1]))
-    gPad.Print('%s_%s_mjj_pull.png' % (fname_parts[0], fname_parts[1]))
+    gPad.Print('%s%s_%s_mjj_pull.pdf' % (fname_path,fname_parts[0],
+                                         fname_parts[1]))
+    gPad.Print('%s%s_%s_mjj_pull.png' % (fname_path,fname_parts[0],
+                                         fname_parts[1]))
 
     mWW_plot = f.Get('fit_mlvjj_plot_stacked')
     cs.cd()
     mWW_plot.Draw()
+    pyroot_logon.cmsLabel(cs, lumi = 19.2, prelim = opts.prelim)
     gPad.Update()
-    gPad.Print('%s_%s_mWW_stacked.pdf' % (fname_parts[0], fname_parts[1]))
-    gPad.Print('%s_%s_mWW_stacked.png' % (fname_parts[0], fname_parts[1]))
+    gPad.Print('%s%s_%s_mWW_stacked.pdf' % (fname_path,fname_parts[0],
+                                            fname_parts[1]))
+    gPad.Print('%s%s_%s_mWW_stacked.png' % (fname_path,fname_parts[0],
+                                            fname_parts[1]))
     if mH > 400:
         cs.SetLogy(True)
         mWW_plot.SetAxisRange(0.1, 1e5, 'Y')
         gPad.Update()
-        gPad.Print('%s_%s_mWW_stacked_log.pdf' % \
-                       (fname_parts[0], fname_parts[1]))
-        gPad.Print('%s_%s_mWW_stacked_log.png' % \
-                       (fname_parts[0], fname_parts[1]))
+        gPad.Print('%s%s_%s_mWW_stacked_log.pdf' % \
+                       (fname_path,fname_parts[0], fname_parts[1]))
+        gPad.Print('%s%s_%s_mWW_stacked_log.png' % \
+                       (fname_path,fname_parts[0], fname_parts[1]))
 
 
     mWW_pull = f.Get('mWW_pull')
     cp.cd()
     mWW_pull.Draw('ap')
+    pyroot_logon.cmsLabel(cp, lumi = 19.2, prelim = opts.prelim)
     gPad.Update()
     gPad.Print('%s%s_%s_mWW_pull.pdf' % (fname_path, fname_parts[0], 
                                          fname_parts[1]))

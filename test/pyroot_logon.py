@@ -28,6 +28,7 @@ def RooFitInclude():
         return False
 
 import pyroot_plain
+from pyroot_plain import cmsLabel
 
 if (gSystem.DynamicPathName("libFWCoreFWLite.so",True)):
     gSystem.Load("$CMSSW_BASE/lib/$SCRAM_ARCH/libMMozerpowhegweight.so")

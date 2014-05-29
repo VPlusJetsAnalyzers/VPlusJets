@@ -11,7 +11,7 @@ def cmsLabel(canvas, lumi, prelim = False, lumiLabel = 'fb', s = 8.):
     canvas.cd()
     prelimText = ''
     if prelim:
-        prelimText = ' preliminary'
+        prelimText = ' prelim.'
     l.DrawLatex(1. - canvas.GetRightMargin(), 1. - canvas.GetTopMargin() + 0.01,
                 'CMS%s, #scale[0.5]{#lower[-0.15]{#it{#int}}}#it{L} dt = %0.1f#kern[0.2]{%s}^{-1}, #sqrt{#it{s}} = %.0f#kern[0.1]{TeV}' % \
                 (prelimText, lumi, lumiLabel, s)
