@@ -5,16 +5,19 @@ parser.add_option('-b', action='store_true', dest='noX', default=False,
                   help='no X11 windows')
 parser.add_option('-p', action='store_false', dest='prelim', default=True,
                   help='turn off the preliminary portion of the CMS label')
+parser.add_option('-s', dest='scaler', type=float,
+                  help='scale to multiply the signal by')
 (opts, args) = parser.parse_args()
 
 import pyroot_logon
 import re
-from ROOT import TFile, gPad, TCanvas
+from ROOT import TFile, gPad, TCanvas, TF2, SetOwnership
 
 cs = TCanvas('cs', 'stacked')
 cp = TCanvas('cp', 'pull')
 cp.SetGridy()
 
+scaleFunction = None
 for fname in args:
     print fname
     fname_minusPath = fname.split('/')[-1]
@@ -28,6 +31,21 @@ for fname in args:
     match = re.search(r'\d+', fname_parts[0])
     mH = int(match.group(0))
     mjj_plot = f.Get('Mass2j_PFCor_stacked')
+    sigCurve = mjj_plot.getCurve('signal_HWW')
+    if sigCurve and (opts.scaler != None):
+        if scaleFunction == None:
+            scaleFunction = TF2("scaleFunction", "y*%.3f" % opts.scaler,
+                                mjj_plot.GetXaxis().GetXmin(),
+                                mjj_plot.GetXaxis().GetXmax(),
+                                mjj_plot.GetMinimum(), mjj_plot.GetMaximum())
+        sigCurve.Apply(scaleFunction)
+        sigEntry = mjj_plot.findObject('theLegend').GetListOfPrimitives().Last().SetLabel('H(%i)#times%.0f' %(mH,opts.scaler*2))
+#         SetOwnership(sigEntry, False)
+# #         print sigEntry
+# #         sigEntry.Print()
+#         sigEntry.SetLabel('H(%i)#times%.0f' %(mH,opts.scaler*2))
+        
+        
     cs.cd()
     cs.SetLogy(False)
     mjj_plot.Draw()
@@ -49,6 +67,14 @@ for fname in args:
                                          fname_parts[1]))
 
     mWW_plot = f.Get('fit_mlvjj_plot_stacked')
+    sigCurve = mWW_plot.getCurve('signal_HWW')
+    if sigCurve and (opts.scaler != None):
+        sigCurve.Apply(scaleFunction)
+        sigEntry = mWW_plot.findObject('theLegend').GetListOfPrimitives().Last().SetLabel('H(%i)#times%.0f' %(mH,opts.scaler*2))
+#         SetOwnership(sigEntry, False)       
+# #         print sigEntry
+# #         sigEntry.Print()
+#         sigEntry.SetLabel('H(%i)#times%.0f' %(mH,opts.scaler*2))
     cs.cd()
     mWW_plot.Draw()
     pyroot_logon.cmsLabel(cs, lumi = 19.2, prelim = opts.prelim)
