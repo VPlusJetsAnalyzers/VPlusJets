@@ -99,5 +99,8 @@
 #include "ClassifierOut/TMVAClassification_550_VBF_el_Likelihood.class.C"
 #include "ClassifierOut/TMVAClassification_600_VBF_el_Likelihood.class.C"
 #include "ClassifierOut/TMVAClassification_126_VBF_el_Likelihood.class.C"
+#include "ClassifierOut/TMVAClassification_127_nJ2_el_WJets_Likelihood.class.C"
+#include "ClassifierOut/TMVAClassification_127_nJ2_el_Top_Likelihood.class.C"
+
 
 #endif // _CLASSIFIER_ELEC_H

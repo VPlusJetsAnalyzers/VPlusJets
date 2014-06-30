@@ -816,9 +816,12 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t hvbf_bj_e =-999,   hvbf_bj_pt =-999,   hvbf_bj_eta=-999,  hvbf_bj_phi =-999, hvbf_bj_m =-999,hvbf_bj_Rapidity=-999;
 	Float_t hvbf_jj_deta=-999; Float_t hvbf_jj_dphi=-999;  Int_t   hvbf_jj_type=0,   hvbf_n_excj=0,   hvbf_n_exfj=0,   hvbf_n_gdjj=0;
 	Float_t mva126el=-999;
+        Float_t mvavbfWjetsel=-999;
+        Float_t mvavbfTopel=-999;
 
+	TBranch *branch_mvavbfWjetsel    = newtree->Branch("mvavbfWjetsel",    &mvavbfWjetsel,     "mvavbfWjetsel/F");
+        TBranch *branch_mvavbfTopel    = newtree->Branch("mvavbfTopel",    &mvavbfTopel,     "mvavbfTopel/F");
 	TBranch *branch_mva126el    = newtree->Branch("mva126el",    &mva126el,     "mva126el/F");
-
 
 	TBranch *branch_vbf_jj_e    = newtree->Branch("vbf_jj_e",    &vbf_jj_e,     "vbf_jj_e/F");
 	TBranch *branch_vbf_jj_pt   = newtree->Branch("vbf_jj_pt",   &vbf_jj_pt,    "vbf_jj_pt/F");
@@ -1344,6 +1347,21 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	std::vector<std::string> hvbf_inputVarsMVA;
 	for (int i=0; i<8; ++i) hvbf_inputVarsMVA.push_back( hvbf_inputVars[i] );
 	ReadLikelihoodvbf126el mvaReader126el( hvbf_inputVarsMVA );
+
+
+      const char* hvbfWjets_inputVars[] = { "W_electron_charge", "hvbf_wjj_deta", "hvbf_wjj_m", "hvbf_jj_dphi", "hvbf_jj_m", "hvbf_lvjj_Rapidity", "hvbf_lvjj_pt", "hvbf_lvjj_ZeppenField" };
+
+        std::vector<std::string> hvbfWjets_inputVarsMVA;
+        for (int i=0; i<8; ++i) hvbfWjets_inputVarsMVA.push_back( hvbfWjets_inputVars[i] );
+	ReadLikelihoodvbfWJetsel mvaReaderWjetsel( hvbfWjets_inputVarsMVA );
+
+     const char* hvbfTop_inputVars[] = { "hvbf_wjj_ang_hs", "hvbf_wjj_m", "hvbf_jj_dphi", "hvbf_jj_m", "hvbf_hW_tag1_deta", "hvbf_lW_tag1_deta", "hvbf_lW_hW_deltaphi", "hvbf_lvjj_ZeppenField", "hvbf_jjj_m" };
+
+        std::vector<std::string> hvbfTop_inputVarsMVA;
+           for (int i=0; i<9; ++i) hvbfTop_inputVarsMVA.push_back( hvbfTop_inputVars[i] );
+           ReadLikelihoodvbfTopel mvaReaderTopel( hvbfTop_inputVarsMVA );
+
+
 
 	const char* inputVars_b[] = { "ptlvjj", "ylvjj", "W_muon_charge", "ang_ha", "ang_hb", "ang_hs", "ang_phi", "ang_phib" };
 
@@ -2600,6 +2618,34 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 		//cout<<"  mva126el "<<mva126el<<endl;
 		//}
+                                        // Wjets
+                                        std::vector<double> hvbfWjets_mvaInputVal;
+                                        hvbfWjets_mvaInputVal.push_back( W_electron_charge );
+                                        hvbfWjets_mvaInputVal.push_back( hvbf_wjj_deta );
+                                        hvbfWjets_mvaInputVal.push_back( hvbf_wjj_m );
+                                        hvbfWjets_mvaInputVal.push_back( hvbf_jj_dphi );
+                                        hvbfWjets_mvaInputVal.push_back( hvbf_jj_m );
+                                        hvbfWjets_mvaInputVal.push_back( hvbf_lvjj_Rapidity );
+                                        hvbfWjets_mvaInputVal.push_back( hvbf_lvjj_pt );
+                                        hvbfWjets_mvaInputVal.push_back( hvbf_lvjj_ZeppenField );
+                                        mvavbfWjetsel = (float) mvaReaderWjetsel.GetMvaValue( hvbfWjets_mvaInputVal );
+                                     //   cout<< "mvavbfWjetsel   "<<mvavbfWjetsel<<endl;
+                                        //Top
+                                        std::vector<double> hvbfTop_mvaInputVal;
+                                        hvbfTop_mvaInputVal.push_back( hvbf_wjj_ang_hs );
+                                        hvbfTop_mvaInputVal.push_back( hvbf_wjj_m );
+                                        hvbfTop_mvaInputVal.push_back(hvbf_jj_dphi  );
+                                        hvbfTop_mvaInputVal.push_back(hvbf_jj_m  );
+                                        hvbfTop_mvaInputVal.push_back(hvbf_hW_tag1_deta  );
+                                        hvbfTop_mvaInputVal.push_back(hvbf_lW_tag1_deta  );
+                                        hvbfTop_mvaInputVal.push_back(hvbf_lW_hW_deltaphi  );
+                                        hvbfTop_mvaInputVal.push_back(hvbf_lvjj_ZeppenField  );
+                                        hvbfTop_mvaInputVal.push_back(hvbf_jjj_m  );
+                                        mvavbfTopel = (float) mvaReaderTopel.GetMvaValue( hvbfTop_mvaInputVal );
+
+                                      //  cout<<"mvavbfTopel  "<<mvavbfTopel<<endl;
+
+
 
 		// VBF Higgs Analysis end
 
@@ -4341,6 +4387,8 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 		// VBF Higgs Analysis
 		branch_mva126el->Fill();
+                branch_mvavbfWjetsel->Fill();
+                branch_mvavbfTopel->Fill();
 
 		branch_hvbf_jj_e->Fill();
 		branch_hvbf_jj_pt->Fill();
