@@ -19,6 +19,8 @@
 #include <TString.h>
 
 #include "TLorentzVector.h"
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
 
 // Construct soft-links in the current directory pointed to the right location
 //
@@ -2228,21 +2230,22 @@ class kanamuon {
             const char * outfilename,
             bool isQCD = false);
       virtual double   getDeltaPhi(double phi1, double phi2);
+      virtual double getDeltaR(double eta1, double phi1, double eta2, double phi2);
       //virtual bool     large(const double &a, const double &b);
       virtual bool     doKinematicFit(Int_t                 fflage,
-            const TLorentzVector     mup, 
+            const TLorentzVector     mup,
             const TLorentzVector     nvp,
-            const TLorentzVector     ajp, 
-            const TLorentzVector     bjp, 
-            TLorentzVector     & fit_mup, 
+            const TLorentzVector     ajp,
+            const TLorentzVector     bjp,
+            TLorentzVector     & fit_mup,
             TLorentzVector     & fit_nvp,
-            TLorentzVector     & fit_ajp, 
-            TLorentzVector     & fit_bjp, 
+            TLorentzVector     & fit_ajp,
+            TLorentzVector     & fit_bjp,
             Float_t            & fit_chi2,
-            Int_t              & fit_NDF, 
+            Int_t              & fit_NDF,
             Int_t              & fit_status);
-      virtual bool    dottHKinematicFit(const TLorentzVector     mup, 
-            const TLorentzVector     nvp, 
+      virtual bool    dottHKinematicFit(const TLorentzVector     mup,
+            const TLorentzVector     nvp,
             const TLorentzVector     wajp,
             const TLorentzVector     wbjp,
             const TLorentzVector     topajp,
@@ -2264,6 +2267,7 @@ class kanamuon {
 
  private:
    std::map<int,TString> m_samplecodes_;
+   TMVA::Reader *reader;// = new TMVA::Reader( "!Color:!Silent" );
 };
 
 #endif

@@ -27,10 +27,27 @@
 #include "EffTableReader.h"
 #include "EffTableLoader.h"
 
+// Regre
+#include <cstdlib>
+#include <vector>
+#include <iostream>
+#include <map>
+#include <string>
+
+#include "TFile.h"
+#include "TTree.h"
+#include "TString.h"
+#include "TSystem.h"
+#include "TROOT.h"
+#include "TStopwatch.h"
+
+
 //#include "PhysicsTools/Utilities/interface/Lumi3DReWeighting.h"
 
 #include "ElectroWeakAnalysis/VPlusJets/interface/QGLikelihoodCalculator.h"
 #include "MMozer/powhegweight/interface/pwhg_wrapper.h"
+
+using namespace TMVA;
 
 bool large(const double &a, const double &b)
 {
@@ -49,6 +66,99 @@ struct sortPt
 
 void kanamuon::myana(double myflag, bool isQCD, int runflag)
 {
+
+   // --- Create the Reader object
+   //
+       reader = new TMVA::Reader( );    
+   
+   // Create a set of variables and declare them to the reader
+   // - the variable names MUST corresponds in name and type to those given in the weight file(s) used
+      //Float_t W_pt, W_y, W_mt, W_muon_e, W_muon_pt, W_muon_eta, W_muon_phi, event_met_pfmet, event_met_pfmetPhi, event_met_pfmetsignificance, event_met_pfsumet;
+      reader->AddVariable( "W_pt", &W_pt );
+      reader->AddVariable( "W_y", &W_y );
+      reader->AddVariable( "W_mt", &W_mt );
+      reader->AddVariable( "W_muon_e", &W_muon_e );
+      reader->AddVariable( "W_muon_pt", &W_muon_pt );
+      reader->AddVariable( "W_muon_eta", &W_muon_eta );
+      reader->AddVariable( "W_muon_phi", &W_muon_phi );
+      reader->AddVariable( "event_met_pfmet", &event_met_pfmet );
+      reader->AddVariable( "event_met_pfmetPhi", &event_met_pfmetPhi );
+      reader->AddVariable( "event_met_pfmetsignificance", &event_met_pfmetsignificance );
+      reader->AddVariable( "event_met_pfsumet", &event_met_pfsumet );
+
+
+   // Spectator variables declared in the training have to be added to the reader, too
+   //   Float_t spec1,spec2;
+   //   reader->AddSpectator( "spec1:=var1*2",  &spec1 );
+   //   reader->AddSpectator( "spec2:=var1*3",  &spec2 );
+/*	Float_t W_neutrino_px_gen, W_neutrino_py_gen, W_neutrino_pz_gen, nuE_gen, W_muon_px, W_muon_py, W_muon_pz, W_muon_e_gen, W_muon_px_gen, W_muon_py_gen, W_muon_pz_gen, nuPx, nuPy, W_pzNu1, W_pzNu2, JetPFCor_E[8], JetPFCor_Px[8], JetPFCor_Py[8], JetPFCor_Pz[8], JetGen_E[8], JetGen_Px[8], JetGen_Py[8], JetGen_Pz[8];  
+
+
+	Float_t Jet1PFCor_E = JetPFCor_E[0];
+	Float_t Jet1PFCor_Px = JetPFCor_Px[0];
+	Float_t Jet1PFCor_Py = JetPFCor_Py[0];
+	Float_t	Jet1PFCor_Pz = JetPFCor_Pz[0];	
+
+        Float_t Jet2PFCor_E = JetPFCor_E[1];
+        Float_t Jet2PFCor_Px = JetPFCor_Px[1];
+        Float_t Jet2PFCor_Py = JetPFCor_Py[1];
+	Float_t Jet2PFCor_Pz = JetPFCor_Pz[1];
+
+	Float_t Jet1Gen_E = JetGen_E[0];
+	Float_t Jet1Gen_Px = JetGen_Px[0];
+	Float_t Jet1Gen_Py = JetGen_Py[0];
+	Float_t Jet1Gen_Pz = JetGen_Pz[0];
+
+
+        Float_t Jet2Gen_E = JetGen_E[1];
+        Float_t Jet2Gen_Px = JetGen_Px[1];
+        Float_t Jet2Gen_Py = JetGen_Py[1];
+        Float_t Jet2Gen_Pz = JetGen_Pz[1];
+
+
+   reader->AddSpectator(" W_neutrino_px_gen",& W_neutrino_px_gen);
+   reader->AddSpectator(" W_neutrino_py_gen",&W_neutrino_py_gen);
+   reader->AddSpectator(" W_neutrino_pz_gen",&W_neutrino_pz_gen );
+   reader->AddSpectator("nuE_gen := sqrt(W_neutrino_px_gen**2 + W_neutrino_py_gen**2 + W_neutrino_pz_gen**2)", &nuE_gen);
+
+
+    reader->AddSpectator(" W_muon_px",&W_muon_px );
+    reader->AddSpectator("W_muon_py", &W_muon_py);
+    reader->AddSpectator(" W_muon_pz", &W_muon_pz);
+    reader->AddSpectator(" W_muon_e_gen", &W_muon_e_gen);
+    reader->AddSpectator(" W_muon_px_gen",&W_muon_px_gen);
+    reader->AddSpectator(" W_muon_py_gen",&W_muon_py_gen);
+    reader->AddSpectator(" W_muon_pz_gen", &W_muon_pz_gen);
+    reader->AddSpectator("nuPx := event_met_pfmet * cos(event_met_pfmetPhi)", &nuPx);
+    reader->AddSpectator("nuPy := event_met_pfmet * sin(event_met_pfmetPhi)", &nuPy);
+    reader->AddSpectator("W_pzNu1",&W_pzNu1);
+    reader->AddSpectator("W_pzNu2",&W_pzNu2);
+    reader->AddSpectator(" Jet1PFCor_E",&Jet1PFCor_E);
+    reader->AddSpectator(" Jet1PFCor_Px",&Jet1PFCor_Px );
+    reader->AddSpectator("Jet1PFCor_Py",&Jet1PFCor_Py );
+    reader->AddSpectator(" Jet1PFCor_Pz",&Jet1PFCor_Pz );
+    reader->AddSpectator(" Jet2PFCor_E",&Jet2PFCor_E );
+    reader->AddSpectator(" Jet2PFCor_Px",&Jet2PFCor_Px);
+    reader->AddSpectator(" Jet2PFCor_Py",&Jet2PFCor_Py);
+    reader->AddSpectator(" Jet2PFCor_Pz",&Jet2PFCor_Pz);
+    reader->AddSpectator(" Jet1Gen_E",&Jet1Gen_E);
+    reader->AddSpectator(" Jet1Gen_Px", &Jet1Gen_Px);
+    reader->AddSpectator(" Jet1Gen_Py",& Jet1Gen_Py );
+    reader->AddSpectator(" Jet1Gen_Pz",&Jet1Gen_Pz);
+    reader->AddSpectator(" Jet2Gen_E", &Jet2Gen_E);
+    reader->AddSpectator(" Jet2Gen_Px",&Jet2Gen_Px);
+    reader->AddSpectator(" Jet2Gen_Py",&Jet2Gen_Py);
+    reader->AddSpectator(" Jet2Gen_Pz",&Jet2Gen_Pz);   
+    */
+   // --- Book the MVA methods
+
+      TString dir    = "weights/";
+      TString prefix = "TMVARegression";
+
+      TString  BDT;
+      TString weightfile = dir + prefix + "_" + "BDT" + ".weights.xml";
+      reader->BookMVA( "BDT", weightfile ); 
+
 
   //Prepare the histogram for the cut-flow control : 8 presel + 12 sel
   const int n_step = 16;
@@ -100,16 +210,13 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
   else if (myflag == 20120001 || myflag == -100){
     myChain = new TChain("WJet");
     if ( !isQCD ) {
-      //InitCounters( inDataDir + "mu_SingleMuon2012_pt1.root", h_events, h_events_weighted);
-      //myChain->Add( inDataDir + "mu_SingleMuon2012_pt1.root");
       InitCounters( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root", h_events, h_events_weighted);
       myChain->Add( inDataDir + "WmunuJets_DataAllSingleMuonTrigger_GoldenJSON_v1_fb.root");
       Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v1_fb");
-
     } else {
-      InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
-      myChain->Add( inQCDDir + "QCDmu.root");
-      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
+      InitCounters( inDataDir + "QCDmu1.root", h_events, h_events_weighted);
+      myChain->Add( inQCDDir + "QCDmu1.root");
+      Init(myChain);Loop( h_events, h_events_weighted, 20120001,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON1_0p7invfb", isQCD);
     }
   }
   else if (myflag == 20120002 || myflag == -100){
@@ -120,9 +227,9 @@ void kanamuon::myana(double myflag, bool isQCD, int runflag)
       Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RD_WmunuJets_DataAll_GoldenJSON_v2_fb");
       
     } else  {        
-       InitCounters( inDataDir + "QCDmu.root", h_events, h_events_weighted);
-       myChain->Add( inQCDDir + "QCDmu.root");
-       Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON_0p7invfb", isQCD);
+       InitCounters( inDataDir + "QCDmu2.root", h_events, h_events_weighted);
+       myChain->Add( inQCDDir + "QCDmu2.root");
+       Init(myChain);Loop( h_events, h_events_weighted, 20120002,runflag, outDataDir + "RDQCD_WmunuJets_DataAll_GoldenJSON2_0p7invfb", isQCD);
     }
   }
   else if (!isQCD) {
@@ -301,10 +408,14 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_NDF   = newtree->Branch("fit_NDF",   &fit_NDF,    "fit_NDF/I");
 	TBranch *branch_status= newtree->Branch("fit_status",&fit_status, "fit_status/I");
 
-	Float_t TopWm=0,   TopWm5j=0;
+	Float_t TopWm=0,   TopWm5j=0,Top_bmjj=0,Top_bjjeta1eta2=0,Top_bjjdeta=-999;
 	Float_t Tchi2=999, Tchi25j=999;
 	TBranch *branch_TopWm   = newtree->Branch("TopWm",       &TopWm,      "TopWm/F");
 	TBranch *branch_TopWm5j = newtree->Branch("TopWm5j",     &TopWm5j,    "TopWm5j/F");
+        TBranch *branch_Top_bmjj   = newtree->Branch("Top_bmjj",       &Top_bmjj,      "Top_bmjj/F");
+        TBranch *branch_Top_bjjeta1eta2   = newtree->Branch("Top_bjjeta1eta2",       &Top_bjjeta1eta2,      "Top_bjjeta1eta2/F");
+        TBranch *branch_Top_bjjdeta   = newtree->Branch("Top_bjjdeta",       &Top_bjjdeta,      "Top_bjjdeta/F");
+
 	TBranch *branch_Tchi2   = newtree->Branch("Tchi2",       &Tchi2,      "Tchi2/F");
 	TBranch *branch_Tchi25j = newtree->Branch("Tchi25j",     &Tchi25j,    "Tchi25j/F");
 
@@ -851,10 +962,11 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t vbf_lvjj_e=-999,   vbf_lvjj_pt=-999,   vbf_lvjj_eta=-999,   vbf_lvjj_phi=-999,   vbf_lvjj_m=-999,   vbf_lvjj_y=-999;   
 	// VBF Higgs  
 	Float_t hvbf_wjj_e =-999,   hvbf_wjj_pt =-999,   hvbf_wjj_eta =-999,   hvbf_wjj_phi =-999,   hvbf_wjj_m =-999, hvbf_wjj_Rapidity =-999;
-	Float_t hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999,hvbf_topWm=-999;
-	Float_t hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999;
+	Float_t hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999,hvbf_topWm=-999, Reg_neutrino_pz=-999;
+	Float_t hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999,thvbf_wjj_m =-999;
 	Float_t hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999,   hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,hvbf_lvjj_Rapidity=-999, hvbf_lvjj_ZeppenField = -999,  hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999;
-	Float_t hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999;
+	Float_t hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999,hvbf_deltaRrecogen1=-999,hvbf_deltaRrecogen2=-999;
+
 	Float_t hvbf_lv_e=-999,   hvbf_lv_pt=-999,   hvbf_lv_eta=-999,   hvbf_lv_phi=-999,  hvbf_lv_Rapidity=-999,  hvbf_lv_m=-999,   hvbf_lv_mT=-999;
 	Float_t hvbf_l_e=-999,   hvbf_l_pt=-999,   hvbf_l_eta=-999,   hvbf_l_phi=-999;
 	Float_t hvbf_l_MET_deltaphi=-999, hvbf_lW_hW_deltaphi=-999, hvbf_event_met_pfmet=-999,hvbf_event_met_pfmetPhi =-999, WJets_weight=1.0; 
@@ -890,12 +1002,18 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_vbf_lvjj_y    = newtree->Branch("vbf_lvjj_y",    &vbf_lvjj_y,     "vbf_lvjj_y/F");
 
 	// VBF Higgs  jets 
+        TBranch *branch_hvbf_deltaRrecogen1     = newtree->Branch("hvbf_deltaRrecogen1",     &hvbf_deltaRrecogen1,      "hvbf_deltaRrecogen1/F");
+        TBranch *branch_hvbf_deltaRrecogen2     = newtree->Branch("hvbf_deltaRrecogen2",     &hvbf_deltaRrecogen2,      "hvbf_deltaRrecogen2/F");
+
 	TBranch *branch_hvbf_wjj_e     = newtree->Branch("hvbf_wjj_e",     &hvbf_wjj_e,      "hvbf_wjj_e/F");
 	TBranch *branch_hvbf_wjj_pt    = newtree->Branch("hvbf_wjj_pt",    &hvbf_wjj_pt,     "hvbf_wjj_pt/F");
 	TBranch *branch_hvbf_wjj_eta   = newtree->Branch("hvbf_wjj_eta",   &hvbf_wjj_eta,    "hvbf_wjj_eta/F");
 	TBranch *branch_hvbf_wjj_phi   = newtree->Branch("hvbf_wjj_phi",   &hvbf_wjj_phi,    "hvbf_wjj_phi/F");
 	TBranch *branch_hvbf_wjj_m     = newtree->Branch("hvbf_wjj_m",     &hvbf_wjj_m,      "hvbf_wjj_m/F");
+        TBranch *branch_thvbf_wjj_m     = newtree->Branch("thvbf_wjj_m",     &thvbf_wjj_m,      "thvbf_wjj_m/F");
+
         TBranch *branch_hvbf_topWm     = newtree->Branch("hvbf_topWm",     &hvbf_topWm,      "hvbf_topWm/F");
+        TBranch *branch_Reg_neutrino_pz     = newtree->Branch("Reg_neutrino_pz",     &Reg_neutrino_pz,      "Reg_neutrino_pz/F");
 
 	TBranch *branch_hvbf_wjj_Rapidity     = newtree->Branch("hvbf_wjj_Rapidity",     &hvbf_wjj_Rapidity,      "hvbf_wjj_Rapidity/F");
 
@@ -974,7 +1092,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 	// VBF Higgs Analysis   
 
-	Int_t hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1,fourJets=0;
+	Int_t hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1,fourJets=0, opp_hemi=1,bjet_veto=0,additional_jet=0;
 
 	Float_t hvbf_wjj_ang_ha   = 999, hvbf_wjj_ang_hb = 999, hvbf_wjj_ang_hs = 999,hvbf_wjj_ang_phi = 999, hvbf_wjj_ang_phia = 999, hvbf_wjj_ang_phib = 999;
 
@@ -988,6 +1106,10 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_vbf_wbj_id    = newtree->Branch("vbf_wbj_id", &vbf_wbj_id,  "vbf_wbj_id/I");
 	// VBF Higgs Analysis   
 	TBranch *branch_hvbf_event     = newtree->Branch("hvbf_event",  &hvbf_event,   "hvbf_event/I");
+        TBranch *branch_opp_hemi     = newtree->Branch("opp_hemi",  &opp_hemi,   "opp_hemi/I");
+        TBranch *branch_bjet_veto     = newtree->Branch("bjet_veto",  &bjet_veto,   "bjet_veto/I");
+        TBranch *branch_additional_jet     = newtree->Branch("additional_jet",  &additional_jet,   "additional_jet/I");
+
 	TBranch *branch_hvbf_aj_id     = newtree->Branch("hvbf_aj_id",  &hvbf_aj_id,   "hvbf_aj_id/I");
 	TBranch *branch_hvbf_bj_id     = newtree->Branch("hvbf_bj_id",  &hvbf_bj_id,   "hvbf_bj_id/I");
 	TBranch *branch_hvbf_waj_id    = newtree->Branch("hvbf_waj_id", &hvbf_waj_id,  "hvbf_waj_id/I");
@@ -1688,7 +1810,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		fit_mlv   = 0; fit_mjj   = 0;
 
 		TopWm     = 0; TopWm5j   = 0; Tchi2     =999; Tchi25j   =999;
-
+		Top_bmjj =  0; Top_bjjeta1eta2=0; Top_bjjdeta=-999;
 		ang_ha  = 999; ang_hb    =999;ang_hs    =999; ang_phi   =999; 
 		ang_phia= 999; ang_phib  =999;
 		masslvjj=-999; ptlvjj    =-999; ylvjj   =-999;philvjj   =-999;
@@ -1796,18 +1918,18 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		vbf_wjj_ang_ha   = 999; vbf_wjj_ang_hb = 999; vbf_wjj_ang_hs = 999; vbf_wjj_ang_phi = 999; vbf_wjj_ang_phia = 999; vbf_wjj_ang_phib = 999;
 
 //hVBF 
-         hvbf_wjj_e =-999,   hvbf_wjj_pt =-999,   hvbf_wjj_eta =-999,   hvbf_wjj_phi =-999,   hvbf_wjj_m =-999, hvbf_wjj_Rapidity =-999;
-         hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999,hvbf_topWm=-999;
-         hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999;
-         hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999,   hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,hvbf_lvjj_Rapidity=-999, hvbf_lvjj_ZeppenField = -999,  hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999;
-         hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999;
-         hvbf_lv_e=-999,   hvbf_lv_pt=-999,   hvbf_lv_eta=-999,   hvbf_lv_phi=-999,  hvbf_lv_Rapidity=-999,  hvbf_lv_m=-999,   hvbf_lv_mT=-999;
-         hvbf_l_e=-999,   hvbf_l_pt=-999,   hvbf_l_eta=-999,   hvbf_l_phi=-999;
-         hvbf_l_MET_deltaphi=-999, hvbf_lW_hW_deltaphi=-999, hvbf_event_met_pfmet=-999,hvbf_event_met_pfmetPhi =-999, WJets_weight=1.0;
+         hvbf_wjj_e =-999;   hvbf_wjj_pt =-999;   hvbf_wjj_eta =-999;   hvbf_wjj_phi =-999;   hvbf_wjj_m =-999; hvbf_wjj_Rapidity =-999;
+         hvbf_waj_e =-999;   hvbf_waj_pt =-999;   hvbf_waj_eta =-999;   hvbf_waj_phi =-999;   hvbf_waj_m =-999;hvbf_topWm=-999; Reg_neutrino_pz=-999;
+         hvbf_wbj_e =-999;   hvbf_wbj_pt =-999;   hvbf_wbj_eta =-999;   hvbf_wbj_phi =-999;   hvbf_wbj_m =-999; thvbf_wjj_m =-999;
+         hvbf_lvjj_e=-999;   hvbf_lvjj_pt=-999;   hvbf_lvjj_eta=-999;   hvbf_lvjj_phi=-999;   hvbf_lvjj_m=-999; hvbf_lvjj_Rapidity=-999; hvbf_lvjj_ZeppenField = -999;  hvbf_lvjj_y=-999; hvbf_jjj_m=-999; hvbf_lvj_m=-999; hvbf_lW_tag1_deta=-999; hvbf_lW_tag2_deta=-999; hvbf_hW_tag1_deta=-999; hvbf_hW_tag2_deta=-999;
+         hvbf_wjj_deta=-999; hvbf_wjj_dphi=-999; hvbf_deltaRrecogen1=-999; hvbf_deltaRrecogen2=-999;
+         hvbf_lv_e=-999;   hvbf_lv_pt=-999;   hvbf_lv_eta=-999;   hvbf_lv_phi=-999;  hvbf_lv_Rapidity=-999;  hvbf_lv_m=-999;   hvbf_lv_mT=-999;
+         hvbf_l_e=-999;   hvbf_l_pt=-999;   hvbf_l_eta=-999;   hvbf_l_phi=-999;
+         hvbf_l_MET_deltaphi=-999; hvbf_lW_hW_deltaphi=-999; hvbf_event_met_pfmet=-999; hvbf_event_met_pfmetPhi =-999; WJets_weight=1.0;
 
-        hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1,fourJets=0;
+        hvbf_event = 0; hvbf_aj_id = -1; hvbf_bj_id = -1; hvbf_waj_id = -1; hvbf_wbj_id = -1; fourJets=0; opp_hemi=1; bjet_veto=0; additional_jet=0;
 
-        hvbf_wjj_ang_ha   = 999, hvbf_wjj_ang_hb = 999, hvbf_wjj_ang_hs = 999,hvbf_wjj_ang_phi = 999, hvbf_wjj_ang_phia = 999, hvbf_wjj_ang_phib = 999;
+        hvbf_wjj_ang_ha   = 999; hvbf_wjj_ang_hb = 999; hvbf_wjj_ang_hs = 999; hvbf_wjj_ang_phi = 999; hvbf_wjj_ang_phia = 999; hvbf_wjj_ang_phib = 999;
 
 
 		//VBF diboson event
@@ -2192,6 +2314,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			}
 			ang_ha = a_costheta1; ang_hb = fabs(a_costheta2); ang_hs = a_costhetastar;  ang_phi = a_phi; ang_phia = a_phistar1; ang_phib = a_phistar2;
 
+
+
 			// Fill the trained MVA output 
 			std::vector<double> mvaInputVal1;
 			//mvaInputVal1.push_back( ptlvjj );
@@ -2336,21 +2460,32 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				int nbnot = 0;
 				int Aj    = -999;
 				int Bj    = -999;
-				/*if (JetPFCor_bDiscriminator[0]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
-				  if (JetPFCor_bDiscriminator[1]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=1; if (nbnot==2) Bj=1;}
-				  if (JetPFCor_bDiscriminator[2]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=2; if (nbnot==2) Bj=2;}
-				  if (JetPFCor_bDiscriminator[3]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=3; if (nbnot==2) Bj=3;}
-				 */
-				if (JetPFCor_bDiscriminatorCSV[0]>btcsvm) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
-				if (JetPFCor_bDiscriminatorCSV[1]>btcsvm) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=1; if (nbnot==2) Bj=1;}
-				if (JetPFCor_bDiscriminatorCSV[2]>btcsvm) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=2; if (nbnot==2) Bj=2;}
-				if (JetPFCor_bDiscriminatorCSV[3]>btcsvm) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=3; if (nbnot==2) Bj=3;}
+				int Cj	  = -999;
+				int Dj	  = -999;
 
-				if (nbjet==2 && nbnot==2 && Aj!=-999 && Bj!=-999){
-					TLorentzVector  ajp, bjp; 
-					ajp.SetPtEtaPhiE(jess * JetPFCor_Pt[Aj], JetPFCor_Eta[Aj], JetPFCor_Phi[Aj], jess * JetPFCor_E[Aj]  );
-					bjp.SetPtEtaPhiE(jess * JetPFCor_Pt[Bj], JetPFCor_Eta[Bj], JetPFCor_Phi[Bj], jess * JetPFCor_E[Bj]  );
-					TopWm   = (ajp+bjp).M(); 
+				if (JetPFCor_bDiscriminator[0]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
+				if (JetPFCor_bDiscriminator[1]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=1; if (nbnot==2) Bj=1;}
+				if (JetPFCor_bDiscriminator[2]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=2; if (nbnot==2) Bj=2;}
+				if (JetPFCor_bDiscriminator[3]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=3; if (nbnot==2) Bj=3;}
+                                if (JetPFCor_bDiscriminatorCSV[0]>btcsvm)  { nbjet++; if (nbjet==1) Cj=0; if(nbjet==2) Dj=0;  }
+	                           else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
+	                        if (JetPFCor_bDiscriminatorCSV[1]>btcsvm)  { nbjet++;if (nbjet==1) Cj=1; if(nbjet==2) Dj=1;  }
+		                   else { nbnot++; if (nbnot==1) Aj=1; if (nbnot==2) Bj=1;}
+			        if (JetPFCor_bDiscriminatorCSV[2]>btcsvm)  { nbjet++;if (nbjet==1) Cj=2; if(nbjet==2) Dj=2;  }
+                                   else { nbnot++; if (nbnot==1) Aj=2; if (nbnot==2) Bj=2;}
+                                if (JetPFCor_bDiscriminatorCSV[3]>btcsvm)  { nbjet++;if (nbjet==1) Cj=3; if(nbjet==2) Dj=3;  }
+                                   else { nbnot++; if (nbnot==1) Aj=3; if (nbnot==2) Bj=3;}
+				if (nbjet==2 && nbnot==2 && Aj!=-999 && Bj!=-999 && Cj!=-999 && Dj!=-999)
+				{
+				TLorentzVector  ajp, bjp, cjp, djp;
+                                ajp.SetPtEtaPhiE(jess * JetPFCor_Pt[Aj], JetPFCor_Eta[Aj], JetPFCor_Phi[Aj], jess * JetPFCor_E[Aj]  );
+                                bjp.SetPtEtaPhiE(jess * JetPFCor_Pt[Bj], JetPFCor_Eta[Bj], JetPFCor_Phi[Bj], jess * JetPFCor_E[Bj]  );
+                                cjp.SetPtEtaPhiE(jess * JetPFCor_Pt[Cj], JetPFCor_Eta[Cj], JetPFCor_Phi[Cj], jess * JetPFCor_E[Cj]  );
+                                djp.SetPtEtaPhiE(jess * JetPFCor_Pt[Dj], JetPFCor_Eta[Dj], JetPFCor_Phi[Dj], jess * JetPFCor_E[Dj]  );
+                                TopWm   = (ajp+bjp).M();
+                                Top_bmjj   = (cjp+djp).M();
+                                Top_bjjeta1eta2   = cjp.Eta()*djp.Eta();
+                                Top_bjjdeta   = fabs(cjp.Eta()-djp.Eta());
 
 					TLorentzVector fit_mup(0,0,0,0), fit_nvp(0,0,0,0), fit_ajp(0,0,0,0), fit_bjp(0,0,0,0) ; Int_t tmpa =0, tmpb=0;
 					doKinematicFit( 1, mup, b_nvp, ajp, bjp,  fit_mup, fit_nvp, fit_ajp, fit_bjp, Tchi2, tmpa, tmpb);
@@ -2733,6 +2868,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			boostedW_wjj_ang_ha_ak7 = tmpa_costheta1; boostedW_wjj_ang_hb_ak7 = fabs(tmpa_costheta2); boostedW_wjj_ang_hs_ak7 = tmpa_costhetastar;  boostedW_wjj_ang_phi_ak7 = tmpa_phi; boostedW_wjj_ang_phia_ak7 = tmpa_phistar1; boostedW_wjj_ang_phib_ak7 = tmpa_phistar2;
 
 		}
+
 		//###############End Boosted W Analysis########################################
 
 		// VBF Higgs Analysis starts
@@ -2808,6 +2944,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 		float hbest_detatagjj = 0; // float best_mtagjj =0;
 		float hbest_mjj = 0; // float best_mjj =0;
+                float thbest_mjj = 0; // 
 
 		/*   float hvbf_jj_e =-999,   hvbf_jj_pt =-999,   hvbf_jj_eta=-999,  hvbf_jj_phi =-999, hvbf_jj_m=-999;   
 		     float hvbf_aj_e =-999,   hvbf_aj_pt =-999,   hvbf_aj_eta=-999,  hvbf_aj_phi =-999;   
@@ -2854,6 +2991,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				} //loop to find two tag jets with highest mjj
 			} // over over loop over Nmax-1 reco jets inside 
 		} //loop over Nmax reco jets 
+
 		if (htag_i_id !=-1 && htag_j_id != -1)
 		{
 			hvbf_jj_e      = (hvbf_ajp+ hvbf_bjp).E();
@@ -2880,7 +3018,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			//cout<<"  "<<vbf_jj_dphi<<endl;
 		} //loop  
 		// method1 B
-
+		// two w jets as two leading jets from remaining jet collection on top of two tag jets
 		if (htag_i_id!=-1&& htag_j_id!=-1) 
 		{  
 			for ( int k=0; k < (int) jets.size(); ++k) 
@@ -2900,8 +3038,90 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				}
 			}// loop over reco jets upto Nmax                                                     
 		} // loop of insuring having allready two tagjets
-//top 
+// top
+/*
+	TLorentzVector thvbf_ajp(0,0,0,0), thvbf_bjp(0,0,0,0);
+	TLorentzVector thwjj_ajp(0,0,0,0), thwjj_bjp(0,0,0,0); 
+		 
+		int thtag_i_id = -1, thtag_j_id = -1, thwjj_a_id = -1, thwjj_b_id = -1;
+		//method1 A two top tag jets from  eta region
+		for ( size_t i=0; i < jets.size(); ++i) 
+		{
+			if (fabs(jets.at(i)->Eta()) > 2.4) continue;
+                        if (fabs(jets.at(i)->Pt()) < 30.) continue;
+			TLorentzVector thi_p;
+			thi_p.SetPtEtaPhiE (jets.at(i)->Pt(), jets.at(i)->Eta(), jets.at(i)->Phi(),jets.at(i)->E());
+			for (size_t j=i+1; j <jets.size(); ++j) 
+			{
+				if (fabs(jets.at(j)->Eta()) > 2.4) continue;
+	                        if (fabs(jets.at(j)->Pt()) < 30.) continue;
+				TLorentzVector thj_p;
+				thj_p.SetPtEtaPhiE (jets.at(j)->Pt(), jets.at(j)->Eta(), jets.at(j)->Phi(),jets.at(j)->E());
+                                thvbf_tageta1eta2= jets.at(i)->Eta()*jets.at(j)->Eta();
+				//if ( (jets.at(i)->Eta()*jets.at(j)->Eta())>0 )continue;// 1.  have to be one forward, one backward
+				thvbf_tagmjj=(thi_p+thj_p).M();
+				if ( (fabs(jets.at(i)->Eta()-jets.at(j)->Eta())>3.5) ) continue; 
+						Float_t *ttmp1btagCSV = (Float_t*) jetsbtagCSV.GetValue(jets[i]);
+                                                Float_t *ttmp2btagCSV = (Float_t*) jetsbtagCSV.GetValue(jets[j]);
+						Float_t tbtag1CSV = *ttmp1btagCSV;
+                                                Float_t tbtag2CSV = *ttmp2btagCSV;
+						if(tbtag1CSV > btcsvm && tbtag2CSV > btcsvm )
+						{	
+						thtag_i_id = i; 
+						thtag_j_id = j; 
+						thvbf_ajp = thi_p; 
+						thvbf_bjp = thj_p;
+						}
+			} // over over loop over Nmax-1 reco jets inside 
+		} //loop over Nmax reco jets 
 
+		if (thtag_i_id !=-1 && thtag_j_id != -1)
+		{
+		//	thvbf_jj_m      = (thvbf_ajp+ thvbf_bjp).M();
+			//cout<<"  "<<vbf_jj_dphi<<endl;
+		} //loop
+
+		if (thtag_i_id!=-1&& thtag_j_id!=-1) 
+		{  
+			for ( int k=0; k < (int) jets.size(); ++k) 
+			{ 
+				if (fabs(jets.at(k)->Eta()) > 2.4) continue;
+                                if (fabs(jets.at(k)->Pt()) < 30.) continue;
+
+				if ( k!=thtag_i_id && k!= thtag_j_id && thwjj_ajp.Pt()!=0 && thwjj_bjp.Pt()==0 ) 
+				{
+					Float_t *tmp3btagCSV = (Float_t*) jetsbtagCSV.GetValue(jets[k]);
+					Float_t btag3CSV = *tmp3btagCSV;
+					//cout<<" "<<btagCSV<<endl;
+					if (btag3CSV<btcsvm) 
+					{
+					int Bj = k;  
+					thwjj_bjp.SetPtEtaPhiE (jets.at(Bj)->Pt(), jets.at(Bj)->Eta(), jets.at(Bj)->Phi(),jets.at(Bj)->E());
+					thwjj_b_id=Bj;                                                                                       
+					}
+				}
+				if ( k!=thtag_i_id&&k!=thtag_j_id&&thwjj_ajp.Pt()==0 && thwjj_bjp.Pt()==0 ) 
+				{
+                                     Float_t *tmp4btagCSV = (Float_t*) jetsbtagCSV.GetValue(jets[k]);
+                                     Float_t btag4CSV = *tmp4btagCSV;
+                                         //cout<<" "<<btagCSV<<endl;
+				      if (btag4CSV<btcsvm) 
+				       {
+					int Aj = k;  
+					thwjj_ajp.SetPtEtaPhiE (jets.at(Aj)->Pt(), jets.at(Aj)->Eta(), jets.at(Aj)->Phi(),jets.at(Aj)->E());
+					thwjj_a_id=Aj;                                                                                       
+				       }
+				}
+			}// loop over reco jets upto Nmax                                                     
+		} // loop of insuring having allready two anti tagjets
+
+	if (thwjj_a_id!=-1 && thwjj_b_id!=-1)
+	{ 
+		thvbf_wjj_m = (thwjj_ajp+thwjj_bjp).M();
+		//cout<<"thvbf_wjj_m = "<<thvbf_wjj_m<<endl;
+	}
+*/
+//....................................................................
 
               if (htag_i_id!=-1&& htag_j_id!=-1)
                 {
@@ -2933,18 +3153,27 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			}// k loop over Nmax
       //cout<<"no of non bjets  "<<hnbnot<<" 1st  " <<nbindex[0]<<" 2nd  "<<nbindex[1]<<"no of b jets  "<<hnbjet<<" 1st  "<<bindex[0]<<" 2nd  "<<bindex[1]<<endl;
 
-			if(((hnbjet==1) || (hnbjet==2))&& (hnbnot==2) )
-                          { 
-				htopwjj_ajp.SetPtEtaPhiE (jets.at(nbindex[0])->Pt(), jets.at(nbindex[0])->Eta(), jets.at(nbindex[0])->Phi(),jets.at(nbindex[0])->E());
-                                htopwjj_bjp.SetPtEtaPhiE (jets.at(nbindex[1])->Pt(), jets.at(nbindex[1])->Eta(), jets.at(nbindex[1])->Phi(),jets.at(nbindex[1])->E());
-                                        hvbf_topWm = (htopwjj_ajp+htopwjj_bjp).M();
-		        }
+		if(((hnbjet==1) || (hnbjet==2))&& (hnbnot==2) )
+                { 
+		htopwjj_ajp.SetPtEtaPhiE (jets.at(nbindex[0])->Pt(), jets.at(nbindex[0])->Eta(), jets.at(nbindex[0])->Phi(),jets.at(nbindex[0])->E());
+                htopwjj_bjp.SetPtEtaPhiE (jets.at(nbindex[1])->Pt(), jets.at(nbindex[1])->Eta(), jets.at(nbindex[1])->Phi(),jets.at(nbindex[1])->E());
+                hvbf_topWm = (htopwjj_ajp+htopwjj_bjp).M();
+	        }
                 } // loop of insuring having allready two tagjets
                // cout<<"hvbf_topWm  "<<hvbf_topWm<<endl;
 
 		//cout<<hwjj_a_id<<"     "<<hwjj_b_id<<endl;
-		if (hwjj_a_id!=-1 && hwjj_b_id!=-1)
-		{            //    two W jets
+if (hwjj_a_id!=-1 && hwjj_b_id!=-1 && W_tParton_pt[0]>20. &&  W_tParton_pt[1]>20. &&  fabs(W_tParton_eta[0]) <4.7 && fabs(W_tParton_eta[1]) <4.7 )
+		{ 
+		double delta_R1 = getDeltaR( W_tParton_eta[0], W_tParton_phi[0], (hwjj_ajp).Eta(),(hwjj_ajp).Phi());
+                double delta_R2 = getDeltaR( W_tParton_eta[1], W_tParton_phi[1], (hwjj_bjp).Eta(),(hwjj_bjp).Phi());
+                       hvbf_deltaRrecogen1     =  delta_R1;
+		       hvbf_deltaRrecogen2     =  delta_R2;
+		}
+
+	
+                if (hwjj_a_id!=-1 && hwjj_b_id!=-1)
+	           {            //    two W jets
 			hvbf_wjj_e      = (hwjj_ajp+hwjj_bjp).E();
 			hvbf_wjj_pt     = (hwjj_ajp+hwjj_bjp).Pt();
 			hvbf_wjj_eta    = (hwjj_ajp+hwjj_bjp).Eta();
@@ -3009,10 +3238,24 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 
 
-		//	Int_t fourJets=0;
+		//	Int_t fourJets=0; //setting flag for jet veto and bjet veto
 		if (htag_i_id!=-1 && htag_j_id!=-1 && hwjj_a_id!=-1 && hwjj_b_id!=-1)
 		{
-			fourJets=1;
+		fourJets=1;
+		for ( int k=0; k < (int) jets.size(); ++k)
+		{
+		if (fabs(jets.at(k)->Eta()) > 4.7) continue;
+		if ( k!=htag_i_id && k!= htag_j_id && k!=hwjj_a_id && k!=hwjj_b_id )
+		{
+		additional_jet=1;	
+		Float_t *atmpbtagCSV = (Float_t*) jetsbtagCSV.GetValue(jets[k]);
+                Float_t btagCSV = *atmpbtagCSV;
+		if(btagCSV>btcsvm) 
+		{
+		bjet_veto=1;
+		}	
+		}
+		}
 		}
 		if (htag_i_id!=-1 && htag_j_id!=-1 && hwjj_a_id!=-1 && hwjj_b_id!=-1 && goodlepton==1 && hvbf_lv_mT >30. && hvbf_wjj_m >30.&& event_met_pfmet>25.)
 		{
@@ -3162,12 +3405,11 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 					//cout<<"mvavbfTopmu  "<<mvavbfTopmu<<endl;
 
-
-
-
-
+			//Float_t val = reader->EvaluateRegression( "BDT" );
+			Float_t val = (reader->EvaluateRegression( "BDT" ))[0];
+			Reg_neutrino_pz=val;
+			//std::cout<<"val  "<<val<<std::endl;
 					// VBF Higgs Analysis end
-
 					// For VBF Analysis ! Currently Gd Event Selection same as Hww
 					if (isgengdevt)
 					{
@@ -4026,6 +4268,10 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					branch_status->Fill();
 
 					branch_TopWm->Fill();
+                                        branch_Top_bmjj->Fill();
+                                        branch_Top_bjjeta1eta2->Fill();
+                                        branch_Top_bjjdeta->Fill();
+
 					branch_TopWm5j->Fill();
 					branch_Tchi2->Fill();
 					branch_Tchi25j->Fill();
@@ -4315,10 +4561,15 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					branch_hvbf_jj_dphi->Fill();
 
 					branch_hvbf_wjj_e->Fill();
+					branch_hvbf_deltaRrecogen1->Fill();
+                                        branch_hvbf_deltaRrecogen2->Fill();
+
 					branch_hvbf_wjj_pt->Fill();
 					branch_hvbf_wjj_eta->Fill();
 					branch_hvbf_wjj_phi->Fill();
 					branch_hvbf_wjj_m->Fill();
+                                        branch_thvbf_wjj_m->Fill();
+
                                         branch_hvbf_topWm->Fill();
 
 					branch_hvbf_wjj_Rapidity->Fill();
@@ -4369,12 +4620,16 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 					branch_hvbf_l_phi->Fill();
 					branch_hvbf_event_met_pfmet->Fill();
 					branch_hvbf_event_met_pfmetPhi->Fill();
-
+					branch_Reg_neutrino_pz->Fill();
 
 					branch_hvbf_l_MET_deltaphi->Fill();
 					branch_hvbf_lW_hW_deltaphi->Fill();
 
 					branch_hvbf_event->Fill();
+                                        branch_bjet_veto->Fill();
+                                        branch_additional_jet->Fill();
+
+					branch_opp_hemi->Fill();
 					branch_WJets_weight->Fill();
 
 					branch_hvbf_wjj_ang_ha->Fill();
@@ -4785,6 +5040,17 @@ double kanamuon::getDeltaPhi(double phi1, double phi2  )
 	result = TMath::Abs(result);
 	return result;
 }
+
+
+double kanamuon::getDeltaR(double eta1, double phi1, double eta2, double phi2)
+{
+	const double PI=2.0*acos(0.);
+	const double TWOPI=2.0*PI;
+	double deta = eta1-eta2;
+	double dphi = getDeltaPhi(phi1,phi2);
+	return sqrt(deta*deta + dphi*dphi);
+}
+
 
 bool kanamuon::doKinematicFit(Int_t                 fflage,
 		const TLorentzVector     mup, 
