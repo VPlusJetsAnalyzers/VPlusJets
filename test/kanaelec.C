@@ -333,9 +333,14 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_NDF   = newtree->Branch("fit_NDF",   &fit_NDF,    "fit_NDF/I");
 	TBranch *branch_status= newtree->Branch("fit_status",&fit_status, "fit_status/I");
 
-	Float_t TopWm=0,   TopWm5j=0;
+	Float_t TopWm=0,   TopWm5j=0, Top_bmjj=0,Top_bjjeta1eta2=0,Top_bjjdeta=-999;
 	Float_t Tchi2=999, Tchi25j=999;
 	TBranch *branch_TopWm   = newtree->Branch("TopWm",       &TopWm,      "TopWm/F");
+
+	TBranch *branch_Top_bmjj   = newtree->Branch("Top_bmjj",       &Top_bmjj,      "Top_bmjj/F");
+        TBranch *branch_Top_bjjeta1eta2   = newtree->Branch("Top_bjjeta1eta2",       &Top_bjjeta1eta2,      "Top_bjjeta1eta2/F");
+        TBranch *branch_Top_bjjdeta   = newtree->Branch("Top_bjjdeta",       &Top_bjjdeta,      "Top_bjjdeta/F");
+
 	TBranch *branch_TopWm5j = newtree->Branch("TopWm5j",     &TopWm5j,    "TopWm5j/F");
 	TBranch *branch_Tchi2   = newtree->Branch("Tchi2",       &Tchi2,      "Tchi2/F");
 	TBranch *branch_Tchi25j = newtree->Branch("Tchi25j",     &Tchi25j,    "Tchi25j/F");
@@ -673,8 +678,14 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	TBranch *branch_GroomedJet_CA8_prsubjet2ptoverjetpt = newtree->Branch("GroomedJet_CA8_prsubjet2ptoverjetpt", &GroomedJet_CA8_prsubjet2ptoverjetpt, "GroomedJet_CA8_prsubjet2ptoverjetpt/F");
 	TBranch *branch_GroomedJet_CA8_prsubjet1subjet2_deltaR = newtree->Branch("GroomedJet_CA8_prsubjet1subjet2_deltaR", &GroomedJet_CA8_prsubjet1subjet2_deltaR, "GroomedJet_CA8_prsubjet1subjet2_deltaR/F");
 
-	Float_t boostedW_lvj_e=-999,   boostedW_lvj_pt=-999,   boostedW_lvj_eta=-999,   boostedW_lvj_phi=-999,   boostedW_lvj_m=-999,   boostedW_lvj_y=-999;
+	Float_t boostedW_lvj_e=-999,   boostedW_lvj_pt=-999,   boostedW_lvj_eta=-999,   boostedW_lvj_phi=-999,   boostedW_lvj_m=-999,   boostedW_lvj_y=-999, GroomedJet_CA8_UncUp_mass=-999, GroomedJet_CA8_UncDown_mass=-999, GroomedJet_AK5_Up_dijet_mass=-999, GroomedJet_AK5_Down_dijet_mass=-999, GroomedJet_AK5_dijet_mass=-999;
 	TBranch *branch_boostedW_lvj_e    = newtree->Branch("boostedW_lvj_e",    &boostedW_lvj_e,     "boostedW_lvj_e/F");
+        TBranch *branch_GroomedJet_CA8_UncUp_mass   = newtree->Branch("GroomedJet_CA8_UncUp_mass",    &GroomedJet_CA8_UncUp_mass,     "GroomedJet_CA8_UncUp_mass/F");
+        TBranch *branch_GroomedJet_CA8_UncDown_mass   = newtree->Branch("GroomedJet_CA8_UncDown_mass",    &GroomedJet_CA8_UncDown_mass,     "GroomedJet_CA8_UncDown_mass/F");
+        TBranch *branch_GroomedJet_AK5_Up_dijet_mass   = newtree->Branch("GroomedJet_AK5_Up_dijet_mass",    &GroomedJet_AK5_Up_dijet_mass,     "GroomedJet_AK5_Up_dijet_mass/F");
+        TBranch *branch_GroomedJet_AK5_Down_dijet_mass   = newtree->Branch("GroomedJet_AK5_Down_dijet_mass",    &GroomedJet_AK5_Down_dijet_mass,     "GroomedJet_AK5_Down_dijet_mass/F");
+        TBranch *branch_GroomedJet_AK5_dijet_mass   = newtree->Branch("GroomedJet_AK5_dijet_mass",    &GroomedJet_AK5_dijet_mass,     "GroomedJet_AK5_dijet_mass/F");
+
 	TBranch *branch_boostedW_lvj_pt   = newtree->Branch("boostedW_lvj_pt",   &boostedW_lvj_pt,    "boostedW_lvj_pt/F");
 	TBranch *branch_boostedW_lvj_eta  = newtree->Branch("boostedW_lvj_eta",  &boostedW_lvj_eta,   "boostedW_lvj_eta/F");
 	TBranch *branch_boostedW_lvj_phi  = newtree->Branch("boostedW_lvj_phi",  &boostedW_lvj_phi,   "boostedW_lvj_phi/F");
@@ -1022,7 +1033,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	Float_t vbf_wjj_ang_ha   = 999, vbf_wjj_ang_hb = 999, vbf_wjj_ang_hs = 999, vbf_wjj_ang_phi = 999, vbf_wjj_ang_phia = 999, vbf_wjj_ang_phib = 999;
 	// VBF Higgs Analysis   
 
-	Int_t hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1, fourJets=0;
+	Int_t hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1, fourJets=0,opp_hemi=1, bjet_veto=0,additional_jet=0;
 
 	Float_t hvbf_wjj_ang_ha   = 999, hvbf_wjj_ang_hb = 999, hvbf_wjj_ang_hs = 999,hvbf_wjj_ang_phi = 999, hvbf_wjj_ang_phia = 999, hvbf_wjj_ang_phib = 999;
 
@@ -1035,6 +1046,11 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 	// VBF Higgs Analysis   
 	TBranch *branch_hvbf_event     = newtree->Branch("hvbf_event",  &hvbf_event,   "hvbf_event/I");
+        TBranch *branch_opp_hemi     = newtree->Branch("opp_hemi",  &opp_hemi,   "opp_hemi/I");
+	TBranch *branch_bjet_veto     = newtree->Branch("bjet_veto",  &bjet_veto,   "bjet_veto/I");
+	TBranch *branch_additional_jet     = newtree->Branch("additional_jet",  &additional_jet,   "additional_jet/I");
+
+
 	TBranch *branch_hvbf_aj_id     = newtree->Branch("hvbf_aj_id",  &hvbf_aj_id,   "hvbf_aj_id/I");
 	TBranch *branch_hvbf_bj_id     = newtree->Branch("hvbf_bj_id",  &hvbf_bj_id,   "hvbf_bj_id/I");
 	TBranch *branch_hvbf_waj_id    = newtree->Branch("hvbf_waj_id", &hvbf_waj_id,  "hvbf_waj_id/I");
@@ -1669,7 +1685,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			  4.842E-02,
 			  4.707E-02,
 			  4.501E-02,
-			  4.228E-02,
+  4.228E-02,
 			  3.896E-02,
 			  3.521E-02,
 			  3.118E-02,
@@ -1768,7 +1784,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		fit_mlv   = 0; fit_mjj   = 0;
 
 		TopWm     = 0; TopWm5j   = 0; Tchi2     =999; Tchi25j   =999;
-
+		Top_bmjj =  0; Top_bjjeta1eta2=0; Top_bjjdeta=-999;
 		ang_ha  = 999; ang_hb    =999;ang_hs    =999; ang_phi   =999; 
 		ang_phia= 999; ang_phib  =999;
 		masslvjj=-999; ptlvjj    =-999; ylvjj   =-999;philvjj   =-999;
@@ -1825,7 +1841,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		GroomedJet_CA8_prsubjet1ptoverjetpt = -1; GroomedJet_CA8_prsubjet2ptoverjetpt = -1;
 		GroomedJet_CA8_prsubjet1subjet2_deltaR = -1;
 
-		boostedW_lvj_e=-999;   boostedW_lvj_pt=-999;   boostedW_lvj_eta=-999;   boostedW_lvj_phi=-999;   boostedW_lvj_m=-999;   boostedW_lvj_y=-999;
+		boostedW_lvj_e=-999;   boostedW_lvj_pt=-999;   boostedW_lvj_eta=-999;   boostedW_lvj_phi=-999;   boostedW_lvj_m=-999;   boostedW_lvj_y=-999; GroomedJet_CA8_UncUp_mass=-999; GroomedJet_CA8_UncDown_mass=-999; GroomedJet_AK5_Up_dijet_mass=-999; GroomedJet_AK5_Down_dijet_mass=-999; GroomedJet_AK5_dijet_mass=-999;
 
 		boostedW_wjj_ang_ha = 999; boostedW_wjj_ang_hb = 999; boostedW_wjj_ang_hs = 999; boostedW_wjj_ang_phi = 999; boostedW_wjj_ang_phia = 999; boostedW_wjj_ang_phib = 999;
 
@@ -1872,19 +1888,17 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 		vbf_event = 0; vbf_aj_id = -1; vbf_bj_id = -1; vbf_waj_id = -1; vbf_wbj_id = -1;
 		vbf_wjj_ang_ha   = 999; vbf_wjj_ang_hb = 999; vbf_wjj_ang_hs = 999; vbf_wjj_ang_phi = 999; vbf_wjj_ang_phia = 999; vbf_wjj_ang_phib = 999;
-		hvbf_event = 0;
-                fourJets=0;
 //hVBF 
-         hvbf_wjj_e =-999,   hvbf_wjj_pt =-999,   hvbf_wjj_eta =-999,   hvbf_wjj_phi =-999,   hvbf_wjj_m =-999, hvbf_wjj_Rapidity =-999;
-         hvbf_waj_e =-999,   hvbf_waj_pt =-999,   hvbf_waj_eta =-999,   hvbf_waj_phi =-999,   hvbf_waj_m =-999,hvbf_topWm=-999;
-         hvbf_wbj_e =-999,   hvbf_wbj_pt =-999,   hvbf_wbj_eta =-999,   hvbf_wbj_phi =-999,   hvbf_wbj_m =-999;
-         hvbf_lvjj_e=-999,   hvbf_lvjj_pt=-999,   hvbf_lvjj_eta=-999,   hvbf_lvjj_phi=-999,   hvbf_lvjj_m=-999,hvbf_lvjj_Rapidity=-999, hvbf_lvjj_ZeppenField = -999,  hvbf_lvjj_y=-999, hvbf_jjj_m=-999, hvbf_lvj_m=-999,hvbf_lW_tag1_deta=-999, hvbf_lW_tag2_deta=-999,hvbf_hW_tag1_deta=-999,hvbf_hW_tag2_deta=-999;
-         hvbf_wjj_deta=-999, hvbf_wjj_dphi=-999;
-         hvbf_lv_e=-999,   hvbf_lv_pt=-999,   hvbf_lv_eta=-999,   hvbf_lv_phi=-999,  hvbf_lv_Rapidity=-999,  hvbf_lv_m=-999,   hvbf_lv_mT=-999;
-         hvbf_l_e=-999,   hvbf_l_pt=-999,   hvbf_l_eta=-999,   hvbf_l_phi=-999;
-         hvbf_l_MET_deltaphi=-999, hvbf_lW_hW_deltaphi=-999, hvbf_event_met_pfmet=-999,hvbf_event_met_pfmetPhi =-999, WJets_weight=1.0;
+         hvbf_wjj_e =-999;   hvbf_wjj_pt =-999;   hvbf_wjj_eta =-999;   hvbf_wjj_phi =-999;   hvbf_wjj_m =-999; hvbf_wjj_Rapidity =-999;
+         hvbf_waj_e =-999;   hvbf_waj_pt =-999;   hvbf_waj_eta =-999;   hvbf_waj_phi =-999;   hvbf_waj_m =-999; hvbf_topWm=-999;
+         hvbf_wbj_e =-999;   hvbf_wbj_pt =-999;   hvbf_wbj_eta =-999;   hvbf_wbj_phi =-999;   hvbf_wbj_m =-999;
+         hvbf_lvjj_e=-999;   hvbf_lvjj_pt=-999;   hvbf_lvjj_eta=-999;   hvbf_lvjj_phi=-999;   hvbf_lvjj_m=-999; hvbf_lvjj_Rapidity=-999; hvbf_lvjj_ZeppenField = -999;  hvbf_lvjj_y=-999; hvbf_jjj_m=-999; hvbf_lvj_m=-999; hvbf_lW_tag1_deta=-999; hvbf_lW_tag2_deta=-999; hvbf_hW_tag1_deta=-999; hvbf_hW_tag2_deta=-999;
+         hvbf_wjj_deta=-999; hvbf_wjj_dphi=-999;
+         hvbf_lv_e=-999;   hvbf_lv_pt=-999;   hvbf_lv_eta=-999;   hvbf_lv_phi=-999;  hvbf_lv_Rapidity=-999;  hvbf_lv_m=-999;   hvbf_lv_mT=-999;
+         hvbf_l_e=-999;   hvbf_l_pt=-999;   hvbf_l_eta=-999;   hvbf_l_phi=-999;
+         hvbf_l_MET_deltaphi=-999; hvbf_lW_hW_deltaphi=-999; hvbf_event_met_pfmet=-999; hvbf_event_met_pfmetPhi =-999; WJets_weight=1.0;
 
-        hvbf_event = 0, hvbf_aj_id = -1, hvbf_bj_id = -1, hvbf_waj_id = -1, hvbf_wbj_id = -1,fourJets=0;
+        hvbf_event = 0; hvbf_aj_id = -1; hvbf_bj_id = -1; hvbf_waj_id = -1; hvbf_wbj_id = -1; fourJets=0;  opp_hemi=1; bjet_veto=0; additional_jet=0;
 
         hvbf_wjj_ang_ha   = 999, hvbf_wjj_ang_hb = 999, hvbf_wjj_ang_hs = 999,hvbf_wjj_ang_phi = 999, hvbf_wjj_ang_phia = 999, hvbf_wjj_ang_phib = 999;
 
@@ -2215,6 +2229,10 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			//      if ( !( (0.177<W_electron_pfIsoEA) )  ) isgengdevt=0;
 
 		}
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 		//###########End Boosted W analysis Flag ###################################
 		// VBF Higgs Analysis starts
 		//      if(isgendevtnojetevt)//One good electron, no jet requirement
@@ -2498,6 +2516,20 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
                if (htag_i_id!=-1 && htag_j_id!=-1 && hwjj_a_id!=-1 && hwjj_b_id!=-1)
                 {
                         fourJets=1;
+                for ( int k=0; k < (int) jets.size(); ++k)
+		         {
+		               if (fabs(jets.at(k)->Eta()) > 4.7) continue;
+		               if ( k!=htag_i_id && k!= htag_j_id && k!=hwjj_a_id && k!=hwjj_b_id )
+		                {
+		                additional_jet=1;
+		                Float_t *atmpbtagCSV = (Float_t*) jetsbtagCSV.GetValue(jets[k]);
+		                Float_t btagCSV = *atmpbtagCSV;
+		                if(btagCSV>btcsvm)
+																						                {
+																						                bjet_veto=1;
+																						                }
+			           }
+			           }
                 }
 
 
@@ -2852,21 +2884,39 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				int nbnot = 0;
 				int Aj    = -999;
 				int Bj    = -999;
+				int Cj	  = -999;
+				int Dj	  = -999;
+
 				/*if (JetPFCor_bDiscriminator[0]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
 				  if (JetPFCor_bDiscriminator[1]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=1; if (nbnot==2) Bj=1;}
 				  if (JetPFCor_bDiscriminator[2]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=2; if (nbnot==2) Bj=2;}
 				  if (JetPFCor_bDiscriminator[3]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=3; if (nbnot==2) Bj=3;}
 				 */
-				if (JetPFCor_bDiscriminatorCSV[0]>btcsvm) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
-				if (JetPFCor_bDiscriminatorCSV[1]>btcsvm) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=1; if (nbnot==2) Bj=1;}
-				if (JetPFCor_bDiscriminatorCSV[2]>btcsvm) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=2; if (nbnot==2) Bj=2;}
-				if (JetPFCor_bDiscriminatorCSV[3]>btcsvm) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=3; if (nbnot==2) Bj=3;}
+				if (JetPFCor_bDiscriminatorCSV[0]>btcsvm) 
+					{ nbjet++; if (nbjet==1) Cj=0; if(nbjet==2) Dj=0;  } 
+				else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
+				
+				if (JetPFCor_bDiscriminatorCSV[1]>btcsvm) 
+					{ nbjet++;if (nbjet==1) Cj=1; if(nbjet==2) Dj=1;  } 
+				else { nbnot++; if (nbnot==1) Aj=1; if (nbnot==2) Bj=1;}
 
-				if (nbjet==2 && nbnot==2 && Aj!=-999 && Bj!=-999){
-					TLorentzVector  ajp, bjp; 
+				if (JetPFCor_bDiscriminatorCSV[2]>btcsvm) 
+					{ nbjet++;if (nbjet==1) Cj=2; if(nbjet==2) Dj=2;  } 
+				else { nbnot++; if (nbnot==1) Aj=2; if (nbnot==2) Bj=2;}
+				if (JetPFCor_bDiscriminatorCSV[3]>btcsvm) 
+				{ nbjet++;if (nbjet==1) Cj=3; if(nbjet==2) Dj=3;  } 
+				else { nbnot++; if (nbnot==1) Aj=3; if (nbnot==2) Bj=3;}
+
+				if (nbjet==2 && nbnot==2 && Aj!=-999 && Bj!=-999 && Cj!=-999 && Dj!=-999){
+					TLorentzVector  ajp, bjp, cjp, djp; 
 					ajp.SetPtEtaPhiE(jess * JetPFCor_Pt[Aj], JetPFCor_Eta[Aj], JetPFCor_Phi[Aj], jess * JetPFCor_E[Aj]  );
 					bjp.SetPtEtaPhiE(jess * JetPFCor_Pt[Bj], JetPFCor_Eta[Bj], JetPFCor_Phi[Bj], jess * JetPFCor_E[Bj]  );
-					TopWm   = (ajp+bjp).M(); 
+                                        cjp.SetPtEtaPhiE(jess * JetPFCor_Pt[Cj], JetPFCor_Eta[Cj], JetPFCor_Phi[Cj], jess * JetPFCor_E[Cj]  );
+                                        djp.SetPtEtaPhiE(jess * JetPFCor_Pt[Dj], JetPFCor_Eta[Dj], JetPFCor_Phi[Dj], jess * JetPFCor_E[Dj]  );
+                                        TopWm   = (ajp+bjp).M();
+					Top_bmjj   = (cjp+djp).M(); 
+                                        Top_bjjeta1eta2   = cjp.Eta()*djp.Eta(); 
+                                        Top_bjjdeta   = fabs(cjp.Eta()-djp.Eta());
 
 					TLorentzVector fit_mup(0,0,0,0), fit_nvp(0,0,0,0), fit_ajp(0,0,0,0), fit_bjp(0,0,0,0) ; Int_t tmpa =0, tmpb=0;
 					doKinematicFit( 1, mup, b_nvp, ajp, bjp,  fit_mup, fit_nvp, fit_ajp, fit_bjp, Tchi2, tmpa, tmpb);
@@ -3277,7 +3327,73 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			boostedW_wjj_ang_ha_ak7 = tmpa_costheta1; boostedW_wjj_ang_hb_ak7 = fabs(tmpa_costheta2); boostedW_wjj_ang_hs_ak7 = tmpa_costhetastar;  boostedW_wjj_ang_phi_ak7 = tmpa_phi; boostedW_wjj_ang_phia_ak7 = tmpa_phistar1; boostedW_wjj_ang_phib_ak7 = tmpa_phistar2;
 
 		}
+
+
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+		TLorentzVector leadingjetca8p4_Up;
+                                       leadingjetca8p4_Up.SetPtEtaPhiE(GroomedJet_CA8_UncUp_pt[0],
+                                                                       GroomedJet_CA8_eta[0],
+                                                                       GroomedJet_CA8_phi[0],
+                                                                       GroomedJet_CA8_e[0]);
+                                        GroomedJet_CA8_UncUp_mass = leadingjetca8p4_Up.M();
+                       TLorentzVector leadingjetca8p4_Down;
+                                        leadingjetca8p4_Down.SetPtEtaPhiE(GroomedJet_CA8_UncDown_pt[0],
+                                                                        GroomedJet_CA8_eta[0],
+                                                                        GroomedJet_CA8_phi[0],
+                                                                        GroomedJet_CA8_e[0]);
+                                        GroomedJet_CA8_UncDown_mass = leadingjetca8p4_Down.M();
+                     TLorentzVector leadingjetak5p4;
+                                        leadingjetak5p4.SetPtEtaPhiE(GroomedJet_AK5_pt[0],
+                                                                     GroomedJet_AK5_eta[0],
+                                                                     GroomedJet_AK5_phi[0],
+                                                                     GroomedJet_AK5_e[0]);
+                     TLorentzVector subleadingjetak5p4;
+                                       subleadingjetak5p4.SetPtEtaPhiE(GroomedJet_AK5_pt[1],
+                                                                      GroomedJet_AK5_eta[1],
+                                                                      GroomedJet_AK5_phi[1],
+                                                                      GroomedJet_AK5_e[1]);
+					
+                       TLorentzVector leadingjetak5p4_Up;
+                                         leadingjetak5p4_Up.SetPtEtaPhiE(GroomedJet_AK5_UncUp_pt[0],
+                                                                        GroomedJet_AK5_eta[0],
+                                                                        GroomedJet_AK5_phi[0],
+                                                                        GroomedJet_AK5_e[0]);
+
+                       TLorentzVector subleadingjetak5p4_Up;
+                                         subleadingjetak5p4_Up.SetPtEtaPhiE(GroomedJet_AK5_UncUp_pt[1],
+                                                                        GroomedJet_AK5_eta[1],
+                                                                        GroomedJet_AK5_phi[1],
+                                                                        GroomedJet_AK5_e[1]);
+
+                        TLorentzVector leadingjetak5p4_Down;
+                                         leadingjetak5p4_Down.SetPtEtaPhiE(GroomedJet_AK5_UncDown_pt[0],
+                                                                        GroomedJet_AK5_eta[0],
+                                                                        GroomedJet_AK5_phi[0],
+                                                                        GroomedJet_AK5_e[0]);
+
+                      TLorentzVector subleadingjetak5p4_Down;
+                                         subleadingjetak5p4_Down.SetPtEtaPhiE(GroomedJet_AK5_UncDown_pt[1],
+                                                                           GroomedJet_AK5_eta[1],
+                                                                           GroomedJet_AK5_phi[1],
+                                                                           GroomedJet_AK5_e[1]);
+
+		        TLorentzVector c2jmass =  leadingjetak5p4 + subleadingjetak5p4;
+			                       GroomedJet_AK5_dijet_mass = c2jmass.M();
+                        TLorentzVector c2jup =  leadingjetak5p4_Up + subleadingjetak5p4_Up;
+                                               GroomedJet_AK5_Up_dijet_mass = c2jup.M();
+                        TLorentzVector c2jdown =  leadingjetak5p4_Down + subleadingjetak5p4_Down;
+                                               GroomedJet_AK5_Down_dijet_mass = c2jdown.M();
+//    cout<<"down  mass  "<<leadingjetca8p4_Down.M()<<" up mass "<<leadingjetca8p4_Up.M()<<"original m "<<GroomedJet_CA8_mass[0]<<endl;
+
 		//###############End Boosted W Analysis########################################
+
+
+
+
+
 
 		// For VBF Analysis ! Currently Gd Event Selection same as Hww
 		if (isgengdevt)
@@ -4128,6 +4244,10 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		branch_status->Fill();
 
 		branch_TopWm->Fill();
+                branch_Top_bmjj->Fill();
+                branch_Top_bjjeta1eta2->Fill();
+                branch_Top_bjjdeta->Fill();
+
 		branch_TopWm5j->Fill();
 		branch_Tchi2->Fill();
 		branch_Tchi25j->Fill();
@@ -4478,6 +4598,10 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		branch_hvbf_lW_hW_deltaphi->Fill();
 
 		branch_hvbf_event->Fill();
+                branch_bjet_veto->Fill();
+		branch_additional_jet->Fill();
+                branch_opp_hemi->Fill();
+
 		branch_WJets_weight->Fill();
 
 		branch_hvbf_wjj_ang_ha->Fill();
@@ -4572,6 +4696,12 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 		branch_boostedW_lvj_phi->Fill();
 		branch_boostedW_lvj_m->Fill();
 		branch_boostedW_lvj_y->Fill();
+
+		branch_GroomedJet_CA8_UncUp_mass->Fill();
+                branch_GroomedJet_CA8_UncDown_mass->Fill();
+                branch_GroomedJet_AK5_dijet_mass->Fill();
+                branch_GroomedJet_AK5_Up_dijet_mass->Fill();
+                branch_GroomedJet_AK5_Down_dijet_mass->Fill();
 
 		branch_boostedW_wjj_ang_ha->Fill();
 		branch_boostedW_wjj_ang_hb->Fill();

@@ -280,10 +280,23 @@ class kanamuon {
    Float_t         GroomedJet_AK5_tau3_pr[6];
    Float_t         GroomedJet_AK5_tau4_pr[6];
    Float_t         GroomedJet_AK5_massdrop_pr_uncorr[6];
+
    Float_t         GroomedJet_AK5_pt[6];
    Float_t         GroomedJet_AK5_eta[6];
    Float_t         GroomedJet_AK5_phi[6];
    Float_t         GroomedJet_AK5_e[6];
+
+   Float_t         GroomedJet_AK5_UncUp_pt[6];
+   Float_t         GroomedJet_AK5_UncUp_eta[6];
+   Float_t         GroomedJet_AK5_UncUp_phi[6];
+   Float_t         GroomedJet_AK5_UncUp_e[6];
+
+
+   Float_t         GroomedJet_AK5_UncDown_pt[6];
+   Float_t         GroomedJet_AK5_UncDown_eta[6];
+   Float_t         GroomedJet_AK5_UncDown_phi[6];
+   Float_t         GroomedJet_AK5_UncDown_e[6];
+
    Float_t         GroomedJet_AK5_pt_tr_uncorr[6];
    Float_t         GroomedJet_AK5_pt_tr[6];
    Float_t         GroomedJet_AK5_eta_tr[6];
@@ -432,10 +445,23 @@ class kanamuon {
    Float_t         GroomedJet_CA8_tau3_pr[6];
    Float_t         GroomedJet_CA8_tau4_pr[6];
    Float_t         GroomedJet_CA8_massdrop_pr_uncorr[6];
+
    Float_t         GroomedJet_CA8_pt[6];
    Float_t         GroomedJet_CA8_eta[6];
    Float_t         GroomedJet_CA8_phi[6];
    Float_t         GroomedJet_CA8_e[6];
+
+   Float_t         GroomedJet_CA8_UncUp_pt[6];
+   Float_t         GroomedJet_CA8_UncUp_eta[6];
+   Float_t         GroomedJet_CA8_UncUp_phi[6];
+   Float_t         GroomedJet_CA8_UncUp_e[6];
+
+   Float_t         GroomedJet_CA8_UncDown_pt[6];
+   Float_t         GroomedJet_CA8_UncDown_eta[6];
+   Float_t         GroomedJet_CA8_UncDown_phi[6];
+   Float_t         GroomedJet_CA8_UncDown_e[6];
+
+
    Float_t         GroomedJet_CA8_pt_tr_uncorr[6];
    Float_t         GroomedJet_CA8_pt_tr[6];
    Float_t         GroomedJet_CA8_eta_tr[6];
@@ -1371,6 +1397,14 @@ class kanamuon {
    TBranch        *b_GroomedJet_AK5_eta;   //!
    TBranch        *b_GroomedJet_AK5_phi;   //!
    TBranch        *b_GroomedJet_AK5_e;   //!
+   TBranch        *b_GroomedJet_AK5_UncUp_pt;   //!
+   TBranch        *b_GroomedJet_AK5_UncUp_eta;   //!
+   TBranch        *b_GroomedJet_AK5_UncUp_phi;   //!
+   TBranch        *b_GroomedJet_AK5_UncUp_e;   //
+   TBranch        *b_GroomedJet_AK5_UncDown_pt;   //!
+   TBranch        *b_GroomedJet_AK5_UncDown_eta;   //!
+   TBranch        *b_GroomedJet_AK5_UncDown_phi;   //!
+   TBranch        *b_GroomedJet_AK5_UncDown_e;  //
    TBranch        *b_GroomedJet_AK5_pt_tr_uncorr;   //!
    TBranch        *b_GroomedJet_AK5_pt_tr;   //!
    TBranch        *b_GroomedJet_AK5_eta_tr;   //!
@@ -1519,10 +1553,24 @@ class kanamuon {
    TBranch        *b_GroomedJet_CA8_tau3_pr;   //!
    TBranch        *b_GroomedJet_CA8_tau4_pr;   //!
    TBranch        *b_GroomedJet_CA8_massdrop_pr_uncorr;   //!
+
    TBranch        *b_GroomedJet_CA8_pt;   //!
    TBranch        *b_GroomedJet_CA8_eta;   //!
    TBranch        *b_GroomedJet_CA8_phi;   //!
    TBranch        *b_GroomedJet_CA8_e;   //!
+
+   TBranch        *b_GroomedJet_CA8_UncUp_pt;   //!
+   TBranch        *b_GroomedJet_CA8_UncUp_eta;   //!
+   TBranch        *b_GroomedJet_CA8_UncUp_phi;   //!
+   TBranch        *b_GroomedJet_CA8_UncUp_e;   //!
+
+   TBranch        *b_GroomedJet_CA8_UncDown_pt;   //!
+   TBranch        *b_GroomedJet_CA8_UncDown_eta;   //!
+   TBranch        *b_GroomedJet_CA8_UncDown_phi;   //!
+   TBranch        *b_GroomedJet_CA8_UncDown_e;   //!
+
+
+
    TBranch        *b_GroomedJet_CA8_pt_tr_uncorr;   //!
    TBranch        *b_GroomedJet_CA8_pt_tr;   //!
    TBranch        *b_GroomedJet_CA8_eta_tr;   //!
