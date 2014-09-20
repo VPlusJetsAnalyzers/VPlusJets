@@ -83,8 +83,13 @@ namespace ewk
     void SetBranch( int* x, std::string name);
     void SetBranchSingle( float* x, std::string name);
     void SetBranchSingle( int* x, std::string name);
-    double getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea); 
+    double getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea);
+    double getJECUncUp(double curJetEta, double curJetPt);
+    double getJECUncDown(double curJetEta, double curJetPt);
     TLorentzVector getCorrectedJet(fastjet::PseudoJet& jet, double inArea);
+    TLorentzVector getCorrectedJetUncUp(TLorentzVector correctedjet, fastjet::PseudoJet& jet, double inArea);
+    TLorentzVector getCorrectedJetUncDown(TLorentzVector correctedjet,fastjet::PseudoJet& jet, double inArea);
+
     void computeCore( std::vector<fastjet::PseudoJet> constits, double Rval, float &m_core, float &pt_core );
     void computePlanarflow(std::vector<fastjet::PseudoJet> constits,double Rval,fastjet::PseudoJet jet,std::string mJetAlgo,float &planarflow);
         float computeJetCharge( std::vector<fastjet::PseudoJet> constits, std::vector<float> pdgIds, float PTjet, float kappa );        
@@ -145,6 +150,19 @@ namespace ewk
     float jeteta[NUM_JET_MAX];
     float jetphi[NUM_JET_MAX];
     float jete[NUM_JET_MAX];
+
+
+
+    float jetpt_withUncUp[NUM_JET_MAX];
+    float jeteta_withUncUp[NUM_JET_MAX];
+    float jetphi_withUncUp[NUM_JET_MAX];
+    float jete_withUncUp[NUM_JET_MAX];
+
+    float jetpt_withUncDown[NUM_JET_MAX];
+    float jeteta_withUncDown[NUM_JET_MAX];
+    float jetphi_withUncDown[NUM_JET_MAX];
+    float jete_withUncDown[NUM_JET_MAX];
+
 
     float jetpt_tr_uncorr[NUM_JET_MAX];
     float jetpt_tr[NUM_JET_MAX];
