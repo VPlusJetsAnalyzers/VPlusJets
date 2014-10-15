@@ -612,13 +612,23 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 			//float qgl_out = (*QGTagsHandleLikelihood)[jetRef];
 			//qgl_out[ijet] = (*QGTagsHandleLikelihood)[jetRef];
 
-			std::cout <<" ijet  "<<ijet<< "  Likelihood: " << PFqgLikelihood[ijet] << std::endl;
+			//std::cout <<" ijet  "<<ijet<< "  Likelihood: " << PFqgLikelihood[ijet] << std::endl;
 		}
 	}
 	//		}
 	// Fill pile Up jet id info
 
 	if(mInputJets.label()!="Gen") fillPileUpJetID (jets);     
+
+/*
+	edm::Handle<JetCorrectorParametersCollection> JetCorParColl;
+	iEvent.get<JetCorrectionsRecord>().get("AK5PF",JetCorParColl); 
+	JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+	JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(JetCorPar);
+*/
+
+
+
 
 
 

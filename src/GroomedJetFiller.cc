@@ -119,19 +119,17 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
     SetBranch( jetphi, lableGen + "GroomedJet_" + jetLabel_ + "_phi");
     SetBranch( jete, lableGen + "GroomedJet_" + jetLabel_ + "_e");
 
-
     SetBranch( jetpt_withUncUp, lableGen + "GroomedJet_" + jetLabel_ + "_UncUp_pt");
     SetBranch( jeteta_withUncUp, lableGen + "GroomedJet_" + jetLabel_ + "_UncUp_eta");
     SetBranch( jetphi_withUncUp, lableGen + "GroomedJet_" + jetLabel_ + "_UncUp_phi");
     SetBranch( jete_withUncUp, lableGen + "GroomedJet_" + jetLabel_ + "_UncUp_e");
-
+    SetBranch( jetmass_withUncUp, lableGen + "GroomedJet_" + jetLabel_ + "UncUp_mass");
 
     SetBranch( jetpt_withUncDown, lableGen + "GroomedJet_" + jetLabel_ + "_UncDown_pt");
     SetBranch( jeteta_withUncDown, lableGen + "GroomedJet_" + jetLabel_ + "_UncDown_eta");
     SetBranch( jetphi_withUncDown, lableGen + "GroomedJet_" + jetLabel_ + "_UncDown_phi");
     SetBranch( jete_withUncDown, lableGen + "GroomedJet_" + jetLabel_ + "_UncDown_e");
-
-
+    SetBranch( jetmass_withUncDown, lableGen + "GroomedJet_" + jetLabel_ + "UncDown_mass");
 
     SetBranch( jetpt_tr_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_tr_uncorr");
     SetBranch( jetpt_tr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_tr");
@@ -145,6 +143,13 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
     SetBranch( jete_ft, lableGen + "GroomedJet_" + jetLabel_ + "_e_ft");
     SetBranch( jetpt_pr_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_pr_uncorr");
     SetBranch( jetpt_pr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_pr");
+
+    SetBranch( jetpt_pr_withUncDown, lableGen + "GroomedJet_" + jetLabel_ + "withUncDown_pt_pr");
+    SetBranch( jetpt_pr_withUncUp, lableGen + "GroomedJet_" + jetLabel_ + "withUncUp_pt_pr");
+
+    SetBranch( jetmass_pr_withUncDown, lableGen + "GroomedJet_" + jetLabel_ + "withUncDown_mass_pr");
+    SetBranch( jetmass_pr_withUncUp, lableGen + "GroomedJet_" + jetLabel_ + "withUncUp_mass_pr");
+
     SetBranch( jeteta_pr, lableGen + "GroomedJet_" + jetLabel_ + "_eta_pr");
     SetBranch( jetphi_pr, lableGen + "GroomedJet_" + jetLabel_ + "_phi_pr");
     SetBranch( jete_pr, lableGen + "GroomedJet_" + jetLabel_ + "_e_pr");
@@ -210,6 +215,11 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
         tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_e").c_str(), constituents0pr_e, (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_e"+"[100]/F").c_str() );
         bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_e").c_str() );   
         SetBranchSingle( &nconstituents0pr, lableGen + "GroomedJet_" + jetLabel_ + "_nconstituents0pr" );
+        SetBranchSingle( &NumGJets, lableGen + "GroomedJet_" + jetLabel_ + "_Gjets" );
+    SetBranchSingle( &Inv_mass, lableGen + "GroomedJet_" + jetLabel_ + "_dijet_mass");
+    SetBranchSingle( &Inv_mass_Up, lableGen + "GroomedJet_" + jetLabel_ + "_up_dijet_mass");
+    SetBranchSingle( &Inv_mass_Down, lableGen + "GroomedJet_" + jetLabel_ + "_Down_dijet_mass");
+
     }
     
         ////////////////////////////////////
@@ -353,7 +363,7 @@ void ewk::GroomedJetFiller::SetBranch( int* x, std::string name)
 
     // ------------ method called to produce the data  ------------
 void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
-                
+        NumGJets = 0;
         ////----------
         // init
     for (int j =0; j< NUM_JET_MAX; ++j) {
@@ -389,18 +399,21 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
         jeteta_withUncUp[j] = -10.;
         jetphi_withUncUp[j] = -10.;
         jete_withUncUp[j] = -1.;
+	jetmass_withUncUp[j] = -1.;
 
         jetpt_withUncDown[j] = -1.;
         jeteta_withUncDown[j] = -10.;
         jetphi_withUncDown[j] = -10.;
         jete_withUncDown[j] = -1.;
-
+        jetmass_withUncDown[j] = -1.;
 
 
         jetmass[j] = -1.;
         jetmass_tr[j] = -1.;
         jetmass_ft[j] = -1.;
         jetmass_pr[j] = -1.;
+        jetmass_pr_withUncUp[j] = -1.;
+        jetmass_pr_withUncDown[j] = -1.;
         jetarea[j] = -1.;
         jetarea_tr[j] = -1.;
         jetarea_ft[j] = -1.;
@@ -418,6 +431,10 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
         jete_ft[j] = -1.;
         jetpt_pr_uncorr[j] = -1.;
         jetpt_pr[j] = -1.;
+        jetpt_pr_withUncUp[j] = -1.;
+        jetpt_pr_withUncDown[j] = -1.;
+
+
         jeteta_pr[j] = -10.;
         jetphi_pr[j] = -10.;
         jete_pr[j] = -1.;
@@ -446,7 +463,10 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
             qjetmass[k] = 0; qjetmassdrop[k] = 0;
         }
     }
-    
+	Inv_mass = -1;
+	Inv_mass_Up = -1;
+	Inv_mass_Down = -1;
+
 
         // ----- get handles... --------    
     std::string pfinput_ = mGroomedJet;    
@@ -609,9 +629,10 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
     if (!isGenJ){
         iEvent.getByLabel( pfjetlabel, pfjets ); 
     }
+       int iJet = 0;
 
     for (unsigned j = 0; j < out_jets.size()&&int(j)<NUM_JET_MAX; j++) {
-        
+        iJet = j;
         if (mSaveConstituents && j==0){
             if (out_jets_basic.at(j).constituents().size() >= 100) nconstituents0 = 100;
             else nconstituents0 = (int) out_jets_basic.at(j).constituents().size();
@@ -637,22 +658,27 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
         jeteta[j] = jet_corr.Eta();
         jetphi[j] = jet_corr.Phi();
         jete[j]   = jet_corr.Energy();
+
         jetconstituents[j] = out_jets_basic.at(j).constituents().size();
 
-
         TLorentzVector jet_corr_withUncUp = getCorrectedJetUncUp(getCorrectedJet(out_jets.at(j), jetarea[j]), out_jets.at(j), jetarea[j]);
+        jetmass_withUncUp[j] = jet_corr_withUncUp.M();
         jetpt_withUncUp[j] = jet_corr_withUncUp.Pt();
         jeteta_withUncUp[j] = jet_corr_withUncUp.Eta();
         jetphi_withUncUp[j] = jet_corr_withUncUp.Phi();
         jete_withUncUp[j]   = jet_corr_withUncUp.Energy();
 
         TLorentzVector jet_corr_withUncDown = getCorrectedJetUncDown(getCorrectedJet(out_jets.at(j), jetarea[j]), out_jets.at(j), jetarea[j]);
+        jetmass_withUncDown[j] = jet_corr_withUncDown.M();
         jetpt_withUncDown[j] = jet_corr_withUncDown.Pt();
         jeteta_withUncDown[j] = jet_corr_withUncDown.Eta();
         jetphi_withUncDown[j] = jet_corr_withUncDown.Phi();
         jete_withUncDown[j]   = jet_corr_withUncDown.Energy();
 
-//	std::cout<<"jet_corr.Pt() "<<jet_corr.Pt()<<" jet_corr_withUnc.Pt()"<<jet_corr_withUnc.Pt()<<" jet_corr_withUncUp.Pt()"<<jet_corr_withUncUp.Pt()<<" jet_corr_withUncDown.Pt() "<<jet_corr_withUncDown.Pt()<<std::endl;  
+
+  //      std::cout<<"jet_corr Pt "<<jet_corr.Pt()<<" jet_corr_withUncUp Pt "<<jet_corr_withUncUp.Pt()<<" jet_corr_withUncDown Pt "<<jet_corr_withUncDown.Pt()<<std::endl;      
+
+
 
 	// pruning, trimming, filtering  -------------
         int transctr = 0;
@@ -688,6 +714,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
                 jetphi_ft[j] = jet_ft_corr.Phi();
                 jete_ft[j]   = jet_ft_corr.Energy();
                 jetarea_ft[j] = transformedJet.area();                    
+
             }
             else if (transctr == 2){ // pruned
                 jetmass_pr_uncorr[j] = transformedJet.m();
@@ -699,7 +726,17 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
                 jetphi_pr[j] = jet_pr_corr.Phi();
                 jete_pr[j]   = jet_pr_corr.Energy();
                 jetarea_pr[j] = transformedJet.area();          
-                
+
+	 	TLorentzVector jet_corr_withUncUp = getCorrectedJetUncUp(getCorrectedJet(transformedJet,transformedJet.area()), transformedJet,transformedJet.area());
+        jetmass_pr_withUncUp[j] = jet_corr_withUncUp.M();
+        jetpt_pr_withUncUp[j] = jet_corr_withUncUp.Pt();
+
+
+		TLorentzVector jet_corr_withUncDown = getCorrectedJetUncDown(getCorrectedJet(transformedJet,transformedJet.area()), transformedJet,transformedJet.area());
+        jetmass_pr_withUncDown[j] = jet_corr_withUncDown.M();
+        jetpt_pr_withUncDown[j] = jet_corr_withUncDown.Pt();
+
+
                 fastjet::Nsubjettiness nSub1KT_pr(1, Njettiness::onepass_kt_axes, beta, R0, Rcut);
                 fastjet::Nsubjettiness nSub2KT_pr(2, Njettiness::onepass_kt_axes, beta, R0, Rcut);                
                 fastjet::Nsubjettiness nSub3KT_pr(3, Njettiness::onepass_kt_axes, beta, R0, Rcut);                
@@ -878,6 +915,34 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
         jetGeneralizedECF[j] = C2beta(incluisve_jets_forECF[0]);
         
     }
+        NumGJets = (int) iJet;
+	//std::cout<<" NumGJets "<<NumGJets<<std::endl;
+	if( NumGJets>=2 ) {
+
+       	TLorentzVector leadingjetp4;
+        TLorentzVector leadingjetp4_Up;
+        TLorentzVector leadingjetp4_Down;
+
+        TLorentzVector subleadingjetp4;
+        TLorentzVector subleadingjetp4_Up;
+        TLorentzVector subleadingjetp4_Down;
+
+
+	leadingjetp4.SetPtEtaPhiM(jetpt[0],jeteta[0],jetphi[0],jetmass[0] );
+        leadingjetp4_Up.SetPtEtaPhiM(jetpt_withUncUp[0],jeteta_withUncUp[0],jetphi_withUncUp[0],jetmass_withUncUp[0] );
+        leadingjetp4_Down.SetPtEtaPhiM(jetpt_withUncDown[0],jeteta_withUncDown[0],jetphi_withUncDown[0],jetmass_withUncDown[0] );
+
+        subleadingjetp4.SetPtEtaPhiM(jetpt[1],jeteta[1],jetphi[1],jetmass[1] );
+        subleadingjetp4_Up.SetPtEtaPhiM(jetpt_withUncUp[1],jeteta_withUncUp[1],jetphi_withUncUp[1],jetmass_withUncUp[1] );
+        subleadingjetp4_Down.SetPtEtaPhiM(jetpt_withUncDown[1],jeteta_withUncDown[1],jetphi_withUncDown[1],jetmass_withUncDown[1] );
+	
+	 Inv_mass = (leadingjetp4+subleadingjetp4).M();
+         Inv_mass_Up = (leadingjetp4_Up+subleadingjetp4_Up).M();
+         Inv_mass_Down = (leadingjetp4_Down+subleadingjetp4_Down).M();
+
+//	std::cout<<" Inv_mass  "<<Inv_mass<<" Inv_mass_Up "<<Inv_mass_Up<<"  Inv_mass_Down  "<<Inv_mass_Down<<std::endl;
+
+		}
 
 }  
 
@@ -898,6 +963,7 @@ double ewk::GroomedJetFiller::getJEC(double curJetEta,
     jec_->setRho   ( rhoVal_ );
     jec_->setNPV   ( nPV_ );
     double corr = jec_->getCorrection();
+//    std::cout<<"corr   "<<corr<<std::endl;
     return corr;
 }
 
@@ -910,6 +976,7 @@ double ewk::GroomedJetFiller::getJECUncUp(double curJetEta,
 	      jecUnc_->setJetPt ( curJetPt );
               double uncUp = jecUnc_->getUncertainty(1);
 	      return uncUp;
+	    //std::cout<<"UncUp   "<<uncUp<<std::endl;
 	    }
 
 double ewk::GroomedJetFiller::getJECUncDown(double curJetEta,
@@ -947,7 +1014,7 @@ TLorentzVector ewk::GroomedJetFiller::getCorrectedJetUncDown(TLorentzVector corr
         //jecVal = getJEC( jet.eta(), jet.pt(), jet.e(), jet.area() );   
         jecVal = getJEC( jet.eta(), jet.pt(), jet.e(), inArea );      
         jecUncDownVal = jecVal * (1-fabs(getJECUncDown(  jet.eta(),  correctedjet.Pt())));   
-
+//         std::cout << "jecval " <<jecVal<< "jecUncDownVal " << jecUncDownVal << std::endl;
     }
     
     TLorentzVector jet_corr_withUncDown(jet.px()  * jecUncDownVal, 
@@ -964,7 +1031,8 @@ TLorentzVector ewk::GroomedJetFiller::getCorrectedJetUncUp(TLorentzVector correc
     double jecUncUpVal =1.0;
     if(applyJECToGroomedJets_ && !isGenJ) {
         jecVal = getJEC( jet.eta(), jet.pt(), jet.e(), inArea );
-        jecUncUpVal = jecVal * (1+fabs(getJECUncUp(  jet.eta(),  correctedjet.Pt()))); 
+        jecUncUpVal = jecVal * (1+fabs(getJECUncUp(  jet.eta(),  correctedjet.Pt())));
+//            std::cout << "jecval " <<jecVal<< "jecUncUpVal " << jecUncUpVal << std::endl;
     }
     
     TLorentzVector jet_corr_withUncUp(jet.px() *  jecUncUpVal, 

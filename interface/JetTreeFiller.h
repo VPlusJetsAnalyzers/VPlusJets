@@ -46,7 +46,7 @@
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
 #include "DataFormats/BTauReco/interface/TrackIPTagInfo.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 
 #include "CMGTools/External/interface/PileupJetIdentifier.h"
 
