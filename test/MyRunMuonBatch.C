@@ -3,6 +3,8 @@ void MyRunMuonBatch(double myflag=20112250, bool isQCD=false, int runflag=0)
   gSystem->Exec("ln -s /eos/uscms/store/user/lnujj/Moriond2013/MergedNtuples_v2_nojetnum InData");
   //gSystem->Exec("ln -s /eos/uscms/store/user/lnujj/Moriond2013/MergedNtuples_v1 InData");
   //gSystem->Exec("ln -s /eos/uscms/store/user/ajay/QGStudy/ntuples InData");
+  //gSystem->Exec("ln -s /eos/uscms/store/user/lnujj/MergedNtuples_11Feb14 InData");
+  //  gSystem->Exec("ln -s eos/uscms/store/user/lnujj/Moriond2013/MergedNtuples InData");
   gSystem->Exec("ln -s . InQCD");
   gSystem->Exec("ln -s . OutData");
   gSystem->Exec("ln -s . EffTable2012");
@@ -111,6 +113,8 @@ void MyRunMuonBatch(double myflag=20112250, bool isQCD=false, int runflag=0)
   gSystem->Load("TMVAClassification_550_VBF_mu_Likelihood.class_C.so");
   gSystem->Load("TMVAClassification_600_VBF_mu_Likelihood.class_C.so");
   gSystem->Load("TMVAClassification_126_VBF_mu_Likelihood.class_C.so");
+  gSystem->Load("TMVAClassification_127_nJ2_mu_WJets_Likelihood.class_C.so");
+  gSystem->Load("TMVAClassification_127_nJ2_mu_Top_Likelihood.class_C.so");
   gSystem->Load("kanamuon_C.so");
   gROOT->ProcessLine("kanamuon runover");
   //Set true/false for isQCD

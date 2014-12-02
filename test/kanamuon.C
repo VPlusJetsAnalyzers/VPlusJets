@@ -2030,7 +2030,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			muIDEff.GetEfficiency(W_muon_pt, W_muon_eta) * 
 			muHLTEff.GetEfficiency(W_muon_pt, W_muon_eta);
 
-                effwt *= (W_genwt >= 0) ? 1 : -1;
+                effwt *= (W_genwt >= 0) ? 1 : -1; //defalt
+                //effwt = effwt*W_genwt; //sherpa only condition
 		genwt=W_genwt;
 
 	//	cout<<"   :"<<genwt<<"    "<<effwt<<"   "<<endl;
@@ -2879,16 +2880,16 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
 	//:::::::::::::::::::::::::::::::::::::::::::::::::;;;;;;;;;;;;;;;;;;;;;;;;;
 	//
-
+/*
                        TLorentzVector leadingjetca8p4_Up;
-	                               leadingjetca8p4_Up.SetPtEtaPhiE(GroomedJet_CA8_UncUp_pt[0],
-			                                               GroomedJet_CA8_UncUp_eta[0],
+	                               leadingjetca8p4_Up.SetPtEtaPhiE(GroomedJet_CA8_pt[0],
+			                                               GroomedJet_CA8_eta[0],
 			                                               GroomedJet_CA8_phi[0],
 			                                               GroomedJet_CA8_e[0]);
 					GroomedJet_CA8_UncUp_mass = leadingjetca8p4_Up.M();
 		       TLorentzVector leadingjetca8p4_Down;
-		                        leadingjetca8p4_Down.SetPtEtaPhiE(GroomedJet_CA8_UncDown_pt[0],
-	        		                                        GroomedJet_CA8_UncDown_eta[0],
+		                        leadingjetca8p4_Down.SetPtEtaPhiE(GroomedJet_CA8_pt[0],
+	        		                                        GroomedJet_CA8_eta[0],
 			                                                GroomedJet_CA8_phi[0],
 				                                        GroomedJet_CA8_e[0]);
                                         GroomedJet_CA8_UncDown_mass = leadingjetca8p4_Down.M();
@@ -2904,25 +2905,25 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 	                                                                GroomedJet_AK5_phi[1],
 	                                                                GroomedJet_AK5_e[1]);
  		       TLorentzVector leadingjetak5p4_Up;
-		                         leadingjetak5p4_Up.SetPtEtaPhiE(GroomedJet_AK5_UncUp_pt[0],
+		                         leadingjetak5p4_Up.SetPtEtaPhiM(GroomedJet_AK5_UncUp_pt[0],
 						      			GroomedJet_AK5_UncUp_eta[0],
-									GroomedJet_AK5_phi[0],
-									GroomedJet_AK5_e[0]);
+									GroomedJet_AK5_UncUp_phi[0],
+									GroomedJet_AK5UncUp_mass[0]);
                        TLorentzVector subleadingjetak5p4_Up;
-                                         subleadingjetak5p4_Up.SetPtEtaPhiE(GroomedJet_AK5_UncUp_pt[1],
+                                         subleadingjetak5p4_Up.SetPtEtaPhiM(GroomedJet_AK5_UncUp_pt[1],
                                                                         GroomedJet_AK5_UncUp_eta[1],
-                                                                        GroomedJet_AK5_phi[1],
-                                                                        GroomedJet_AK5_e[1]);
+                                                                        GroomedJet_AK5_UncUp_phi[1],
+                                                                        GroomedJet_AK5UncUp_mass[1]);
                         TLorentzVector leadingjetak5p4_Down;
-                                      leadingjetak5p4_Down.SetPtEtaPhiE(GroomedJet_AK5_UncDown_pt[0],
+                                      leadingjetak5p4_Down.SetPtEtaPhiM(GroomedJet_AK5_UncDown_pt[0],
                                                                         GroomedJet_AK5_UncDown_eta[0],
-                                                                        GroomedJet_AK5_phi[0],
-                                                                        GroomedJet_AK5_e[0]);
+                                                                        GroomedJet_AK5_UncDown_phi[0],
+                                                                        GroomedJet_AK5UncDown_mass[0]);
                       TLorentzVector subleadingjetak5p4_Down;
-                                      subleadingjetak5p4_Down.SetPtEtaPhiE(GroomedJet_AK5_UncDown_pt[1],
+                                      subleadingjetak5p4_Down.SetPtEtaPhiM(GroomedJet_AK5_UncDown_pt[1],
                                                                            GroomedJet_AK5_UncDown_eta[1],
-                                                                           GroomedJet_AK5_phi[1],
-                                                                           GroomedJet_AK5_e[1]);
+                                                                           GroomedJet_AK5_UncDown_phi[1],
+                                                                           GroomedJet_AK5UncDown_mass[1]);
 
                         TLorentzVector c2jmass =  leadingjetak5p4 + subleadingjetak5p4;
                                                GroomedJet_AK5_dijet_mass = c2jmass.M();
@@ -2933,8 +2934,8 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
                         TLorentzVector c2jdown =  leadingjetak5p4_Down + subleadingjetak5p4_Down;
                                                GroomedJet_AK5_Down_dijet_mass = c2jdown.M();
 
- //cout<<"mass  "<<GroomedJet_AK5_dijet_mass<<"  "<<leadingjetak5p4_Down.M()<<"   "<<subleadingjetak5p4_Down.M()<<endl;
-
+cout<<"GroomedJet_AK5_dijet_mass  "<<GroomedJet_AK5_dijet_mass<<" GroomedJet_AK5_Down_dijet_mass "<<GroomedJet_AK5_Down_dijet_mass<<endl;
+*/
 		//###############End Boosted W Analysis########################################
 
 		// VBF Higgs Analysis starts

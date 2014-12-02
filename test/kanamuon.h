@@ -290,12 +290,15 @@ class kanamuon {
    Float_t         GroomedJet_AK5_UncUp_eta[6];
    Float_t         GroomedJet_AK5_UncUp_phi[6];
    Float_t         GroomedJet_AK5_UncUp_e[6];
+   Float_t         GroomedJet_AK5UncUp_mass[6];
 
 
    Float_t         GroomedJet_AK5_UncDown_pt[6];
    Float_t         GroomedJet_AK5_UncDown_eta[6];
    Float_t         GroomedJet_AK5_UncDown_phi[6];
    Float_t         GroomedJet_AK5_UncDown_e[6];
+   Float_t         GroomedJet_AK5UncDown_mass[6];
+
 
    Float_t         GroomedJet_AK5_pt_tr_uncorr[6];
    Float_t         GroomedJet_AK5_pt_tr[6];

@@ -1997,11 +1997,9 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 			eleMHTEff.GetEfficiency(event_met_pfmet, 0) *
 			eleWMtEff.GetEfficiency(W_mt, W_electron_eta);
 
-                effwt *= (W_genwt >= 0) ? 1 : -1;
+                //effwt *= (W_genwt >= 0) ? 1 : -1;
+                effwt = effwt*W_genwt; //sherpa only condition
 		//cout<<" before "<<effwt<<endl;
-//		effwt*=W_genwt;
-                //effwt=effwt*W_genwt;
-
                 genwt=W_genwt;
 
                 //cout<<"   :"<<genwt<<"  after  "<<effwt<<"   "<<endl;
@@ -3332,7 +3330,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+/*
 		TLorentzVector leadingjetca8p4_Up;
                                        leadingjetca8p4_Up.SetPtEtaPhiE(GroomedJet_CA8_UncUp_pt[0],
                                                                        GroomedJet_CA8_eta[0],
@@ -3387,7 +3385,7 @@ void kanaelec::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
                         TLorentzVector c2jdown =  leadingjetak5p4_Down + subleadingjetak5p4_Down;
                                                GroomedJet_AK5_Down_dijet_mass = c2jdown.M();
 //    cout<<"down  mass  "<<leadingjetca8p4_Down.M()<<" up mass "<<leadingjetca8p4_Up.M()<<"original m "<<GroomedJet_CA8_mass[0]<<endl;
-
+*/
 		//###############End Boosted W Analysis########################################
 
 
