@@ -124,6 +124,7 @@ namespace ewk
     
     // ----------member data ---------------------------
     // names of modules, producing object collections    
+    int NumGJets;
     float jetmass_uncorr[NUM_JET_MAX];
     float jetmass_tr_uncorr[NUM_JET_MAX];
     float jetmass_ft_uncorr[NUM_JET_MAX];
@@ -151,17 +152,23 @@ namespace ewk
     float jetphi[NUM_JET_MAX];
     float jete[NUM_JET_MAX];
 
+    float jetpt_pr_withUncUp[NUM_JET_MAX];
+    float jetpt_pr_withUncDown[NUM_JET_MAX];
+   float jetmass_pr_withUncUp[NUM_JET_MAX];
+   float jetmass_pr_withUncDown[NUM_JET_MAX];
 
 
     float jetpt_withUncUp[NUM_JET_MAX];
     float jeteta_withUncUp[NUM_JET_MAX];
     float jetphi_withUncUp[NUM_JET_MAX];
     float jete_withUncUp[NUM_JET_MAX];
+    float jetmass_withUncUp[NUM_JET_MAX];
 
     float jetpt_withUncDown[NUM_JET_MAX];
     float jeteta_withUncDown[NUM_JET_MAX];
     float jetphi_withUncDown[NUM_JET_MAX];
     float jete_withUncDown[NUM_JET_MAX];
+    float jetmass_withUncDown[NUM_JET_MAX];
 
 
     float jetpt_tr_uncorr[NUM_JET_MAX];
@@ -226,7 +233,9 @@ namespace ewk
         float constituents0pr_phi[100];        
         float constituents0pr_e[100];        
         int nconstituents0pr;   
-        
+        float Inv_mass;
+        float Inv_mass_Up;
+        float Inv_mass_Down;
         std::vector<int> neutrals;
         std::vector<int> positives;
         std::vector<int> negatives;        
