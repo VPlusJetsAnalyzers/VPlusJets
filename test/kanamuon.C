@@ -2471,10 +2471,11 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
 				int Cj	  = -999;
 				int Dj	  = -999;
 
-				if (JetPFCor_bDiscriminator[0]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
+				/*if (JetPFCor_bDiscriminator[0]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
 				if (JetPFCor_bDiscriminator[1]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=1; if (nbnot==2) Bj=1;}
 				if (JetPFCor_bDiscriminator[2]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=2; if (nbnot==2) Bj=2;}
 				if (JetPFCor_bDiscriminator[3]>btssv) { nbjet++; } else { nbnot++; if (nbnot==1) Aj=3; if (nbnot==2) Bj=3;}
+				*/
                                 if (JetPFCor_bDiscriminatorCSV[0]>btcsvm)  { nbjet++; if (nbjet==1) Cj=0; if(nbjet==2) Dj=0;  }
 	                           else { nbnot++; if (nbnot==1) Aj=0; if (nbnot==2) Bj=0;}
 	                        if (JetPFCor_bDiscriminatorCSV[1]>btcsvm)  { nbjet++;if (nbjet==1) Cj=1; if(nbjet==2) Dj=1;  }
@@ -2491,6 +2492,7 @@ void kanamuon::Loop(TH1F* h_events, TH1F* h_events_weighted, int wda, int runfla
                                 cjp.SetPtEtaPhiE(jess * JetPFCor_Pt[Cj], JetPFCor_Eta[Cj], JetPFCor_Phi[Cj], jess * JetPFCor_E[Cj]  );
                                 djp.SetPtEtaPhiE(jess * JetPFCor_Pt[Dj], JetPFCor_Eta[Dj], JetPFCor_Phi[Dj], jess * JetPFCor_E[Dj]  );
                                 TopWm   = (ajp+bjp).M();
+				cout<<"TopWm=  "<<TopWm<<endl;
                                 Top_bmjj   = (cjp+djp).M();
                                 Top_bjjeta1eta2   = cjp.Eta()*djp.Eta();
                                 Top_bjjdeta   = fabs(cjp.Eta()-djp.Eta());
