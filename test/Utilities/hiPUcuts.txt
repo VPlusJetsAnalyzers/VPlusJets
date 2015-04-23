@@ -1,0 +1,2 @@
+#  Name             Cut string
+"nPV >= 18"	    "(event_nPV >= 18)"
