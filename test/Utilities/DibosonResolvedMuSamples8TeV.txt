@@ -1,0 +1,21 @@
+# always list data first and list the lumi in the third column.
+# then samples in the order that they get put into the TStack
+# Multiple entries with the same sample name will get added together after scaling.
+# sample name is used for the legend entry - but no spaces, please
+#
+# name                      file location                      xspb/lumipb  otherscale   nMCevents	colorcode	stackit
+data    InData/RD_WmunuJets_DataAll_GoldenJSON_19p3invfb.root  19300        1                   1	     1             0
+Z+Jets  InData/RD_mu_ZpJ_CMSSW532.root                         3503.71      1.0          30209426	   400             1
+top     InData/RD_mu_TTbar_CMSSW532.root                        225.197     1.0           6893735	   418             1
+top     InData/RD_mu_STopS_T_CMSSW532.root                        3.89394   1.0            259960	   418             1
+top     InData/RD_mu_STopT_T_CMSSW532.root                       55.531     1.0           3758221	   418             1
+top     InData/RD_mu_STopTW_T_CMSSW532.root                      11.1773    1.0            497657	   418             1
+top     InData/RD_mu_STopS_Tbar_CMSSW532.root                     1.75776   1.0            139974	   418             1
+top     InData/RD_mu_STopT_Tbar_CMSSW532.root                    30.0042    1.0           1935066	   418             1
+top     InData/RD_mu_STopTW_Tbar_CMSSW532.root                   11.1773    1.0            493458	   418             1
+WW/WZ   InData/RD_mu_WWtoLNuQQ_amcnlo_800k_CMSSW532.root         57.52      0.230996       799899	   868             1
+WW/WZ   InData/RD_mu_WZtoLNuQQ_amcnlo_100k_CMSSW532.root         24.20      0.230996        99791	   868             1
+W+jets  InData/RD_mu_W4Jets_CMSSW532.root                       214.0       1.16         12842803	   632             1
+W+jets  InData/RD_mu_W3Jets_CMSSW532.root                       519.0       1.16         15059503	   632             1
+W+jets  InData/RD_mu_W2Jets_CMSSW532.root                      1750.0       1.16         33004921	   632             1
+W+jets  InData/RD_mu_W1Jets_CMSSW532.root                      5400.0       1.16         19871598	   632             1

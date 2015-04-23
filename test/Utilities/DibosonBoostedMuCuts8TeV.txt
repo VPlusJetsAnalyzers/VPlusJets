@@ -1,0 +1,12 @@
+#  Name                     Cut string
+"Boosted Event"		"(ggdboostedWevt==1)"
+"Veto VBF"		"(vbf_event==0)"
+"W_pt>200"		"(W_pt>200.)"
+"Veto Btag PFJets"	"(numPFCorJetBTags<1)"
+"Good Muon"		"(W_muon_pt>30.) && (abs(W_muon_eta)<2.1)"
+"Good FatJet"		"(GroomedJet_CA8_pt[0]>200)&&(abs(GroomedJet_CA8_eta[0])<2.4)&&(GroomedJet_CA8_tau2tau1[0]<0.55)"
+"2nd Jet Veto"		"(GroomedJet_CA8_pt[1]<80.0)"
+"pfMET>50"		"(event_met_pfmet >50)"
+"|#Delta#phi(MET,J)|>2.0"	"(GroomedJet_CA8_deltaphi_METca8jet[0]>2.0)"
+"|dR(#mu,J)|>#pi/2"	"(GroomedJet_CA8_deltaR_lca8jet[0]>1.57)"
+"40<m_{J}<140"		"((GroomedJet_CA8_mass_pr[0]>40)&&(GroomedJet_CA8_mass_pr[0]<140))"

@@ -1,0 +1,10 @@
+#  Name                                Cut string
+#"GoodLepton"                        "(W_muon_pt>25.) && (abs(W_muon_dz000)<0.02) && (abs(W_muon_dzPV)<0.5) && (abs(W_muon_eta)<2.1)"
+"GoodLepton"                        "(W_muon_pt>25.) && (abs(W_muon_eta)<2.1)"
+"p_{T}(j_{1})>40 |#eta(j_{1})<2.4"  "(abs(JetPFCor_Eta[0])<2.4) && (JetPFCor_Pt[0]>40.)"
+"p_{T}(j_{2})>35 |#eta(j_{2})<2.4"  "(abs(JetPFCor_Eta[1])<2.4) && (JetPFCor_Pt[1]>35.)"
+#"Third Jet Veto"                    "(JetPFCor_Pt[2]<30.)"
+"W_mt>30"                           "(W_mt >30.)"
+"MET>25"                            "(event_met_pfmet>25)"
+"W_pt<200"                          "W_pt<200"
+"SigWindowCut"			    "(Mass2j_PFCor>48) && (Mass2j_PFCor<160)"
