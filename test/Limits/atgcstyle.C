@@ -1,25 +1,26 @@
 
-void cmsLabel(TCanvas *canvas,
-	      double lumi,
-	      bool prelim = false,
-	      const TString& lumiLabel = "fb",
-	      double s = 8.)
+void cmsLabel(TCanvas *canvas)
 {
-  TLatex l;
-  l.SetNDC();
-  l.SetTextFont(42);
-  l.SetTextAlign(31);
-  l.SetTextSize(0.045);
+  TLatex latex;
+
+  latex.SetNDC();
 
   canvas->cd();
-  TString prelimText;
-  if (prelim)
-    prelimText = " preliminary";
 
-  l.DrawLatex(1. - canvas->GetRightMargin(),
-	      1. - canvas->GetTopMargin() + 0.01,
-Form("CMS%s, #scale[0.5]{#lower[-0.15]{#it{#int}}}#it{L} dt = %0.1f#kern[0.2]{%s}^{-1}, #sqrt{#it{s}} = %.0f#kern[0.1]{TeV}",
-     prelimText.Data(), lumi, lumiLabel.Data(), s));
+  latex.SetTextSize(0.05);
+  latex.SetTextFont(61); // helvetica bold
+  latex.SetTextAlign(11); // align left
+  latex.DrawLatex(0.18,0.93,"CMS");
+
+  latex.SetTextSize(0.04);
+  latex.SetTextFont(52); // helvetica italic
+  latex.DrawLatex(0.29,0.93,"Preliminary");
+
+  latex.SetTextAlign(31); // align right
+  latex.SetTextSize(0.037);
+  latex.SetTextFont(42); // helvetica italic
+  latex.DrawLatex(0.94,0.93,"19.3 fb^{-1} (#mu)+19.2 fb^{-1} (e) (8 TeV)");
+
   canvas->Update();
 }
 
@@ -51,7 +52,7 @@ void atgcstyle()
   gStyle->SetFuncWidth(1);
   
   //  Margins:
-  gStyle->SetPadTopMargin(0.06);
+  gStyle->SetPadTopMargin(0.08);
   gStyle->SetPadBottomMargin(0.15);
   gStyle->SetPadLeftMargin(0.18); // was 0.16
   gStyle->SetPadRightMargin(0.06);// was 0.02

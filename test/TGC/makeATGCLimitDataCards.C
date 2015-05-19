@@ -17,7 +17,10 @@
 
 #undef ATGCISSIGNAL
 
-const bool blinded      = true;
+//#define SIGNORM_FROM_FIT
+#undef SIGNORM_FROM_FIT
+
+const bool blinded      = false;
 
 const float lz4display=0.01;
 const float dkg4display=0.0;
@@ -102,14 +105,23 @@ const double STopTW_scale  =    11.1   /  497657;
 #if 1 // YIELDS WITH SECOND JET/lepton sep. reqrmnt. (deltaR(l,ca8jet)>7.0):
 
 //Muons (boosted):
-const double WV_fityield_muboosted    =  369.97472832;  //  +/-  128.653534669
-const double top_fityield_muboosted   =  249.405360996; //  +/-  20.0052840402
-const double WJets_fityield_muboosted = 1349.50888792;  //  +/-  72.6138461002
+// const double WV_fityield_muboosted    =  369.97472832;  //  +/-  128.653534669
+// const double top_fityield_muboosted   =  249.405360996; //  +/-  20.0052840402
+// const double WJets_fityield_muboosted = 1349.50888792;  //  +/-  72.6138461002
+
+// v16 AN:
+const double WV_fityield_muboosted    =  376.649491132; //  +/-  112.253165737
+const double top_fityield_muboosted   =  249.729251046; //  +/-   19.9767156651
+const double WJets_fityield_muboosted = 1340.45881045;  //  +/-   65.8694446871
 
 //Electrons (boosted):
-const double WV_fityield_elboosted    =  387.529582723; //  +/-  93.0619917601
-const double top_fityield_elboosted   =  202.06545164;  //  +/-  20.1262682472
-const double WJets_fityield_elboosted = 1075.33103014;  //  +/-  53.2322420384
+// const double WV_fityield_elboosted    =  387.529582723; //  +/-  93.0619917601
+// const double top_fityield_elboosted   =  202.06545164;  //  +/-  20.1262682472
+// const double WJets_fityield_elboosted = 1075.33103014;  //  +/-  53.2322420384
+
+const double WV_fityield_elboosted    =  410.228594617; //  +/-  95.2647857845
+const double top_fityield_elboosted   =  201.361387059; //  +/-  20.1270894732
+const double WJets_fityield_elboosted = 1051.96944293;  //  +/-  55.0675110829
 
 #else // YIELDS WITHOUT SECOND JET/lepton sep. requrment or 2nd jet veto
 
@@ -132,15 +144,21 @@ const double WJets_fityield_elboosted = 1430.79518601;  //  +/-   64.5534199824
 const double mu_bkgd_norm_error = (77.65)/(WJets_fityield_muboosted+top_fityield_muboosted);
 const double el_bkgd_norm_error = (70.76)/(WJets_fityield_elboosted+top_fityield_elboosted);
 
+#ifdef SIGNORM_FROM_FIT
+// Taking signal normalization and norm unc. from the fit:
+const double mu_sig_norm_error = 112.25/376.65;
+const double el_sig_norm_error = 95.265/410.23;
+#else
 // Add absolute errors for WW, W+Z, and W-Z NLO from MCFM paper in quadrature
 // (arxiv:1105.0020v1)
 //
 const double mu_sig_norm_error =  sqrt((.041 * .041 * 57.25 *57.25)+
 				       (.052 * .052 * 14.48 *14.48)+
 				       (.054 * .054 * 8.4   *  8.4)
-				       )/(57.25+14.48+8.4); // (132.90)/317.82;
+				       )/(57.25+14.48+8.4);
+const double el_sig_norm_error =  mu_sig_norm_error;
+#endif
 
-const double el_sig_norm_error =  mu_sig_norm_error; // (106.49)/387.09;
 
 const float yRatioMin = 0.2;
 const float yRatioMax = 2.2;
@@ -237,7 +255,8 @@ void InstantiateTrees() {
 
   //// ------------ Get all trees
  if (domu) {
-   treedata->Add("InData/RD_WmunuJets_DataAll_GoldenJSON_19p3invfb.root");
+   treedata->Add("InData/RD_WmunuJets_DataAll_GoldenJSON_v1.root");
+   treedata->Add("InData/RD_WmunuJets_DataAll_GoldenJSON_v2.root");
    treewwlo->Add("InMC/RD_mu_WW_minPt150_amcnlo_CMSSW532.root");
    treewwhi->Add("InMC/RD_mu_WW_minPt500_amcnlo_CMSSW532.root");
    treewzlo->Add("InMC/RD_mu_WZ_minPt150_amcnlo_CMSSW532.root");
@@ -261,7 +280,8 @@ void InstantiateTrees() {
 
  } else { // electrons
 
-   treedata->Add("InData/RD_WenuJets_DataAllSingleElectronTrigger_GoldenJSON_19p2invfb.root");
+   treedata->Add("InData/RD_WenuJets_DataAllSingleElectronTrigger_GoldenJSON_v1.root");
+   treedata->Add("InData/RD_WenuJets_DataAllSingleElectronTrigger_GoldenJSON_v2.root");
    treewwlo->Add("InMC/RD_el_WW_minPt150_amcnlo_CMSSW532.root");
    treewwhi->Add("InMC/RD_el_WW_minPt500_amcnlo_CMSSW532.root");
    treewzlo->Add("InMC/RD_el_WZ_minPt150_amcnlo_CMSSW532.root");
@@ -551,7 +571,7 @@ void ScaleHistos(int channel)
   th1wv = (TH1 *)th1ww->Clone("wv");
   th1wv->Add(th1wz,1);
 
-#if 0
+#ifdef SIGNORM_FROM_FIT
   double  wvscale = WV_fityield/ th1wv->Integral();
   th1ww ->Scale( wvscale );
   th1wz ->Scale( wvscale );
@@ -808,15 +828,21 @@ void cmspre()
 {
   TLatex latex;
   latex.SetNDC();
+
   latex.SetTextSize(0.05);
+  latex.SetTextFont(61); // helvetica bold
+  latex.SetTextAlign(11); // align left
+  latex.DrawLatex(0.15,0.93,"CMS");
+
+  latex.SetTextSize(0.04);
+  latex.SetTextFont(52); // helvetica italic
+  latex.DrawLatex(0.25,0.93,"Preliminary");
 
   latex.SetTextAlign(31); // align right
-  latex.DrawLatex(0.85,0.93,"#sqrt{s} = 8 TeV");
-  latex.SetTextAlign(31); // align right
-  latex.DrawLatex(0.65,0.93,Form("#scale[0.5]{#lower[-0.15]{#it{#int}}}#it{L} dt = %0.1f#kern[0.2]{fb}^{-1}", 19.3));
-  latex.SetTextAlign(11); // align left
-//  latex.DrawLatex(0.15,0.93,"CMS,  #sqrt{s} = 7 TeV");//preliminary 2011");
-  latex.DrawLatex(0.15,0.93,"CMS Preliminary");
+  latex.SetTextSize(0.037);
+  latex.SetTextFont(42); // helvetica italic
+  latex.DrawLatex(0.94,0.93,Form("%0.1f#kern[0.2]{fb}^{-1} (8 TeV)",
+				 (domu ? intLUMIinvpb_mu : intLUMIinvpb_el)/1000.));
 }
 
 //======================================================================
@@ -961,7 +987,7 @@ void makeATGCLimitDataCards(int channel) {
 
 
   // Do not put jet pt in the cut string here, since it is going to be smeared
-  TString cutsMerged("(vbf_event==0) && (W_pt>200.) &&(abs(GroomedJet_CA8_eta[0])<2.4)&&(ggdboostedWevt==1) && (GroomedJet_CA8_deltaphi_METca8jet[0]>2.0) && (GroomedJet_CA8_deltaR_lca8jet[0]>1.57) && (numPFCorJetBTags<1) && (GroomedJet_CA8_deltaR_lca8jet[1]<-900 || GroomedJet_CA8_deltaR_lca8jet[1]>7.0) && (GroomedJet_CA8_tau2tau1[0]<0.55) && (GroomedJet_CA8_mass_pr[0]>70. && GroomedJet_CA8_mass_pr[0]<100.)");
+  TString cutsMerged("(vbf_event==0) && (W_pt>200.) &&(abs(GroomedJet_CA8_eta[0])<2.4)&&(ggdboostedWevt==1) && (GroomedJet_CA8_deltaphi_METca8jet[0]>2.0) && (GroomedJet_CA8_deltaR_lca8jet[0]>1.57) && (numPFCorJetBTags<1) && (GroomedJet_CA8_tau2tau1[0]<0.55) && (GroomedJet_CA8_mass_pr[0]>70. && GroomedJet_CA8_mass_pr[0]<100.)");
 
   // 
 
@@ -974,7 +1000,7 @@ void makeATGCLimitDataCards(int channel) {
   TString And = " && ";
 
   TString jet_cut = cutsDijet;
-  TString jetptcut,mcjetptcut,wwhimcjetptcut,wzhimcjetptcut;
+  TString jetptcuts,mcjetptcuts,wwhimcjetptcuts,wzhimcjetptcuts;
 
   if(channel>1) jet_cut = cutsMerged;
 
@@ -984,7 +1010,6 @@ void makeATGCLimitDataCards(int channel) {
   double jetptcutval,wwjetptcutoff,wzjetptcutoff;
   if(channel>1) {
     double jetthresh = 80;
-
     /*observable = 
       "(GroomedJet_CA8_pt[0]>jetthresh)+\
       (GroomedJet_CA8_pt[1]>jetthresh)+\
@@ -996,25 +1021,28 @@ void makeATGCLimitDataCards(int channel) {
     mcobservable = "GroomedJet_CA8_pt_smeared[0]";
     //mcobservable = "GroomedJet_CA8_pt[0]";
     observable = "GroomedJet_CA8_pt[0]";
+    char *jet2var= "GroomedJet_CA8_pt[1]";
+    char *mcjet2var="GroomedJet_CA8_pt_smeared[1]";
     jetptcutval = 200.;
     wwjetptcutoff = 1300.; // value where the WW hi pt MC starts to run out of statistics
     wzjetptcutoff = 1100.; // value where the WZ hi pt MC starts to run out of statistics
-    jetptcut   = Form("(%s > %f)",  observable,jetptcutval);
-    mcjetptcut = Form("(%s > %f)",mcobservable,jetptcutval);
-    wwhimcjetptcut = Form("((%s > %f) && (%s < %f))",mcobservable,jetptcutval,mcobservable,wwjetptcutoff);
-    wzhimcjetptcut = Form("((%s > %f) && (%s < %f))",mcobservable,jetptcutval,mcobservable,wzjetptcutoff);
+    jetptcuts   = Form("(%s > %f) && (%s < %f)",  observable,jetptcutval,jet2var,jetthresh);
+    //mcjetptcut = Form("(%s > %f)",mcobservable,jetptcutval);
+    mcjetptcuts     = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcobservable,jetptcutval,mcobservable,wwjetptcutoff,mcjet2var,jetthresh);
+    wwhimcjetptcuts = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcobservable,jetptcutval,mcobservable,wwjetptcutoff,mcjet2var,jetthresh);
+    wzhimcjetptcuts = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcobservable,jetptcutval,mcobservable,wzjetptcutoff,mcjet2var,jetthresh);
     xtitle = "p_{T}^{j} [GeV]";
   }
 
 
-  TCut mccut( TString("(effwt*puwt)*(")+lepton_cut+And+jet_cut+And+mcjetptcut+TString(")") );
+  TCut mccut( TString("(effwt*puwt)*(")+lepton_cut+And+jet_cut+And+mcjetptcuts+TString(")") );
 
   TCut datacut;
   if (blinded)
-    datacut = TCut( TString("(") + lepton_cut + And + jet_cut + And + jetptcut + And +
+    datacut = TCut( TString("(") + lepton_cut + And + jet_cut + And + jetptcuts + And +
 		    Form("(%s < 520.))", observable) );
   else
-    datacut = TCut( TString("(") + lepton_cut + And + jet_cut + And + jetptcut + TString(")") );
+    datacut = TCut( TString("(") + lepton_cut + And + jet_cut + And + jetptcuts + TString(")") );
 
 
   // for combining ttbar files
@@ -1055,8 +1083,8 @@ void makeATGCLimitDataCards(int channel) {
   th1wzlo = fillMChisto("th1wzlo",treewzlo,mcobservable,mccut);
 
   // cut off integration of high tail when statistics become low and the parametrization is invalid: 
-  TCut wwhimccut( TString("(effwt*puwt)*(")+ lepton_cut+And+jet_cut+And+wwhimcjetptcut + TString(")") );
-  TCut wzhimccut( TString("(effwt*puwt)*(")+ lepton_cut+And+jet_cut+And+wzhimcjetptcut + TString(")") );
+  TCut wwhimccut( TString("(effwt*puwt)*(")+ lepton_cut+And+jet_cut+And+wwhimcjetptcuts + TString(")") );
+  TCut wzhimccut( TString("(effwt*puwt)*(")+ lepton_cut+And+jet_cut+And+wzhimcjetptcuts + TString(")") );
 
   th1wwhi = fillMChisto("th1wwhi",treewwhi,mcobservable,wwhimccut);
   th1wzhi = fillMChisto("th1wzhi",treewzhi,mcobservable,wzhimccut);
@@ -1283,7 +1311,7 @@ void makeATGCLimitDataCards(int channel) {
 
   c1->Print (outfilename + TString(".png"));
   c1->SaveAs(outfilename + TString(".pdf"));
-  c1->SaveAs(outfilename + TString(".root"));
+  c1->SaveAs(outfilename + TString(".C"));
    
 
   ///// -------------------------------//////

@@ -1,5 +1,7 @@
 #include "TStyle.h"
 
+TStyle *tdrStyle;
+
 // tdrGrid: Turns the grid lines on (true) or off (false)
 
 void tdrGrid(bool gridOn) {
@@ -14,7 +16,7 @@ void fixOverlay() {
 }
 
 void setTDRStyle() {
-  TStyle *tdrStyle = new TStyle("tdrStyle","Style for P-TDR");
+  tdrStyle = new TStyle("tdrStyle","Style for P-TDR");
 
 // For the canvas:
   tdrStyle->SetCanvasBorderMode(0);
@@ -42,7 +44,7 @@ void setTDRStyle() {
   tdrStyle->SetFrameLineColor(1);
   tdrStyle->SetFrameLineStyle(1);
   tdrStyle->SetFrameLineWidth(1);
-
+  
 // For the histo:
   // tdrStyle->SetHistFillColor(1);
   // tdrStyle->SetHistFillStyle(0);
@@ -53,11 +55,11 @@ void setTDRStyle() {
   // tdrStyle->SetNumberContours(Int_t number = 20);
 
   tdrStyle->SetEndErrorSize(2);
-  //  tdrStyle->SetErrorMarker(20);
-  tdrStyle->SetErrorX(0.);
+  // tdrStyle->SetErrorMarker(20);
+  //tdrStyle->SetErrorX(0.);
   
   tdrStyle->SetMarkerStyle(20);
-
+  
 //For the fit/function:
   tdrStyle->SetOptFit(1);
   tdrStyle->SetFitFormat("5.4g");
@@ -151,6 +153,9 @@ void setTDRStyle() {
   // tdrStyle->SetPalette(Int_t ncolors = 0, Int_t* colors = 0);
   // tdrStyle->SetTimeOffset(Double_t toffset);
   // tdrStyle->SetHistMinimumZero(kTRUE);
+
+  tdrStyle->SetHatchesLineWidth(5);
+  tdrStyle->SetHatchesSpacing(0.05);
 
   tdrStyle->cd();
 

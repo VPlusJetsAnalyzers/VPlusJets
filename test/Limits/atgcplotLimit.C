@@ -665,13 +665,14 @@ draw2DLimitBFstyle(map<string,TList *>& m_contours,
 
   legend->Draw();
 
+#if 0
   TPaveText *text = new TPaveText(0.516,0.720,0.915,0.951,"NDC");
   text->SetFillStyle(0);
   text->SetBorderSize(0);
   text->AddText(Form("95%% CL Limit on %s and %s",par2latex(par1).Data(),par2latex(par2).Data()));
   text->AddText(0,0.35,Form("#intL dt= %.1f fb^{-1}, #sqrt{s} = %d TeV",intlumifbinv,beamcometev));
   text->Draw();
-
+#endif
   // text2 = TPaveText(0.155,0.199,0.974,0.244,"NDC");
   // text2->SetFillStyle(0);
   // text2->SetBorderSize(0);
@@ -818,12 +819,14 @@ draw2DLimitContours(map<string,TList *>& m_contours,
 
   legend->Draw();
 
+#if 0
   TPaveText *text = new TPaveText(0.516,0.720,0.915,0.951,"NDC");
   text->SetFillStyle(0);
   text->SetBorderSize(0);
   text->AddText(Form("95%% CL Limit on %s and %s",par2latex(par1).Data(),par2latex(par2).Data()));
   text->AddText(0,0.35,Form("#intL dt= %.1f fb^{-1}, #sqrt{s} = %d TeV",intlumifbinv,beamcometev));
   text->Draw();
+#endif
 
   // text2 = TPaveText(0.155,0.199,0.974,0.244,"NDC");
   // text2->SetFillStyle(0);
@@ -995,7 +998,8 @@ draw1DLimitBFstyle(map<string,TGraph2D *> m_graphs,
   legend->SetY2NDC(0.65);
 #endif
   legend->Draw();
-  
+
+#if 0  
   TPaveText *text1d = new TPaveText(0.516,0.720,0.915,0.951,"NDC");
   //TPaveText *text1d = new TPaveText(0.359,0.24,0.758,0.44,"NDC");
   text1d->SetFillStyle(0);
@@ -1003,7 +1007,8 @@ draw1DLimitBFstyle(map<string,TGraph2D *> m_graphs,
   text1d->AddText(Form("95%% CL Limit on #bf{%s}",par2latex(parname).Data()));
   text1d->AddText(0,0.35,Form("#intL dt= %.1f fb^{-1}, #sqrt{s} = %d TeV", intlumifbinv,beamcometev));
   text1d->Draw();
-    
+#endif
+
   // text3.SetX1NDC(0.357);
   // text3.SetY1NDC(0.246);
   // text3.SetX2NDC(0.756);
@@ -1132,63 +1137,64 @@ void atgcplotLimit(const string& fileglob)
   // for limit in limits:
   //   limits[limit]->Print()
 
-
+  if (fnames[0].Contains("2D")) {
 #if 0
-  // for a first look
-  TCanvas *canv2 = new TCanvas("two","two",800,600);
-  canv2->Divide(3,2);
-  canv2->cd(1);  m_graphs["+2s"]->Draw("TRI"); gPad->SetLogz(1);
-  canv2->cd(2);  m_graphs["+1s"]->Draw("TRI"); gPad->SetLogz(1);
-  canv2->cd(3);  m_graphs["median"]->Draw("TRI"); gPad->SetLogz(1);
-  canv2->cd(4);  m_graphs["-1s"]->Draw("TRI"); gPad->SetLogz(1);
-  canv2->cd(5);  m_graphs["-2s"]->Draw("TRI"); gPad->SetLogz(1);
-  canv2->cd(6);  m_graphs["obs"]->Draw("TRI"); gPad->SetLogz(1);
+    // for a first look
+    TCanvas *canv2 = new TCanvas("two","two",800,600);
+    canv2->Divide(3,2);
+    canv2->cd(1);  m_graphs["+2s"]->Draw("TRI"); gPad->SetLogz(1);
+    canv2->cd(2);  m_graphs["+1s"]->Draw("TRI"); gPad->SetLogz(1);
+    canv2->cd(3);  m_graphs["median"]->Draw("TRI"); gPad->SetLogz(1);
+    canv2->cd(4);  m_graphs["-1s"]->Draw("TRI"); gPad->SetLogz(1);
+    canv2->cd(5);  m_graphs["-2s"]->Draw("TRI"); gPad->SetLogz(1);
+    canv2->cd(6);  m_graphs["obs"]->Draw("TRI"); gPad->SetLogz(1);
 #else
-  //m_graphs["obs"]->Draw("TRI");
+    //m_graphs["obs"]->Draw("TRI");
 
-  map<string,TList *> m_contours;
+    map<string,TList *> m_contours;
 
 #if 1
-  collectContours(m_graphs,keys,m_contourlevels,m_contours);
+    collectContours(m_graphs,keys,m_contourlevels,m_contours);
 #endif
 
-  TLegend *legend = new TLegend(0.212,0.72,0.554,0.94,"","NDC");
-  legend->SetFillStyle(0);
-  legend->SetBorderSize(0);
-  legend->SetHeader("CMS Preliminary");
-  //legend->SetHeader("CMS");
-  legend->SetTextFont(42);
-  legend->SetTextSize(0.03);
+    TLegend *legend = new TLegend(0.212,0.72,0.554,0.92,"","NDC");
+    legend->SetFillStyle(0);
+    legend->SetBorderSize(0);
+    legend->SetTextFont(42);
+    legend->SetTextSize(0.03);
 
-  TCanvas *finalPlot;
+    TCanvas *finalPlot;
 #if 1
-  if (method.EqualTo("deltaNLL"))
-    finalPlot = draw2DLimitContours(m_contours,par1,par2,legend);
-  else
-    finalPlot = draw2DLimitBFstyle(m_contours,par1,par2,legend);
+    if (method.EqualTo("deltaNLL"))
+      finalPlot = draw2DLimitContours(m_contours,par1,par2,legend);
+    else
+      finalPlot = draw2DLimitBFstyle(m_contours,par1,par2,legend);
 #endif
 
-  if(graphobsmin) {
-    graphobsmin->Print();
-    graphobsmin->SetMarkerStyle(8);
-    graphobsmin->Draw("SAME Po");
+    cmsLabel(finalPlot);
+
+    if(graphobsmin) {
+      graphobsmin->Print();
+      graphobsmin->SetMarkerStyle(8);
+      graphobsmin->Draw("SAME Po");
+    }
+    TString plotprefix=Form("%s_%s_2dlimit_%s",
+			    par1.Data(),
+			    par2.Data(),
+			    method.Data());
+
+    finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
+    finalPlot->Print(Form("%s.eps",plotprefix.Data()));
+    //finalPlot->Print(Form("%s.png",plotprefix.Data()));
   }
-  TString plotprefix=Form("%s_%s_2dlimit_%s",
-			  par1.Data(),
-			  par2.Data(),
-			  method.Data());
-
-  finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
-  finalPlot->Print(Form("%s.eps",plotprefix.Data()));
-  //finalPlot->Print(Form("%s.png",plotprefix.Data()));
 #endif
 
 #if 0
-  plotprefix=Form("%s_1dlimit_%s",par1.Data(),method.Data());
-  draw1DLimit(m_graphs,par1,plotprefix,1000,0.15,exclusion_limit,true,legend);
+  TString plotprefix=Form("%s_1dlimit_%s",par1.Data(),method.Data());
+  draw1DLimitBFstyle(m_graphs,par1,plotprefix,1000,0.15,exclusion_limit,true,legend);
 
   plotprefix=Form("%s_1dlimit_%s",par2.Data(),method.Data());
-  draw1DLimit(m_graphs,par2,plotprefix,1000,0.15,exclusion_limit,false,legend);
+  draw1DLimitBFstyle(m_graphs,par2,plotprefix,1000,0.15,exclusion_limit,false,legend);
 #endif
 
 }

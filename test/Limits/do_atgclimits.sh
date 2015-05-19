@@ -28,9 +28,9 @@ DC=wv_semil
 buildws()
 {
     plane=$1
-    python buildWVworkspace.py muon $plane ${CFGTAG}
-    python buildWVworkspace.py electron $plane ${CFGTAG}
-#     python buildWWworkspace.py muon $plane ${CFGTAG}
+    python buildWVworkspace.py muon $plane ${CFGTAG} -b
+    python buildWVworkspace.py electron $plane ${CFGTAG} -b
+#     python buildWWworkspace.py muon $plane ${CFGTAG} 
 #     python buildWWworkspace.py electron $plane ${CFGTAG}
 }
 
