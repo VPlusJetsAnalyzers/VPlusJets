@@ -47,33 +47,37 @@ EXPD_ARGS="-t -1 --expectSignal 1"
 ########################################
 # expected 1D limit:
 
-# suffix1d="${suffix}_1Dexp_${PAR1}"
-# echo "combine $WKSPACEROOT $COMMON_ARGS -P $PAR1 -n _${suffix1d}" 2>&1 | tee    limit_${suffix1d}.log
-# combine       $WKSPACEROOT $COMMON_ARGS -P $PAR1 -n _${suffix1d}  2>&1 | tee -a limit_${suffix1d}.log
-# python build1DInterval.py ${VALS1} higgsCombine_${suffix1d}*.root ${PAR1} | tee -a limit_${suffix1d}.log
+suffix1d="${suffix}_1Dexp_${PAR1}"
+echo "combine $WKSPACEROOT $COMMON_ARGS $EXPD_ARGS -P $PAR1 -n _${suffix1d}"        2>&1 | tee    limit_${suffix1d}.log
+combine       $WKSPACEROOT $COMMON_ARGS $EXPD_ARGS -P $PAR1 -n _${suffix1d}         2>&1 | tee -a limit_${suffix1d}.log
+echo "python build1DInterval.py ${VALS1} higgsCombine_${suffix1d}*.root ${PAR1} -b" 2>&1 | tee -a limit_${suffix1d}.log
+python build1DInterval.py ${VALS1} higgsCombine_${suffix1d}*.root ${PAR1} -b        2>&1 | tee -a limit_${suffix1d}.log
 
-# suffix1d="${suffix}_1Dexp_${PAR2}"
-# echo "combine $WKSPACEROOT $COMMON_ARGS -P $PAR2 -n _${suffix1d}" 2>&1 | tee    limit_${suffix1d}.log
-# combine       $WKSPACEROOT $COMMON_ARGS -P $PAR2 -n _${suffix1d}  2>&1 | tee -a limit_${suffix1d}.log
-# python build1DInterval.py ${VALS2} higgsCombine_${suffix1d}*.root ${PAR2} | tee -a limit_${suffix1d}.log
+suffix1d="${suffix}_1Dexp_${PAR2}"
+echo "combine $WKSPACEROOT $COMMON_ARGS $EXPD_ARGS -P $PAR2 -n _${suffix1d}"        2>&1 | tee    limit_${suffix1d}.log
+combine       $WKSPACEROOT $COMMON_ARGS $EXPD_ARGS -P $PAR2 -n _${suffix1d}         2>&1 | tee -a limit_${suffix1d}.log
+echo "python build1DInterval.py ${VALS2} higgsCombine_${suffix1d}*.root ${PAR2} -b" 2>&1 | tee -a limit_${suffix1d}.log
+python build1DInterval.py ${VALS2} higgsCombine_${suffix1d}*.root ${PAR2} -b        2>&1 | tee -a limit_${suffix1d}.log
 
 ########################################
 # observed 1D limit:
 
-# suffix1d="${suffix}_1Dobs_${PAR1}"
-# echo "combine $WKSPACEROOT $COMMON_ARGS -P $PAR1 -n _${suffix1d}" 2>&1 | tee    limit_${suffix1d}.log
-# combine       $WKSPACEROOT $COMMON_ARGS -P $PAR1 -n _${suffix1d}  2>&1 | tee -a limit_${suffix1d}.log
-# python build1DInterval.py ${VALS1} higgsCombine_${suffix1d}*.root ${PAR1} | tee -a limit_${suffix1d}.log
+suffix1d="${suffix}_1Dobs_${PAR1}"
+echo "combine $WKSPACEROOT $COMMON_ARGS -P $PAR1 -n _${suffix1d}"                   2>&1 | tee    limit_${suffix1d}.log
+combine       $WKSPACEROOT $COMMON_ARGS -P $PAR1 -n _${suffix1d}                    2>&1 | tee -a limit_${suffix1d}.log
+echo "python build1DInterval.py ${VALS1} higgsCombine_${suffix1d}*.root ${PAR1} -b" 2>&1 | tee -a limit_${suffix1d}.log
+python build1DInterval.py ${VALS1} higgsCombine_${suffix1d}*.root ${PAR1} -b        2>&1 | tee -a limit_${suffix1d}.log
 
-# suffix1d="${suffix}_1Dobs_${PAR2}"
-# echo "combine $WKSPACEROOT $COMMON_ARGS -P $PAR2 -n _${suffix1d}" 2>&1 | tee    limit_${suffix1d}.log
-# combine       $WKSPACEROOT $COMMON_ARGS -P $PAR2 -n _${suffix1d}  2>&1 | tee -a limit_${suffix1d}.log
-# python build1DInterval.py ${VALS2} higgsCombine_${suffix1d}*.root ${PAR2} | tee -a limit_${suffix1d}.log
+suffix1d="${suffix}_1Dobs_${PAR2}"
+echo "combine $WKSPACEROOT $COMMON_ARGS -P $PAR2 -n _${suffix1d}"                   2>&1 | tee    limit_${suffix1d}.log
+combine       $WKSPACEROOT $COMMON_ARGS -P $PAR2 -n _${suffix1d}                    2>&1 | tee -a limit_${suffix1d}.log
+echo "python build1DInterval.py ${VALS2} higgsCombine_${suffix1d}*.root ${PAR2} -b" 2>&1 | tee -a limit_${suffix1d}.log
+python build1DInterval.py ${VALS2} higgsCombine_${suffix1d}*.root ${PAR2} -b        2>&1 | tee -a limit_${suffix1d}.log
 
 ########################################
 # observed 2D limit:
-# echo "combine $WKSPACEROOT $COMMON_ARGS $TWOD_ARGS -n _${suffix}_2Dobs" 2>&1 | tee    limit_${suffix}_2Dobs.log
-# combine       $WKSPACEROOT $COMMON_ARGS $TWOD_ARGS -n _${suffix}_2Dobs  2>&1 | tee -a limit_${suffix}_2Dobs.log
+echo "combine $WKSPACEROOT $COMMON_ARGS $TWOD_ARGS -n _${suffix}_2Dobs" 2>&1 | tee    limit_${suffix}_2Dobs.log
+combine       $WKSPACEROOT $COMMON_ARGS $TWOD_ARGS -n _${suffix}_2Dobs  2>&1 | tee -a limit_${suffix}_2Dobs.log
 
 # expected 2D limit:
 echo "combine $WKSPACEROOT $COMMON_ARGS $TWOD_ARGS $EXPD_ARGS -n _${suffix}_2Dexp" 2>&1 | tee    limit_${suffix}_2Dexp.log
