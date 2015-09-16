@@ -1,5 +1,7 @@
 
-void cmsLabel(TCanvas *canvas)
+void cmsLabel(TCanvas *canvas,
+	      double intlumi_mu,
+	      double intlumi_el)
 {
   TLatex latex;
 
@@ -19,7 +21,13 @@ void cmsLabel(TCanvas *canvas)
   latex.SetTextAlign(31); // align right
   latex.SetTextSize(0.037);
   latex.SetTextFont(42); // helvetica italic
-  latex.DrawLatex(0.94,0.93,"19.3 fb^{-1} (#mu)+19.2 fb^{-1} (e) (8 TeV)");
+
+  if (intlumi_el > 0 && intlumi_mu > 0)
+    latex.DrawLatex(0.94,0.93,Form("%4.1lf fb^{-1} (#mu)+%4.1lf fb^{-1} (e) (8 TeV)",intlumi_mu,intlumi_el));
+  else if (intlumi_mu > 0)
+    latex.DrawLatex(0.94,0.93,Form("%4.1lf fb^{-1} (#mu) (8 TeV)",intlumi_mu));
+  else if (intlumi_el > 0)
+    latex.DrawLatex(0.94,0.93,Form("%4.1lf fb^{-1} (e) (8 TeV)",intlumi_el));
 
   canvas->Update();
 }

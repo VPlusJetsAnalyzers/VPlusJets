@@ -23,6 +23,7 @@
 #include "TLeaf.h"
 #include "TROOT.h"
 #include "TStyle.h"
+#include "TPRegexp.h"
 
 #include "atgcstyle.C"
 
@@ -38,6 +39,9 @@ TString par2latex(const TString& parname)
   if (parname.EqualTo("lZ") )  return "#lambda";
   if (parname.EqualTo("dkg") ) return "#Delta#kappa_{#gamma}";
   if (parname.EqualTo("dg1") ) return "#Delta G1";
+  if (parname.EqualTo("c_WWW") )  return "c_{WWW}/#Lambda^{2} (TeV^{-2})";
+  if (parname.EqualTo("c_B") ) return "c_{B}/#Lambda^{2} (TeV^{-2})";
+  if (parname.EqualTo("c_W") ) return "c_{W}/#Lambda^{2} (TeV^{-2})";
 
   return "UNKNOWN PAR "+parname;
 }
@@ -49,6 +53,9 @@ float parmin(const TString& parname)
   if (parname.EqualTo("lZ") )  return -0.03;
   if (parname.EqualTo("dkg") ) return -0.2;
   if (parname.EqualTo("dg1") ) return -0.08;
+  if (parname.EqualTo("c_WWW") )  return -10;
+  if (parname.EqualTo("c_B") ) return -70;
+  if (parname.EqualTo("c_W") ) return -20;
 
   return -999;
 }
@@ -60,6 +67,9 @@ float parmax(const TString& parname)
   if (parname.EqualTo("lZ") )  return 0.03;
   if (parname.EqualTo("dkg") ) return 0.25;
   if (parname.EqualTo("dg1") ) return 0.08;
+  if (parname.EqualTo("c_WWW") )  return 10;
+  if (parname.EqualTo("c_B") ) return 70;
+  if (parname.EqualTo("c_W") ) return 20;
 
   return -999;
 }
@@ -394,28 +404,109 @@ void fillGraphsFromFilesAsymp( const TString& par1,
 }                                            // fillGraphsFromFilesAsymp
 
 //======================================================================
+// Using equations in "Effective field theory: A modern approach to
+// anomalous couplings" (Degrande, et. al., Annals of Physics 335 (2013) 21)
+// c_WWW/Lambda^2 = 2lambda_Z/(3g^2*m^2_W)
+// c_W/Lambda^2   = 2Delta_g_1^Z/M^2_Z
+// c_B/Lambda^2   = 2Delta_kappa_gamma/M^2_W - 2Delta_g_1^Z/M^2_Z
+//
+void
+calcEFTparnames(int plot,
+		TString& eftpar1name,
+		TString& eftpar2name)
+{
+  switch (plot) {
+  case 1:  { // dkglz
+    eftpar1name = TString("c_WWW");
+    eftpar2name = TString("c_B");
+    break;
+  }
+  case 2: { // dg1lz
+    eftpar1name = TString("c_WWW");
+    eftpar2name = TString("c_W");
+    break;
+  }
+  case 3: { // dkgdg1
+    eftpar1name = TString("c_B");
+    eftpar2name = TString("c_W");
+    break;
+  }
+  default: break;
+  }
+}                                                     // calcEFTparnames
+
+//======================================================================
+// Using equations in "Effective field theory: A modern approach to
+// anomalous couplings" (Degrande, et. al., Annals of Physics 335 (2013) 21)
+// c_WWW/Lambda^2 = 2lambda_Z/(3g^2*m^2_W)
+// c_W/Lambda^2   = 2Delta G_1^Z/M^2_Z
+// c_B/Lambda^2   = 2Delta_kappa_gamma/M^2_W - 2Delta G_1^Z/M^2_Z
+//
+void
+calcEFTpars(int plot,
+	    float par1,     float par2,
+	    float &eftpar1, float &eftpar2)
+{
+  const double mw2tev2= 0.08039*0.08039;
+  const double mz2tev2= 0.09119*0.09119;
+  const double g2     = 0.652*0.652;
+
+  switch (plot) {
+  case 1:  { // lZ/dkg
+    eftpar1 = par1* 2/(3*g2*mw2tev2); // c_WWW
+    eftpar2 = par2* 2/mw2tev2;        // c_B
+    break;
+  }
+  case 2: { // lZ/dg1
+    eftpar1 = par1* 2/(3*g2*mw2tev2); // c_WWW
+    eftpar2 = par2* 2/mz2tev2;        // c_W
+    break;
+  }
+  case 3: { // dkg/dg1
+    eftpar2 = par2* 2/mz2tev2;             // c_W
+    eftpar1 = (par1* 2/mw2tev2) - eftpar2; // c_B
+    break;
+  }
+  default: break;
+  }
+}                                                         // calcEFTpars
+
+//======================================================================
 
 void fillGraphsFromFilesDeltaNLL( const TString& par1name,
 				  const TString& par2name,
+				  //int plot,
 				  const vector<TString>& fnames,
 				  vector<string>&  keys,
+				  //TString& eftpar1name,
+				  //TString& eftpar2name,
 				  map<string,TGraph2D *>& m_graphs,
+				  //map<string,TGraph2D *>& m_graphs_EFT,
 				  TGraph **graphobsmin)
 {
   keys.push_back("exp68");
   keys.push_back("exp95");
-  keys.push_back("exp99");
+  //keys.push_back("exp99");
   keys.push_back("obs68");
   keys.push_back("obs95");
 
   TGraph2D *grobs = new TGraph2D();
   TGraph2D *grexp = new TGraph2D();
 
+  //TGraph2D *grobsEFT = new TGraph2D();
+  //TGraph2D *grexpEFT = new TGraph2D();
+
   m_graphs["obs95"] = grobs;
   m_graphs["exp95"] = grexp;
 
+  //m_graphs_EFT["obs95"] = grobsEFT;
+  //m_graphs_EFT["exp95"] = grexpEFT;
+
   grobs->SetName("graph2Dobs95");
   grexp->SetName("graph2Dexp95");
+
+  //grobsEFT->SetName("graph2Dobs95EFT");
+  //grexpEFT->SetName("graph2Dexp95EFT");
 
   for( size_t i=0; i<fnames.size(); i++) {
     
@@ -428,7 +519,7 @@ void fillGraphsFromFilesDeltaNLL( const TString& par1name,
     }
     cout << fnames[i] << " has limit tree with " << t->GetEntries() << " entries." << endl;
 
-    Float_t deltaNLL, par1, par2;
+    Float_t deltaNLL, par1, par2, eftpar1, eftpar2;
     Int_t iToy;
 
     t->SetBranchAddress("iToy", &iToy);
@@ -436,13 +527,16 @@ void fillGraphsFromFilesDeltaNLL( const TString& par1name,
     t->SetBranchAddress(par1name, &par1);
     t->SetBranchAddress(par2name, &par2);
 
-    Int_t nobs=0, nexp=0;
+    Int_t nobs=0, nexp=0, nobsEFT=0, nexpEFT=0;
 
     for (size_t j = 0, n = t->GetEntries(); j < n; ++j) {
       t->GetEntry(j);
+
+      //calcEFTpars(plot, par1, par2, eftpar1, eftpar2);
+
       //printf ("%d\r",j);
-      if( !iToy)             grobs->SetPoint(nobs++,par1,par2,2*deltaNLL);
-      else if (iToy == -1)   grexp->SetPoint(nexp++,par1,par2,2*deltaNLL);
+      if( !iToy)           { grobs->SetPoint(nobs++,par1,par2,2*deltaNLL); /*grobsEFT->SetPoint(nobsEFT++,eftpar1,eftpar2,2*deltaNLL);*/ }
+      else if (iToy == -1) { grexp->SetPoint(nexp++,par1,par2,2*deltaNLL); /*grexpEFT->SetPoint(nexpEFT++,eftpar1,eftpar2,2*bdeltaNLL);*/ }
       else {
 	cerr << "Unexpected value for iToy, = " << iToy << endl;
 	exit(-1);
@@ -463,17 +557,23 @@ void fillGraphsFromFilesDeltaNLL( const TString& par1name,
   } // file loop
   cout << endl;
 
-  double *x = grexp->GetX();
-  double *y = grexp->GetY();
-  double *z = grexp->GetZ();
-
   m_graphs["exp68"] = (TGraph2D*)grexp->Clone("graph2Dexp68");
-  m_graphs["exp99"] = (TGraph2D*)grexp->Clone("graph2Dexp99");
+  //m_graphs["exp99"] = (TGraph2D*)grexp->Clone("graph2Dexp99");
 
   m_graphs["obs68"] = (TGraph2D*)grobs->Clone("graph2Dobs68");
 
 
+  //m_graphs_EFT["exp68"] = (TGraph2D*)grexpEFT->Clone("graph2Dexp68EFT");
+  //m_graphs["exp99"] = (TGraph2D*)grexp->Clone("graph2Dexp99");
+
+  //m_graphs_EFT["obs68"] = (TGraph2D*)grobsEFT->Clone("graph2Dobs68EFT");
+
+
 #if 0
+  double *x = grexp->GetX();
+  double *y = grexp->GetY();
+  double *z = grexp->GetZ();
+
   for(int i=0; i<grexp->GetN(); i++)
     printf ("%d\t%f\t%f\t%f\n",i,x[i],y[i],z[i]);
 
@@ -500,6 +600,7 @@ void collectContours(map<string,TGraph2D *>& m_graphs,
     double clev = m_contourlevels[keys[i]];
     TGraph2D *gr2d = m_graphs[keys[i]];
     if (gr2d && (gr2d->GetN() > 0)) {
+      cout << "Setting contour... " << clev << endl;
       gr2d->GetHistogram()->SetContour(1, &clev);
       //canv->cd(i+1);
       cout << "drawing... " << endl;
@@ -535,6 +636,43 @@ void collectContours(map<string,TGraph2D *>& m_graphs,
 
   //delete canv;
 }                                                     // collectContours
+
+//======================================================================
+
+void convertContours(int plot,
+		     map<string,TList *>& m_contours,
+		     map<string,TList *>& m_contours_eft)
+{
+  cout << "convertContours" << endl;
+
+  TCanvas *canv = new TCanvas("dummy","dummy",100,100);
+  //canv->Divide(3,2);
+
+  map<string,TList *>::iterator cit;
+
+  for (cit = m_contours.begin(); cit!=m_contours.end(); cit++) {
+    string key = cit->first;
+    TList *list = cit->second;
+
+    TIter next(list);
+    TList *eftlist = new TList();
+    while (TGraph *curv = (TGraph *)next()) {
+      TGraph *eftcurv = new TGraph();
+      for (int i=0; i<curv->GetN(); i++) {
+	double par1,par2;
+	float eftpar1,eftpar2;
+	curv->GetPoint(i,par1,par2);
+	calcEFTpars(plot,par1,par2,eftpar1,eftpar2);
+	eftcurv->SetPoint(i,eftpar1,eftpar2);
+      }
+      eftlist->Add((TGraph *)(eftcurv->Clone()));
+    } // list loop
+
+    cout << "Inserting eft contour list for "<< key << " eftlist="<<eftlist<<endl;
+    m_contours_eft[key] = eftlist;
+
+  } // contours loop
+}                                                     // convertContours
 
 //======================================================================
 // "Brazilian Flag" style
@@ -702,15 +840,19 @@ TCanvas *
 draw2DLimitContours(map<string,TList *>& m_contours,
 		    const TString& par1,
 		    const TString& par2,
-		    TLegend *legend)
+		    TLegend *legend=0)
 {
 
   //from here we build the two-dimensional aTGC limit
 
-  TCanvas *finalPlot = new TCanvas("final","limits",500,500);
+  cout << "Drawing " << par2 << " vs. " << par1 << endl;
+
+  TString cname = par1+par2;
+
+  TCanvas *finalPlot = new TCanvas(cname,"limits",500,500);
   finalPlot->cd();
 
-  cout << "Drawing expected 68%" << endl;
+  cout << "Drawing exp68%" << endl;
 
   TList *contLevel = m_contours["exp68"];
   TGraph *curv;
@@ -731,33 +873,34 @@ draw2DLimitContours(map<string,TList *>& m_contours,
 
   for (int i=0; i<contLevel->GetSize(); i++) {
     assert(curv);
-    curv->SetLineColor(kBlue);
+    curv->SetLineColor(kRed);
     curv->SetLineWidth(2);
     curv->SetLineStyle(9);
     if (!i) {
       curv->Draw("AC");
-      legend->AddEntry(curv,"Expected 68% C.L.","L");
+      if (legend) legend->AddEntry(curv,"Expected 68% C.L.","L");
     } else 
       curv->Draw("SAME C");
     curv=(TGraph *)(contLevel->After(curv));
   }
 
-  cout << "Drawing expected 95%" << endl;
+  cout << "Drawing exp95%" << endl;
   
   contLevel = m_contours["exp95"];
 
   curv = (TGraph*)(contLevel->First());
 
   for (int i=0; i<contLevel->GetSize(); i++) {
-    curv->SetLineColor(kGreen);
+    curv->SetLineColor(kBlue);
     curv->SetLineWidth(2);
     curv->SetLineStyle(9);
     curv->Draw("SAME C");
-    if (!i) legend->AddEntry(curv,"Expected 95% C.L.","L");
+    if (!i && legend) legend->AddEntry(curv,"Expected 95% C.L.","L");
     curv=(TGraph *)(contLevel->After(curv));
   }
 
-  cout << "Drawing expected 99%" << endl;
+#if 0
+  cout << "Drawing exp99%" << endl;
 
   contLevel = m_contours["exp99"];
   curv = (TGraph*)(contLevel->First());
@@ -769,22 +912,7 @@ draw2DLimitContours(map<string,TList *>& m_contours,
     if (!i) legend->AddEntry(curv,"Expected 99% C.L.","L");
     curv=(TGraph *)(contLevel->After(curv));
   }
-
-  
-  contLevel = m_contours["obs95"];
-
-  if (contLevel) {
-    cout << "Drawing obs95" << endl;
-
-    curv = (TGraph*)(contLevel->First());
-
-    for (int i=0; i<contLevel->GetSize(); i++) {
-      curv->Draw("SAME C");
-      curv->SetLineWidth(2);
-      if (!i) legend->AddEntry(curv,"Observed 95% C.L.","L");
-      curv=(TGraph *)(contLevel->After(curv));
-    }
-  }
+#endif
   
   contLevel = m_contours["obs68"];
 
@@ -795,9 +923,25 @@ draw2DLimitContours(map<string,TList *>& m_contours,
 
     for (int i=0; i<contLevel->GetSize(); i++) {
       curv->Draw("SAME C");
+      curv->SetLineColor(kRed);
       curv->SetLineWidth(2);
-      curv->SetLineStyle(2);
-      if (!i) legend->AddEntry(curv,"Observed 68% C.L.","L");
+      if (!i && legend) legend->AddEntry(curv,"Observed 68% C.L.","L");
+      curv=(TGraph *)(contLevel->After(curv));
+    }
+  }
+  
+  contLevel = m_contours["obs95"];
+
+  if (contLevel) {
+    cout << "Drawing obs95" << endl;
+
+    curv = (TGraph*)(contLevel->First());
+
+    for (int i=0; i<contLevel->GetSize(); i++) {
+      curv->Draw("SAME C");
+      curv->SetLineColor(kBlue);
+      curv->SetLineWidth(2);
+      if (!i && legend) legend->AddEntry(curv,"Observed 95% C.L.","L");
       curv=(TGraph *)(contLevel->After(curv));
     }
   }
@@ -817,7 +961,7 @@ draw2DLimitContours(map<string,TList *>& m_contours,
   // smLabel->AddText(" SM");
   // smLabel->Draw();
 
-  legend->Draw();
+  if (legend) legend->Draw();
 
 #if 0
   TPaveText *text = new TPaveText(0.516,0.720,0.915,0.951,"NDC");
@@ -1064,25 +1208,32 @@ void atgcplotLimit(const string& fileglob)
 
   assert(fnames.size());
 
-  TString   par1;
-  TString   par2;
+  TString   par1, eftpar1;
+  TString   par2, eftpar2;
+
+  int plot=0;
 
   // get names of coupling parameters from root filename
   //
   if (fnames[0].Contains("dkglz",TString::kIgnoreCase)) {
     par1 = TString("lZ");
     par2 = TString("dkg");
+    plot = 1;
   } else if (fnames[0].Contains("dg1lz",TString::kIgnoreCase)) {
     par1 = TString("lZ");
     par2 = TString("dg1");
+    plot = 2;
   } else if  (fnames[0].Contains("dkgdg1",TString::kIgnoreCase)) {
     par1 = TString("dkg");
     par2 = TString("dg1");
+    plot = 3;
   } 
   if (!par1.Length() || !par2.Length() ) {
     cerr << "Unknown coupling parameters in name " << fnames[0] << endl;
     exit(-1);
   }
+
+  calcEFTparnames(plot, eftpar1, eftpar2);
 
   TString method("Other");
   if (fnames[0].Contains("Asymptotic"))
@@ -1094,7 +1245,7 @@ void atgcplotLimit(const string& fileglob)
 
   vector<string> keys;
   map<string,double> m_contourlevels;
-  map<string,TGraph2D *> m_graphs;
+  map<string,TGraph2D *> m_graphs, m_graphs_eft;
   TGraph *graphobsmin = 0;
 
   if (method.EqualTo("asympCLs")) {
@@ -1106,7 +1257,7 @@ void atgcplotLimit(const string& fileglob)
     fillGraphsFromFilesDeltaNLL(par1,par2,fnames,keys,m_graphs,&graphobsmin);
     m_contourlevels["exp68"] = 2.3;
     m_contourlevels["exp95"] = 5.99;
-    m_contourlevels["exp99"] = 9.21;
+    //m_contourlevels["exp99"] = 9.21;
     m_contourlevels["obs68"] = 2.3;
     m_contourlevels["obs95"] = 5.99;
   }
@@ -1138,56 +1289,115 @@ void atgcplotLimit(const string& fileglob)
   //   limits[limit]->Print()
 
   if (fnames[0].Contains("2D")) {
+
+    const char *perlrecapturefmt = "higgsCombine_(.*)?_2D.*?.root";
+    TObjArray *subStrL = TPRegexp(perlrecapturefmt).MatchS(fnames[0]);
+    if ((subStrL->GetEntriesFast()!=2)) {
+      cerr << "root filename doesn't match expected format, " << fnames[0] << endl;
+      exit(-1);
+    }
+    TString prefix = ((TObjString *)subStrL->At(1))->GetString();
+
+    //cout << "prefix = " << suffix << endl;
+    
 #if 0
     // for a first look
+    TGraph2D *grobs95 = m_graphs_eft["obs95"];
+    cout << "m_graphs_eft[\"obs95\"]->GetN() = " << grobs95->GetN() << endl;
+    for (int i=0; i<grobs95->GetN(); i++) {
+      double *x = grobs95->GetX();
+      double *y = grobs95->GetY();
+      double *z = grobs95->GetZ();
+      printf("x[%d]=%g, y[%d]=%g, z[%d]=%g\n", i, x[i], i, y[i], i, z[i]);
+    }
+
     TCanvas *canv2 = new TCanvas("two","two",800,600);
-    canv2->Divide(3,2);
-    canv2->cd(1);  m_graphs["+2s"]->Draw("TRI"); gPad->SetLogz(1);
-    canv2->cd(2);  m_graphs["+1s"]->Draw("TRI"); gPad->SetLogz(1);
-    canv2->cd(3);  m_graphs["median"]->Draw("TRI"); gPad->SetLogz(1);
-    canv2->cd(4);  m_graphs["-1s"]->Draw("TRI"); gPad->SetLogz(1);
-    canv2->cd(5);  m_graphs["-2s"]->Draw("TRI"); gPad->SetLogz(1);
-    canv2->cd(6);  m_graphs["obs"]->Draw("TRI"); gPad->SetLogz(1);
+    canv2->Divide(2,2);
+    canv2->cd(1);  m_graphs_eft["exp68"]->Draw("COLZ"); gPad->SetLogz(1);
+    canv2->cd(2);  m_graphs_eft["exp95"]->Draw("COLZ"); gPad->SetLogz(1);
+    canv2->cd(3);  m_graphs_eft["obs68"]->Draw("COLZ"); gPad->SetLogz(1);
+    canv2->cd(4);  m_graphs_eft["obs95"]->Draw("COLZ"); gPad->SetLogz(1);
+    canv2->SaveAs("firstlook.png");
 #else
     //m_graphs["obs"]->Draw("TRI");
 
-    map<string,TList *> m_contours;
+    map<string,TList *> m_contours, m_contours_eft;
 
-#if 1
     collectContours(m_graphs,keys,m_contourlevels,m_contours);
-#endif
+    //collectContours(m_graphs_eft,keys,m_contourlevels,m_contours_eft);
 
-    TLegend *legend = new TLegend(0.212,0.72,0.554,0.92,"","NDC");
-    legend->SetFillStyle(0);
-    legend->SetBorderSize(0);
+    convertContours(plot,m_contours,m_contours_eft);
+
+    TLegend *legend = new TLegend(0.212,0.72,0.554,0.9,"","NDC");
+    //legend->SetFillStyle(0);
+    legend->SetBorderSize(1);
     legend->SetTextFont(42);
     legend->SetTextSize(0.03);
 
+    TLegend *legeft = (TLegend *)legend->Clone("legeft");
+
     TCanvas *finalPlot;
+
+    if (method.EqualTo("deltaNLL")) {
+      TString plotprefix;
 #if 1
-    if (method.EqualTo("deltaNLL"))
       finalPlot = draw2DLimitContours(m_contours,par1,par2,legend);
+
+      if (prefix.Contains("elmu"))
+	cmsLabel(finalPlot,19.3,19.2);
+      else if (prefix.Contains("elboosted"))
+	cmsLabel(finalPlot,0.,19.2);
+      else if (prefix.Contains("muboosted"))
+	cmsLabel(finalPlot,19.3,0.);
+      
+      if(graphobsmin) {
+	graphobsmin->Print();
+	graphobsmin->SetMarkerStyle(8);
+	graphobsmin->Draw("SAME Po");
+      }
+      plotprefix=Form("limit2D_%s_%s",
+		      prefix.Data(),
+		      method.Data());
+
+      finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
+      finalPlot->Print(Form("%s.eps",plotprefix.Data()));
+      //finalPlot->Print(Form("%s.png",plotprefix.Data()));
+#endif
+      // DRAW EFT PLOTS
+
+      finalPlot = draw2DLimitContours(m_contours_eft,eftpar1,eftpar2,legeft);
+
+      if (prefix.Contains("elmu"))            cmsLabel(finalPlot,19.3,19.2);
+      else if (prefix.Contains("elboosted"))  cmsLabel(finalPlot,0.,19.2);
+      else if (prefix.Contains("muboosted"))  cmsLabel(finalPlot,19.3,0.);
+
+#if 1
+      if(graphobsmin) {
+	double par1min,par2min;
+	float  eftpar1min,eftpar2min;
+	if (graphobsmin->GetPoint(0,par1min,par2min) == -1)
+	  cerr << "No point 0??"<<endl;
+	else {
+	  calcEFTpars(plot,par1min,par2min,eftpar1min,eftpar2min);
+	  TGraph *graphobsminEFT = new TGraph(1,&eftpar1min,&eftpar2min);
+	  graphobsminEFT->Print();
+	  graphobsminEFT->SetMarkerStyle(8);
+	  graphobsminEFT->Draw("SAME Po");
+	}
+      }
+#endif
+      plotprefix=Form("limit2D_%s_%s_EFT",
+		      prefix.Data(),
+		      method.Data());
+
+      finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
+      finalPlot->Print(Form("%s.eps",plotprefix.Data()));
+      //finalPlot->Print(Form("%s.png",plotprefix.Data()));
+    }
     else
       finalPlot = draw2DLimitBFstyle(m_contours,par1,par2,legend);
 #endif
-
-    cmsLabel(finalPlot);
-
-    if(graphobsmin) {
-      graphobsmin->Print();
-      graphobsmin->SetMarkerStyle(8);
-      graphobsmin->Draw("SAME Po");
-    }
-    TString plotprefix=Form("%s_%s_2dlimit_%s",
-			    par1.Data(),
-			    par2.Data(),
-			    method.Data());
-
-    finalPlot->Print(Form("%s.pdf",plotprefix.Data()));
-    finalPlot->Print(Form("%s.eps",plotprefix.Data()));
-    //finalPlot->Print(Form("%s.png",plotprefix.Data()));
   }
-#endif
 
 #if 0
   TString plotprefix=Form("%s_1dlimit_%s",par1.Data(),method.Data());
