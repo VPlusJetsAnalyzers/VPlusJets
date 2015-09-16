@@ -14,6 +14,11 @@
 #include "TProfile2D.h"
 #include "THStack.h"
 #include "TRandom.h"
+#include "TMath.h"
+#include "TEntryList.h"
+
+#include "TFitResult.h"
+#include "TFitResultPtr.h"
 
 #undef ATGCISSIGNAL
 
@@ -24,10 +29,6 @@ const bool blinded      = false;
 
 const float lz4display=0.01;
 const float dkg4display=0.0;
-
-const int bins = 15;
-const double dm_min = 200.; 
-const double dm_max = 800.;
 
 // for  asym. binning...
 //const double ptbins_boosted[15] = {
@@ -67,75 +68,27 @@ const double stitchwjgev = 680;
 const double ttbar_scale   =   225.197 /20975917;
 const double mtt700_scale  =    15.38  / 3082808;
 const double mtt1k_scale   =     3.063 / 1249109;
-const double SToppS_scale  =     1.76  /  139974;
-const double SToppT_scale  =    30.7   / 1935066;
-const double SToppTW_scale =    11.1   /  493458;
-const double STopS_scale   =     3.79  /  259960;
-const double STopT_scale   =    56.4   / 3758221;
-const double STopTW_scale  =    11.1   /  497657;
+// don't bother with these, only tW contributes in this phase space
+//const double SToppS_scale  =     1.76  /  139974;
+//const double SToppT_scale  =    30.7   / 1935066;
+//const double STopS_scale   =     3.79  /  259960;
+//const double STopT_scale   =    56.4   / 3758221;
+const double STopTbarW_scale =    11.1   /  493458;
+const double STopTW_scale    =    11.1   /  497657;
 
 
 // NORMALIZE TO THE CROSS-SECTION FIT YIELD RESULTS IN THE SIGNAL REGION:
 //
 
-// //Muons (boosted):
-// const double    WV_fityield_muboosted =  317.822509443; //  +/-  132.893054439
-// const double   top_fityield_muboosted =  659.894037959; //  +/-   52.869716158
-// const double WJets_fityield_muboosted = 1827.11376406;  //  +/-   66.7367004534
-
-// //Electrons (boosted):
-// const double    WV_fityield_elboosted =  387.089737128; // +/-  106.493654322
-// const double   top_fityield_elboosted =  539.602494805; // +/-   53.1969479612
-// const double WJets_fityield_elboosted = 1380.22945171;  // +/-   52.9665002837
-
-// YIELDS WITH SECOND JET VETO (Pt<150):
-
-// //Muons (boosted):
-// const double    WV_fityield_muboosted =    281.733229243; //    120.611950138
-// const double   top_fityield_muboosted =    593.98965759;  //     47.5785980599 
-// const double WJets_fityield_muboosted =   1701.45698625;  //     61.5501720859 
-				    								    
-// //Electrons (boosted):		    							    
-// const double    WV_fityield_elboosted =    298.816791102; //    125.156825962
-// const double   top_fityield_elboosted =    488.108124474; //     47.9910346173
-// const double WJets_fityield_elboosted =   1309.77948103;  //     62.8213214703 
-
-
-
-#if 1 // YIELDS WITH SECOND JET/lepton sep. reqrmnt. (deltaR(l,ca8jet)>7.0):
-
 //Muons (boosted):
-// const double WV_fityield_muboosted    =  369.97472832;  //  +/-  128.653534669
-// const double top_fityield_muboosted   =  249.405360996; //  +/-  20.0052840402
-// const double WJets_fityield_muboosted = 1349.50888792;  //  +/-  72.6138461002
-
-// v16 AN:
-const double WV_fityield_muboosted    =  376.649491132; //  +/-  112.253165737
-const double top_fityield_muboosted   =  249.729251046; //  +/-   19.9767156651
-const double WJets_fityield_muboosted = 1340.45881045;  //  +/-   65.8694446871
+const double WV_fityield_muboosted    =  204.118392963; // +/- 116.455352775
+const double top_fityield_muboosted   =  450.117983309; // +/-  36.0567046084
+const double WJets_fityield_muboosted = 1318.48178491;  // +/-  66.6457513819
 
 //Electrons (boosted):
-// const double WV_fityield_elboosted    =  387.529582723; //  +/-  93.0619917601
-// const double top_fityield_elboosted   =  202.06545164;  //  +/-  20.1262682472
-// const double WJets_fityield_elboosted = 1075.33103014;  //  +/-  53.2322420384
-
-const double WV_fityield_elboosted    =  410.228594617; //  +/-  95.2647857845
-const double top_fityield_elboosted   =  201.361387059; //  +/-  20.1270894732
-const double WJets_fityield_elboosted = 1051.96944293;  //  +/-  55.0675110829
-
-#else // YIELDS WITHOUT SECOND JET/lepton sep. requrment or 2nd jet veto
-
-//Muons (boosted):
-const double WV_fityield_muboosted    =  541.33847306;  //  +/-  126.552646112
-const double top_fityield_muboosted   =  361.194607433; //  +/-   28.9054170642
-const double WJets_fityield_muboosted = 1695.22859292;  //  +/-   69.6969191621
-
-//Electrons (boosted):
-const double WV_fityield_elboosted    =  477.20993781;  //  +/-  114.904885277
-const double top_fityield_elboosted   =  295.337782315; //  +/-   29.3448405014
-const double WJets_fityield_elboosted = 1430.79518601;  //  +/-   64.5534199824
-
-#endif
+const double WV_fityield_elboosted    =  285.019244526; // +/- 107.560258373
+const double top_fityield_elboosted   =  363.719433478; // +/-  36.2755682802
+const double WJets_fityield_elboosted = 1023.34933926;  // +/-  60.6034935714
 
 // Yield uncertainties for sum(W+jets,top)
 // computed with correlations from the fit,
@@ -159,7 +112,6 @@ const double mu_sig_norm_error =  sqrt((.041 * .041 * 57.25 *57.25)+
 const double el_sig_norm_error =  mu_sig_norm_error;
 #endif
 
-
 const float yRatioMin = 0.2;
 const float yRatioMax = 2.2;
 
@@ -177,52 +129,186 @@ TChain* treewzlo;
 TChain* treewzhi;
 TChain* treewjlo;
 TChain* treewjhi;
+TChain* treewjsherpa;
 TChain* treettblo,*treettbmd,*treettbhi;
 //TChain* treeqcd;
 TChain* treezj;
-TChain* treests;
-TChain* treestt;
-TChain* treestw;
-TChain* tree64;
-TChain* tree65;
-TChain* tree66;
+//TChain* treestops;
+//TChain* treestopt;
+//TChain* treestopstbar;
+//TChain* treestopttbar;
+TChain* treestoptw;
+TChain* treestoptbarw;
 
 
+const int    bins   = 15;
+const double dm_min = 200.; 
+const double dm_max = 800.;
+const double binwidth = (dm_max-dm_min)/bins;
+
+class histos_t {
+public:
+  TH1D *hobs;
+  TH1D *hcum;
+
+  explicit histos_t() {}
+  explicit histos_t(const TString& name,bool ensumw2=true);
+  ~histos_t() {}
+  inline void Scale(double scale)  { hobs->Scale(scale); hcum->Scale(scale); }
+  inline void SetFillColor(int fc) { hobs->SetFillColor(fc); hcum->SetFillColor(fc); }
+  inline void SetFillStyle(int fs) { hobs->SetFillStyle(fs); hcum->SetFillStyle(fs); }
+  inline void SetLineColor(int lc) { hobs->SetLineColor(lc); hcum->SetLineColor(lc); }
+  inline void SetLineWidth(int lw) { hobs->SetLineWidth(lw); hcum->SetLineWidth(lw); }
+  inline void SetLineStyle(int ls) { hobs->SetLineStyle(ls); hcum->SetLineStyle(ls); }
+  inline double Integral(void)     { return hobs->Integral(); }
+  inline void SetMarkerStyle(int ms)   { hobs->SetMarkerStyle(ms); hcum->SetMarkerStyle(ms); }
+  inline void SetMarkerSize(double ms) { hobs->SetMarkerSize(ms); hcum->SetMarkerSize(ms); }
+  inline void SetMinimum(double min)   { hobs->SetMinimum(min); hcum->SetMinimum(min); }
+
+  TAxis *GetXaxis(void)            { return hobs->GetXaxis(); }
+
+  inline void Add(const histos_t *ad, double c1=1) {
+    hobs->Add(ad->hobs, c1); hcum->Add(ad->hcum, c1);
+  }
+  inline void Add(const histos_t *ad1, const histos_t *ad2,
+		  double c1=1, double c2=1) {
+    hobs->Add(ad1->hobs, ad2->hobs, c1, c2);
+    hcum->Add(ad1->hcum, ad2->hcum, c1, c2);
+  }
+  inline void Divide(const histos_t *denom) {
+    hobs->Divide(denom->hobs);
+    hcum->Divide(denom->hcum);
+  }
+  histos_t *Clone(const TString& name) {
+    histos_t *clone = new histos_t();
+    clone->hobs = (TH1D *)this->hobs->Clone(name);
+    clone->hcum = (TH1D *)this->hcum->Clone(name+"_cum");
+    return clone;
+  }
+
+  void Sumw2() { hobs->Sumw2(); hcum->Sumw2(); }
+
+  void fillFromTree(TChain *thetree,
+		    const TString& theobservable,
+		    const TCut& thecut,
+		    const TString& wtstr="",
+		    double scalefactor=1.,
+		    double locutoff = 0,
+		    double hicutoff = 9.99e99);
+  
+private:
+};
+
+
+//======================================================================
+
+histos_t::histos_t(const TString& name,bool ensumw2)
+{
+  hobs = new TH1D(name,name,bins,dm_min,dm_max);
+  hcum = new TH1D(name+"_cum",name+"_cum",bins,dm_min,dm_max);
+
+  if (ensumw2) {
+    hobs->Sumw2();
+    hcum->Sumw2();
+  }
+}
+
+//======================================================================
+
+void
+histos_t::fillFromTree(TChain *thetree,
+		       const TString& theobservable,
+		       const TCut& thecut,
+		       const TString& wtstr,
+		       double scalefactor,
+		       double locutoff,
+		       double hicutoff)
+{
+  cout << "filling  "<<hobs->GetName()<<", "<< hcum->GetName()<<endl;
+
+  TCut newcut = thecut;
+  if (locutoff > 0)   newcut = TCut(TString("(") + newcut.GetTitle() + Form("&& (%s > %g))",theobservable.Data(),locutoff));
+  if (hicutoff < 1e4) newcut = TCut(TString("(") + newcut.GetTitle() + Form("&& (%s < %g))",theobservable.Data(),hicutoff));
+
+  cout << "Determining event list from cut " << newcut.GetTitle() << endl;
+
+  thetree->Draw(">>elist",newcut,"entrylist");
+  TEntryList *elist = (TEntryList*)gDirectory->Get("elist");
+  thetree->SetEntryList(elist);
+
+  elist->Print();
+
+  TString newwtstr = Form("%g",scalefactor);
+  if (wtstr.Length())
+    newwtstr += Form("*%s",wtstr.Data());
+
+  cout << 
+    thetree->GetName()+
+    TString("->Draw(")+
+    theobservable +
+    Form(">>+%s",hobs->GetName()) +
+    TString(",") +
+    newwtstr +  
+    TString(",goff);")
+       << endl;
+
+  thetree->Draw(theobservable+Form(">>+%s",hobs->GetName()),newwtstr,"goff");
+
+  cout << hobs->GetName() << " now has " << hobs->GetEntries() << " entries." << endl;
+
+#if 1
+  // for cumulative histogram,
+  // ttree::Draw fill histo for appropriate bin for obs value + all bins below, down to the min
+  //
+  for (int ibin=0; ibin<=bins; ibin++) {
+    TString cumobsstr(Form("TMath::Min(%g,",dm_max)+theobservable+Form("-%g)",ibin*binwidth));
+    TString cumcut = newwtstr +TString("*") + TString("((") + theobservable + Form("-%g)>= %g)",ibin*binwidth,dm_min);
+    //if (ibin<2)
+    cout <<
+      thetree->GetName() +
+      TString("->Draw(") + 
+      cumobsstr +
+      Form(">>%s",hcum->GetName()) + 
+      TString(",") +
+      cumcut + 
+      TString(",goff);")
+	 <<endl;
+    thetree->Draw(cumobsstr+Form(">>+%s",hcum->GetName()),cumcut,"goff");
+  }
+
+  cout << hcum->GetName() << " now has " << hcum->GetEntries() << " entries." << endl;
+#endif
+
+  thetree->SetEntryList(0);
+
+}                                              // histos_t::fillFromTree
+
+//======================================================================
 
 ////////// ALL histograms ///////////
-TH1* th1data;
-TH1* th1wwlo;
-TH1* th1wwhi;
-TH1* th1ww;
-TH1* th1wzlo;
-TH1* th1wzhi;
-TH1* th1wz;
-TH1* th1wv;
-TH1* th1wjets;
-TH1* th1wjlo;
-TH1* th1wjhi;
-TH1* systUp;
-TH1* systDown;
-TH1* th1toplo;
-TH1* th1topmd;
-TH1* th1tophi;
-TH1* th1Top;
-//TH1* th1qcd;
-TH1* th1zjets;
-TH1* th1stops;
-TH1* th1stopt;
-TH1* th1stoptw;
-TH1* th1stopps;
-TH1* th1stoppt;
-TH1* th1stopptw;
-TH1D *th1tot;
-TH1* th1totempty;
+
+histos_t *th1data;
+histos_t *th1ww;
+histos_t *th1wz;
+histos_t *th1wv;
+histos_t *th1wjets;
+histos_t *th1ttbar;
+//histos_t *th1stops;
+//histos_t *th1stopt;
+//histos_t *th1stopps;
+//histos_t *th1stoppt;
+histos_t *th1stoptw;
+histos_t *th1stoptbarw;
+histos_t *th1Top;
+histos_t *th1tot;
+histos_t *hhratio;
+histos_t *wwatgc4Display;
+histos_t *wzatgc4Display;
+
+TH1D *th1totempty;
 TH1D* th1emptyclone;
-TH1F* hhratio;
-TH1F* hhratioUp;
-TH1F* hhratioDown;
-TH1D *wwatgc4Display;
-TH1D *wzatgc4Display;
+//TH1F* hhratioUp;
+//TH1F* hhratioDown;
 
 bool saveDataCards_ = !blinded;
 
@@ -246,12 +332,14 @@ void InstantiateTrees() {
   treettbhi = new TChain("WJet");
   //treeqcd = new TChain("WJet");
   //treezj  = new TChain("WJet");
-  treests   = new TChain("WJet");
-  treestt   = new TChain("WJet");
-  treestw   = new TChain("WJet");
-  tree64    = new TChain("WJet");
-  tree65    = new TChain("WJet");
-  tree66    = new TChain("WJet");
+  //treests   = new TChain("WJet");
+  //treestt   = new TChain("WJet");
+  //tree64    = new TChain("WJet");
+  //tree65    = new TChain("WJet");
+  treestoptw    = new TChain("WJet");
+  treestoptbarw = new TChain("WJet");
+
+  treewjsherpa = new TChain("WJet");
 
   //// ------------ Get all trees
  if (domu) {
@@ -265,18 +353,21 @@ void InstantiateTrees() {
 // treewj->Add("InMC/RD_mu_WpJ_CMSSW532.root");
    treewjlo->Add("InMC/RD_mu_WpJ_PT180_Madgraph_CMSSW532.root");
    treewjhi->Add("InMC/RD_mu_WpJ_minPt600_CMSSW532.root");
+
+   treewjsherpa->Add("InMC/RD_mu_WJets_sherpa_CMSSW532.root");
+
 // treettbar->Add("InMC/RD_mu_TTbar_CMSSW532.root");
    treettblo->Add("InMC/RD_mu_TTJets_poheg_CMSSW532.root");
    treettbmd->Add("InMC/RD_mu_Mtt700to1000_CMSSW532.root");
    treettbhi->Add("InMC/RD_mu_Mtt1000toinf_CMSSW532.root");
 // treeqcd->Add("InMC/RD_mu_WpJ_PT180_Madgraph_CMSSW532.root"); // use WpJ, shapes are the same
 // treezj->Add("InMC/RD_mu_ZpJ_CMSSW532.root");
-   treests->Add("InMC/RD_mu_STopS_T_CMSSW532.root");
-   treestt->Add("InMC/RD_mu_STopT_T_CMSSW532.root");
-   treestw->Add("InMC/RD_mu_STopTW_T_CMSSW532.root");
-   tree64->Add("InMC/RD_mu_STopS_Tbar_CMSSW532.root");
-   tree65->Add("InMC/RD_mu_STopT_Tbar_CMSSW532.root");
-   tree66->Add("InMC/RD_mu_STopTW_Tbar_CMSSW532.root");
+// treests->Add("InMC/RD_mu_STopS_T_CMSSW532.root");
+// treestt->Add("InMC/RD_mu_STopT_T_CMSSW532.root");
+// tree64->Add("InMC/RD_mu_STopS_Tbar_CMSSW532.root");
+// tree65->Add("InMC/RD_mu_STopT_Tbar_CMSSW532.root");
+   treestoptw->Add("InMC/RD_mu_STopTW_T_CMSSW532.root");
+   treestoptbarw->Add("InMC/RD_mu_STopTW_Tbar_CMSSW532.root");
 
  } else { // electrons
 
@@ -290,18 +381,21 @@ void InstantiateTrees() {
 // treewj->Add("InMC/RD_el_WpJ_CMSSW532.root");
    treewjlo->Add("InMC/RD_el_WpJ_PT180_Madgraph_CMSSW532.root");
    treewjhi->Add("InMC/RD_el_WpJ_minPt600_CMSSW532.root");
+
+   treewjsherpa->Add("InMC/RD_el_WJets_sherpa_CMSSW532.root");
+
 // treettbar->Add("InMC/RD_el_TTbar_CMSSW532.root");
    treettblo->Add("InMC/RD_el_TTJets_poheg_CMSSW532.root");
    treettbmd->Add("InMC/RD_el_Mtt700to1000_CMSSW532.root");
    treettbhi->Add("InMC/RD_el_Mtt1000toinf_CMSSW532.root");
 // treeqcd->Add("InMC/"InData/RDQCD_WenuJets_Isog0p3NoElMVA_19p2invfb.root");
 // treezj->Add("InMC/RD_el_ZpJ_CMSSW532.root");
-   treests->Add("InMC/RD_el_STopS_T_CMSSW532.root");
-   treestt->Add("InMC/RD_el_STopT_T_CMSSW532.root");
-   treestw->Add("InMC/RD_el_STopTW_T_CMSSW532.root");
-   tree64->Add("InMC/RD_el_STopS_Tbar_CMSSW532.root");
-   tree65->Add("InMC/RD_el_STopT_Tbar_CMSSW532.root");
-   tree66->Add("InMC/RD_el_STopTW_Tbar_CMSSW532.root");
+// treests->Add("InMC/RD_el_STopS_T_CMSSW532.root");
+// treestt->Add("InMC/RD_el_STopT_T_CMSSW532.root");
+// tree64->Add("InMC/RD_el_STopS_Tbar_CMSSW532.root");
+// tree65->Add("InMC/RD_el_STopT_Tbar_CMSSW532.root");
+   treestoptw->Add("InMC/RD_el_STopTW_T_CMSSW532.root");
+   treestoptbarw->Add("InMC/RD_el_STopTW_Tbar_CMSSW532.root");
  }
 
   double nData = treedata->GetEntries();
@@ -330,59 +424,64 @@ void InstantiateTrees() {
 }                                                    // InstantiateTrees
 
 //======================================================================
+// This is a TH1 method in ROOT 6.x
+
+TH1 *GetCumulative(TH1 *src)
+{
+  double sum=0;
+  TH1* hintegrated = (TH1*)src->Clone(TString(src->GetName()) + "_cum");
+  hintegrated->Reset();
+
+  const Int_t nbinsx = src->GetNbinsX();
+  for (Int_t binx = nbinsx; binx >= 1; --binx) {
+    const Int_t bin = hintegrated->GetBin(binx);
+    sum += src->GetBinContent(bin);
+    hintegrated->SetBinContent(bin, sum);
+  }
+  return hintegrated;
+}
+
+//======================================================================
 
 void ScaleHistos(int channel)
 {
-
 #if 0
-  double WJets_norm = 1.;
-  double VV_norm    = 1.;
-  double Top_norm   = 1.;
-  WJets_scale   *= WJets_norm;
-  WW_scale      *= VV_norm;
-  WZ_scale      *= VV_norm;
-  ttbar_scale   *= Top_norm;
-  SToppS_scale  *= Top_norm;
-  SToppT_scale  *= Top_norm;
-  SToppTW_scale *= Top_norm;
-  STopS_scale   *= Top_norm;
-  STopT_scale   *= Top_norm;
-  STopTW_scale  *= Top_norm;
-#endif
-
   // Print all bin contents prior to scaling:
   printf ("%-5s %7s %10s %10s %9s %11s %9s\n","bin","Pt(GeV)","TTbar","WJets","WW","WZ","Data");
-  for (int ibin=1; ibin<=th1wzlo->GetNbinsX()+1; ibin++) {
-    if (ibin>th1wzlo->GetNbinsX())
+  for (int ibin=1; ibin<=bins+1; ibin++) {
+    TAxis *xax = thwzlo->GetXaxis();
+
+    if (ibin > bins)
       printf ("%-4d ovrflow", ibin);
     else
       printf ("%-4d %3.0f-%3.0f", ibin,
-	      th1wzlo->GetXaxis()->GetBinLowEdge(ibin),
-	      th1wzlo->GetXaxis()->GetBinUpEdge(ibin));
-    printf (" %5.4g+-%4.1f",  th1toplo->GetBinContent(ibin)+
-	                      th1topmd->GetBinContent(ibin)+
-	                      th1tophi->GetBinContent(ibin),
-	                      th1toplo->GetBinError(ibin)+
-	                      th1topmd->GetBinError(ibin)+
-	                      th1toplo->GetBinError(ibin));
-    if (th1wzlo->GetBinLowEdge(ibin) < stitchwjgev)
-      printf (" %5.4g+-%4.1f",th1wjlo->GetBinContent(ibin),th1wjlo->GetBinError(ibin));
+	      xax->GetBinLowEdge(ibin),
+	      xax->GetBinUpEdge(ibin));
+    printf (" %5.4g+-%4.1f",  th1toplo->hobs->GetBinContent(ibin)+
+	                      th1topmd->hobs->GetBinContent(ibin)+
+	                      th1tophi->hobs->GetBinContent(ibin),
+	                      th1toplo->hobs->GetBinError(ibin)+
+	                      th1topmd->hobs->GetBinError(ibin)+
+	                      th1tophi->hobs->GetBinError(ibin));
+    if (xax->GetBinLowEdge(ibin) < stitchwjgev)
+      printf (" %5.4g+-%4.1f", th1wjlo->hobs->GetBinContent(ibin), th1wjlo->hobs->GetBinError(ibin));
     else
-      printf (" %5.4g+-%4.1f",th1wjhi->GetBinContent(ibin),th1wjhi->GetBinError(ibin));
+      printf (" %5.4g+-%4.1f", th1wjhi->hobs->GetBinContent(ibin), th1wjhi->hobs->GetBinError(ibin));
 
-    if (th1wzlo->GetBinLowEdge(ibin) < stitchwwgev)
-      printf (" %7.1f+-%4.1f",   th1wwlo->GetBinContent(ibin),   th1wwlo->GetBinError(ibin));
+    if (xax->GetBinLowEdge(ibin) < stitchwwgev)
+      printf (" %7.1f+-%4.1f", th1wwlo->hobs->GetBinContent(ibin), th1wwlo->hobs->GetBinError(ibin));
     else
-      printf (" %7.1f+-%4.1f",   th1wwhi->GetBinContent(ibin),   th1wwhi->GetBinError(ibin));
+      printf (" %7.1f+-%4.1f", th1wwhi->hobs->GetBinContent(ibin), th1wwhi->hobs->GetBinError(ibin));
 
-    if (th1wzlo->GetBinLowEdge(ibin) < stitchwzgev)
-      printf (" %7.1f+-%4.1f",   th1wzlo->GetBinContent(ibin),   th1wzlo->GetBinError(ibin));
+    if (xax->GetBinLowEdge(ibin) < stitchwzgev)
+      printf (" %7.1f+-%4.1f", th1wzlo->hobs->GetBinContent(ibin), th1wzlo->hobs->GetBinError(ibin));
     else
-      printf (" %7.1f+-%4.1f",   th1wzhi->GetBinContent(ibin),   th1wzhi->GetBinError(ibin));
+      printf (" %7.1f+-%4.1f", th1wzhi->hobs->GetBinContent(ibin), th1wzhi->hobs->GetBinError(ibin));
 
-    printf (" %5.3g+-%4.1f", th1data->GetBinContent(ibin), th1data->GetBinError(ibin));
-    printf ("\n");
+    printf   (" %5.3g+-%4.1f", th1data->hobs->GetBinContent(ibin), th1data->hobs->GetBinError(ibin));
+    printf   ("\n");
   }
+#endif
 
   double WV_fityield;
   double WJets_fityield;
@@ -403,173 +502,50 @@ void ScaleHistos(int channel)
     exit(-1);
   }
 
-  th1toplo->Scale(ttbar_scale);
-  th1topmd->Scale(mtt700_scale);
-  th1tophi->Scale(mtt1k_scale);
-
-  th1stops->Scale(STopS_scale);
-  th1stops->SetFillColor(7);
-  th1stops->SetLineWidth(2);
-  th1stopt->Scale(STopT_scale);
-  th1stopt->SetFillColor(13);
-  th1stopt->SetLineWidth(2);
-  th1stoptw->Scale(STopTW_scale);
-  th1stoptw->SetFillColor(9);
-  th1stoptw->SetLineWidth(2);
+  //th1stops->SetFillColor(7);    th1stops->SetLineWidth(2);
+  //th1stopt->SetFillColor(13);   th1stopt->SetLineWidth(2);
+  //th1stopps->SetFillColor(7);   th1stopps->SetLineWidth(2);
+  //th1stoppt->SetFillColor(13);  th1stoppt->SetLineWidth(2);
+  th1stoptw->SetFillColor(9);     th1stoptw->SetLineWidth(2);
+  th1stoptbarw->SetFillColor(9);  th1stoptbarw->SetLineWidth(2);
 
   // Add all the top together:
-  th1topmd->Add(th1tophi,1);
-  th1Top->Add(th1toplo,th1topmd,1.0,0.5);
+  th1Top->Add(th1ttbar,1);
   th1Top->Add(th1stoptw,1);
-  th1Top->Add(th1stopt,1);
-  th1Top->Add(th1stops,1);
+  th1Top->Add(th1stoptbarw,1);
+  //th1Top->Add(th1stopt,1);
+  //th1Top->Add(th1stops,1);
+  //th1Top->Add(th1stoppt,1);
+  //th1Top->Add(th1stopps,1);
+
   th1Top->SetFillColor(kGreen+2);
   th1Top->SetLineColor(kGreen+2);
   th1Top->SetLineWidth(0);
 
-  th1wjlo->Scale(WJ_scale_lo);
-  th1wjhi->Scale(WJ_scale_hi);
-#if 1
-  // stitch the two histograms together into one, post-smearing.
-  for (int ibin=0;ibin<=th1wjets->GetNbinsX()+1;ibin++) {
-    if (th1wjets->GetBinLowEdge(ibin)<stitchwjgev) {
-      th1wjets->SetBinContent(ibin,th1wjlo->GetBinContent(ibin));
-      th1wjets->SetBinError  (ibin,th1wjlo->GetBinError  (ibin));
-    } else {
-      th1wjets->SetBinContent(ibin,th1wjhi->GetBinContent(ibin));
-      th1wjets->SetBinError  (ibin,th1wjhi->GetBinError  (ibin));
-    }
-  }
-#else
-  th1wjets = (TH1 *)th1wjlo->Clone();
-#endif
+  // for one-time test:
+  // TF1* formScaleUp = new TF1("formScaleUp", "1.0-0.0002*x", dm_min, dm_max);
+  // th1wjets->Multiply(formScaleUp);
+
+  //th1wjets->Scale(37509.0 * (domu ? intLUMIinvpb_mu : intLUMIinvpb_el)/93158078); // sherpa sample
 
   th1wjets->SetFillColor(kRed);
   th1wjets->SetLineColor(kRed);
   th1wjets->SetLineWidth(0);
 
-  th1wwlo->Scale(WW_scale_lo);
-  th1wwhi->Scale(WW_scale_hi);
-#if 1
-  // stitch the two WW histograms together into one, post-smearing.
-  for (int ibin=0;ibin<=th1ww->GetNbinsX()+1;ibin++) {
-    if (th1ww->GetBinLowEdge(ibin)<stitchwwgev) {
-      th1ww->SetBinContent(ibin,th1wwlo->GetBinContent(ibin));
-      th1ww->SetBinError  (ibin,th1wwlo->GetBinError  (ibin));
-    } else {
-      th1ww->SetBinContent(ibin,th1wwhi->GetBinContent(ibin));
-      th1ww->SetBinError  (ibin,th1wwhi->GetBinError  (ibin));
-    }
-  }
-#else
-  th1ww = (TH1 *)th1wwlo->Clone();
-#endif
-
-
   th1ww->Scale(WW_scale_NLO * (domu ? intLUMIinvpb_mu : intLUMIinvpb_el));
-  th1ww->SetFillColor(kAzure+8);
-  th1ww->SetLineColor(kAzure+8);
-  th1ww->SetLineWidth(0);
-
-  th1wzlo->Scale(WZ_scale_lo);
-  th1wzhi->Scale(WZ_scale_hi);
-
-  // stitch the two WZ histograms together into one, post-smearing.
-  for (int ibin=0;ibin<=th1wz->GetNbinsX()+1;ibin++) {
-    if (th1wz->GetBinLowEdge(ibin)<stitchwzgev) {
-      th1wz->SetBinContent(ibin,th1wzlo->GetBinContent(ibin));
-      th1wz->SetBinError  (ibin,th1wzlo->GetBinError  (ibin));
-    } else {
-      th1wz->SetBinContent(ibin,th1wzhi->GetBinContent(ibin));
-      th1wz->SetBinError  (ibin,th1wzhi->GetBinError  (ibin));
-    }
-  }
-
   th1wz->Scale(WZ_scale_NLO * (domu ? intLUMIinvpb_mu : intLUMIinvpb_el));
-  th1wz->SetFillColor(11);
-  th1wz->SetLineWidth(0);
 
-  //th1qcd->SetFillColor(kGray+1);
-  //th1qcd->SetLineColor(kGray+1);
-  //th1qcd->SetLineWidth(0);
-  //th1zjets->Scale(ZJets_scale);
-  //th1zjets->SetFillColor(kYellow);
-  //th1zjets->SetLineColor(kYellow);
-  //th1zjets->SetLineWidth(0);
-  //std::cout << " qcd " << th1qcd->Integral()   << std::endl;
-  std::cout << "wjets "  << th1wjets->Integral() << std::endl;
-  std::cout << "tt "     << th1Top->Integral()   << std::endl;
-  std::cout << "ww "     << th1ww->Integral()    << std::endl;
-  std::cout << "wz "     << th1wz->Integral()    << std::endl;
-  //std::cout << "z "    << th1zjets->Integral() << std::endl;
+  std::cout << "wjets " << th1wjets->hobs->Integral() << std::endl;
+  std::cout << "top "   << th1Top->hobs->Integral()   << std::endl;
+  std::cout << "ww "    << th1ww->hobs->Integral()    << std::endl;
+  std::cout << "wz "    << th1wz->hobs->Integral()    << std::endl;
+  std::cout <<" data "  << th1data->hobs->Integral()  << std::endl;
 
-#if 0
-  double den_qcd = 
-    th1Top->Integral()+
-    //th1stops->Integral()+
-    //th1stopt->Integral()+
-    //th1stoptw->Integral()+
-    th1wjets->Integral()+
-    th1ww->Integral()+
-    th1wz->Integral();
-    //th1zjets->Integral();
-
-  double qcd_scale = 0.0;
-
-  if (channel == 1) // electron, resolved dijet
-    qcd_scale = 0.03;
-
-  //std::cout << " qcd_scale  " << qcd_scale <<std::endl;
-  th1qcd->Scale(qcd_scale*den_qcd/th1qcd->Integral()); 
-#endif
-
-  std::cout <<" data " <<  th1data->Integral() << std::endl;
-
-#if 0  // no longer scaling total to data...
-
-  // include SM WW in the backgrounds to determine MC/data normalization
-  double den = 
-    th1Top->Integral()+
-    th1stops->Integral()+
-    th1stopt->Integral()+
-    th1stoptw->Integral()+
-    th1wjets->Integral()+
-    th1ww->Integral()+
-    th1wz->Integral();
-    //th1zjets->Integral()+
-    //th1qcd->Integral();
-
-  std::cout << "den = " <<den <<std::endl;
-  std::cout <<" data " <<  th1data->Integral() << std::endl;
-
-  mc2data_scale = th1data->Integral()/den;
-
-  //th1qcd->Scale   (mc2data_scale); std::cout <<"qcd "   << th1qcd->Integral()   << std::endl;
-  th1Top->Scale   (mc2data_scale); std::cout <<"tt "    << th1Top->Integral()   << std::endl;
-  th1stops->Scale (mc2data_scale); std::cout <<"stops " << th1stops->Integral() << std::endl;
-  th1stopt->Scale (mc2data_scale); std::cout <<"stopt " << th1stopt->Integral() << std::endl;
-  th1stoptw->Scale(mc2data_scale); std::cout <<"stoptw "<< th1stoptw->Integral()<< std::endl;
-  th1wjets->Scale (mc2data_scale); std::cout <<"wjets " << th1wjets->Integral() << std::endl;
-  th1ww->Scale    (mc2data_scale); std::cout <<"ww "    << th1ww->Integral()    << std::endl;
-  th1wz->Scale    (mc2data_scale); std::cout <<"wz "    << th1wz->Integral()    << std::endl;
-  //th1zjets->Scale (mc2data_scale); std::cout <<"z "     << th1zjets->Integral() << std::endl;
-
-  double den2 =
-    th1Top->Integral()+
-    th1stops->Integral()+
-    th1stopt->Integral()+
-    th1stoptw->Integral()+
-    th1wjets->Integral()+
-    th1ww->Integral()+
-    th1wz->Integral()+
-    //th1zjets->Integral()+
-    //th1qcd->Integral();
-
-  std::cout << "den2 " << den2 << std::endl;
-#endif
-
-  th1wv = (TH1 *)th1ww->Clone("wv");
+  th1wv->Add(th1ww,1);
   th1wv->Add(th1wz,1);
+  th1wv->SetFillColor(kAzure+8);
+  th1wv->SetLineColor(kAzure+8);
+  th1wv->SetLineWidth(0);
 
 #ifdef SIGNORM_FROM_FIT
   double  wvscale = WV_fityield/ th1wv->Integral();
@@ -589,20 +565,20 @@ void ScaleHistos(int channel)
 
   // Print all bin contents prior after scaling:
   printf ("%-5s %7s %10s %10s %9s %9s\n","bin","Pt(GeV)","Top","WJets","WW+WZ","Data");
-  for (int ibin=1; ibin<=th1wv->GetNbinsX()+1; ibin++) {
-    if (ibin>th1wv->GetNbinsX())
+  for (int ibin=1; ibin<=bins+1; ibin++) {
+    if (ibin>bins)
       printf ("%-4d ovrflow", ibin);
     else
       printf ("%-4d %3.0f-%3.0f", ibin,
 	      th1wv->GetXaxis()->GetBinLowEdge(ibin),
 	      th1wv->GetXaxis()->GetBinUpEdge(ibin));
-    printf (" %5.4g+-%4.2f",  th1Top->GetBinContent(ibin),  th1Top->GetBinError(ibin));
-    printf (" %5.3g+-%4.1f",th1wjets->GetBinContent(ibin),th1wjets->GetBinError(ibin));
-    printf (" %5.2f+-%4.2f",   th1wv->GetBinContent(ibin),   th1wv->GetBinError(ibin));
-    printf (" %5.3g+-%4.1f", th1data->GetBinContent(ibin), th1data->GetBinError(ibin));
+    printf (" %5.4g+-%4.2f",  th1Top->hobs->GetBinContent(ibin),  th1Top->hobs->GetBinError(ibin));
+    printf (" %5.3g+-%4.1f",th1wjets->hobs->GetBinContent(ibin),th1wjets->hobs->GetBinError(ibin));
+    printf (" %5.2f+-%4.2f",   th1wv->hobs->GetBinContent(ibin),   th1wv->hobs->GetBinError(ibin));
+    printf (" %5.3g+-%4.1f", th1data->hobs->GetBinContent(ibin), th1data->hobs->GetBinError(ibin));
     printf ("\n");
   }
-  
+ 
   //mc2data_scale = th1data->Integral()/(top_fityield+WV_fityield+WJets_fityield);
 
 }                                                         // ScaleHistos
@@ -610,12 +586,12 @@ void ScaleHistos(int channel)
 
 //======================================================================
 
-void AddOverflowBin(TH1* hist) {
+void AddOverflowBin(TH1 *hist,bool calcerror=true) {
   int nBinsTot = hist->GetNbinsX();
   double lastbin = hist->GetBinContent(nBinsTot);
   double overflow = hist->GetBinContent(nBinsTot+1);
   hist->SetBinContent(nBinsTot, lastbin+overflow);
-  hist->SetBinError(nBinsTot, sqrt(lastbin+overflow));
+  if (calcerror) hist->SetBinError(nBinsTot, sqrt(lastbin+overflow));
 }
 
 //======================================================================
@@ -624,19 +600,20 @@ void AddOverflowBin(TH1* hist) {
 void SumAllBackgrounds() {
 
   //-------- First add overflow bin ----------------
-  AddOverflowBin(th1ww);
-  AddOverflowBin(th1wz);
-  AddOverflowBin(th1wv);
+  AddOverflowBin(th1ww->hobs);
+  AddOverflowBin(th1wz->hobs);
+  AddOverflowBin(th1wv->hobs);
 
-  AddOverflowBin(th1wjets);
+  AddOverflowBin(th1wjets->hobs);
   //AddOverflowBin(th1zjets);
-  AddOverflowBin(th1Top);
+  AddOverflowBin(th1Top->hobs);
   //AddOverflowBin(th1qcd);
-  AddOverflowBin(th1data);
+  AddOverflowBin(th1data->hobs,false);
 
   //-------- Now sum of all bkg histograms ----------
-  th1tot = (TH1D*)th1wjets->Clone("th1tot");
-  th1tot->Reset();
+  th1tot->hobs = (TH1D*)th1wjets->hobs->Clone("th1tot");     th1tot->hobs->Reset();
+  th1tot->hcum = (TH1D*)th1wjets->hcum->Clone("th1totcum");  th1tot->hcum->Reset();
+
 #ifdef ATGCISSIGNAL
   cout << "I'M ADDING WV TO THE BACKGROUND!!!!" << endl;
   th1tot->Add(th1wv,1);
@@ -658,12 +635,14 @@ void SumAllBackgrounds() {
 
 void makeRatioHisto()
 {
+#if 0
   //-------- Needed for plotting ----------
   TH1D* th1totClone = ( TH1D*) th1tot->Clone("th1totClone");
 
 #ifndef ATGCISSIGNAL // wasn't added before, so add now for plotting
   th1totClone->Add(th1wv,1);
 #endif
+
   th1totClone->SetMarkerStyle(0);
   th1totClone->SetFillStyle(3003);
   th1totClone->SetFillColor(11);
@@ -679,13 +658,18 @@ void makeRatioHisto()
 		  //(th1zjets->GetBinError(i))**2);
     th1totClone->SetBinError(i, binErr);
   }
+#endif
 
   //-------- Ratio histogram ----------
-  hhratio    = (TH1F*) th1data->Clone("hhratio")  ;
+  hhratio    = th1data->Clone("hhratio")  ;
   hhratio->Sumw2();
+  hhratio->SetMarkerStyle(20);
   hhratio->SetMarkerSize(1.25);
-  hhratio->GetYaxis()->SetRangeUser(yRatioMin, yRatioMax);
-  hhratio->Divide(th1totClone);
+  hhratio->SetLineWidth(2);
+  hhratio->hobs->GetYaxis()->SetRangeUser(yRatioMin, yRatioMax);
+  hhratio->hcum->GetYaxis()->SetRangeUser(yRatioMin, yRatioMax);
+  hhratio->Divide(th1tot);
+#if 0
   double binError(0.0), mcbinentry(0.0), mcerror(0.0);
   for(int i=0; i<hhratio->GetNbinsX(); ++i) {
     binError   = hhratio->GetBinError(i);
@@ -697,6 +681,7 @@ void makeRatioHisto()
     hhratio->SetBinError(i, binError);
     if(th1data->GetBinContent(i)<0.1) hhratio->SetBinError(i,0.0);
   }
+#endif
 }                                                      // makeRatioHisto
 
 //======================================================================
@@ -704,23 +689,23 @@ void makeRatioHisto()
 TLegend* GetLegend(int channel)
 {
   // float  legX0=0.5, legX1=0.89, legY0=0.41, legY1=0.86;
-  float  legX0=0.55, legX1=0.96, legY0=0.50, legY1=0.90;
+  float  legX0=0.65, legX1=0.96, legY0=0.50, legY1=0.90;
 
   TLegend * Leg = new TLegend( legX0, legY0, legX1, legY1);
   Leg->SetFillColor(0);
   Leg->SetFillStyle(0);
   Leg->SetTextSize(0.045);
   if (injectSignal)
-    Leg->AddEntry(th1data, domu ?  "Sig. inject toy mu data" : "Sig. inject toy el. data",  "PLE");
+    Leg->AddEntry(th1data->hobs, domu ?  "Sig. inject toy mu data" : "Sig. inject toy el. data",  "PLE");
   else
-    Leg->AddEntry(th1data, domu ?  "Muon Data" : "Electron Data",  "PLE");
+    Leg->AddEntry(th1data->hobs, domu ?  "Muon Data" : "Electron Data",  "PLE");
 
-  Leg->AddEntry(th1wv,  "SM WW+WZ ",  "f");
-  Leg->AddEntry(th1wjets,  "W+jets",  "f");
-  Leg->AddEntry(th1Top,  "top",  "f");
+  Leg->AddEntry(th1wv->hobs,  "SM WW+WZ ",  "f");
+  Leg->AddEntry(th1wjets->hobs,  "W+jets",  "f");
+  Leg->AddEntry(th1Top->hobs,  "top",  "f");
   //if(channel == 1) Leg->AddEntry(th1qcd,  "Multijet",  "f");
   //Leg->AddEntry(th1zjets,  "Z+Jets",  "f");
-  Leg->AddEntry(th1tot,  "MC error",  "f");
+  Leg->AddEntry(th1tot->hobs,  "MC error",  "f");
   //Leg->AddEntry(systUp,  "Shape error",  "f");
 #if 0
   Leg->AddEntry(wwatgc4Display,
@@ -730,8 +715,8 @@ TLegend* GetLegend(int channel)
 		Form("WZ, (#lambda_{Z}, #Delta#kappa_{#gamma})=(%g,%g)",
 		     lz4display,dkg4display), "l");
 #else
-  Leg->AddEntry(wwatgc4Display,	Form("WW, #lambda_{Z} = %g",lz4display), "l");
-  Leg->AddEntry(wzatgc4Display,	Form("WZ, #lambda_{Z} = %g",lz4display), "l");
+  Leg->AddEntry(wwatgc4Display->hobs,Form("WW, #lambda_{Z} = %g",lz4display), "l");
+  Leg->AddEntry(wzatgc4Display->hobs,Form("WZ, #lambda_{Z} = %g",lz4display), "l");
 #endif
   Leg->SetFillColor(0);
 
@@ -753,8 +738,8 @@ void SetupEmptyHistogram(char* xtitle)
   th1totempty->GetYaxis()->SetLabelSize(0.08);
   th1totempty->GetYaxis()->SetTitleSize(0.08);
 
-  int maxbin = th1data->GetMaximumBin();
-  float maxval = th1data->GetBinContent(maxbin);
+  int maxbin = th1data->hobs->GetMaximumBin();
+  float maxval = th1data->hobs->GetBinContent(maxbin);
   std::cout << "maxval " <<maxval <<std::endl;
   th1totempty->SetMaximum(1.2*maxval);
   th1totempty->SetMinimum(0.0);
@@ -784,7 +769,7 @@ void SetupEmptyHistogram(char* xtitle)
 
 //------- Get signal histogram -------
 
-TCut
+TString
 GetSigRatioFunction(const char *obsrvbl, const char *wworwz="ww")
 {
   //printf("%g\t%g\t%g\r",lambdaZ,dkappaGamma,deltaG1);
@@ -815,11 +800,9 @@ GetSigRatioFunction(const char *obsrvbl, const char *wworwz="ww")
   sigratiostr += TString("0")+closestr;
   //printf("Looking up coefficients for %s lambdaZ=%g, dkappaGamma=%g\n",wworwz,lambda,dkg);
 
-  TCut sigratio(sigratiostr);
-
   cout << "sigratio function: " << sigratiostr << endl;
 
-  return sigratio;
+  return sigratiostr;
 }                                                 // GetSigRatioFunction
 
 //======================================================================
@@ -847,104 +830,187 @@ void cmspre()
 
 //======================================================================
 
-TH1D *fillMChisto(const TString& name,
-		  TChain *thetree,
-		  const TString& theobservable,
-		  const TCut& thecut,
-		  bool verbose = true)
-{
-  TH1D *thehisto = new TH1D(name,name,bins,dm_min,dm_max);
-  //TH1D *thehisto = new TH1D(name, name, bins, ptbins_boosted);
-
-  thehisto->Sumw2();
-
-  TString drawstr = theobservable+Form(">>%s",thehisto->GetName());
-
-  if (verbose) {
-    cout << "filling histo " << thehisto->GetName() << endl;
-    cout <<"tree->Draw("<<drawstr<<","<<TString((const char *)thecut)<<",goff);"<<endl;
-  }
-  thetree->Draw(drawstr,TCut(thecut),"goff");
-
-  return thehisto;
-}                                                         // fillMChisto
-
-//======================================================================
-
 void makeSignalHistos4Display(const TString& mcobservable,
-			      const TCut&    mccut)
+			      const TCut&    mccut,
+			      const TString& wtstr)
 {
   // ---- Get signal histogram ----------
-  TCut wwsigratio= GetSigRatioFunction(mcobservable);
-  TCut wzsigratio= GetSigRatioFunction(mcobservable,"wz");
-  
-  TCut wwsigcut = mccut*wwsigratio;
-  TCut wzsigcut = mccut*wzsigratio;
-  
-  wwatgc4Display = new TH1D("wwatgc4Display","wwatgc4Display",bins,dm_min,dm_max);
-  wzatgc4Display = new TH1D("wzatgc4Display","wzatgc4Display",bins,dm_min,dm_max);
-  //wwatgc4Display = new TH1D("wwatgc4Display","wwatgc4Display",bins,ptbins_boosted);
-  
-  TString drawstr = TString(mcobservable)+TString(">>wwatgc4Display");
+  TString wwsigratio= GetSigRatioFunction(mcobservable);
+  TString wzsigratio= GetSigRatioFunction(mcobservable,"wz");
 
-  cout <<
-    TString("wwtree->Draw(\"")+drawstr+TString("\", \"")+
-    TString((const char*)wwsigcut)+TString("\", \"goff\")") << endl;
+  wwatgc4Display = new histos_t("th1wwatgc");
+  wzatgc4Display = new histos_t("th1wzatgc");
 
-  TH1D *th1wwlosc = fillMChisto("sigwwlo",treewwlo,mcobservable,wwsigcut,false);
-  TH1D *th1wwhisc = fillMChisto("sigwwhi",treewwhi,mcobservable,wwsigcut,false);
-  TH1D *th1wzlosc = fillMChisto("sigwzlo",treewzlo,mcobservable,wzsigcut,false);
-  TH1D *th1wzhisc = fillMChisto("sigwzhi",treewzhi,mcobservable,wzsigcut,false);
-
-  th1wwlosc->Scale(WW_scale_lo);
-  th1wwhisc->Scale(WW_scale_hi);
-
-  th1wzlosc->Scale(WZ_scale_lo);
-  th1wzhisc->Scale(WZ_scale_hi);
-
-  // stitch the two histograms together into one, post-smearing.
-  for (int ibin=1;ibin<=wwatgc4Display->GetNbinsX();ibin++) {
-    if (wwatgc4Display->GetBinLowEdge(ibin)<stitchwwgev) {
-      wwatgc4Display->SetBinContent(ibin,th1wwlosc->GetBinContent(ibin));
-      wwatgc4Display->SetBinError  (ibin,th1wwlosc->GetBinError  (ibin));
-    } else {
-      wwatgc4Display->SetBinContent(ibin,th1wwhisc->GetBinContent(ibin));
-      wwatgc4Display->SetBinError  (ibin,th1wwhisc->GetBinError  (ibin));
-    }
+  TString wwwtstr = TString("(")+wwsigratio+TString(")");
+  TString wzwtstr = TString("(")+wzsigratio+TString(")");
+  if (wtstr.Length()) {
+    wwwtstr += TString("*")+wtstr;
+    wzwtstr += TString("*")+wtstr;
   }
+
+  wwatgc4Display->fillFromTree(treewwlo,mcobservable,mccut,wwwtstr,WW_scale_lo,0,stitchwwgev);
+  wzatgc4Display->fillFromTree(treewzlo,mcobservable,mccut,wzwtstr,WZ_scale_lo,0,stitchwzgev);
+
+  wwatgc4Display->fillFromTree(treewwhi,mcobservable,mccut,wwwtstr,WW_scale_hi,stitchwwgev);
+  wzatgc4Display->fillFromTree(treewzhi,mcobservable,mccut,wzwtstr,WZ_scale_hi,stitchwzgev);
 
   wwatgc4Display->Scale(WW_scale_NLO * (domu ? intLUMIinvpb_mu : intLUMIinvpb_el));
-
-  // stitch the two WZ histograms together into one, post-smearing.
-  for (int ibin=0;ibin<=wzatgc4Display->GetNbinsX()+1;ibin++) {
-    if (wzatgc4Display->GetBinLowEdge(ibin)<stitchwzgev) {
-      wzatgc4Display->SetBinContent(ibin,th1wzlosc->GetBinContent(ibin));
-      wzatgc4Display->SetBinError  (ibin,th1wzlosc->GetBinError  (ibin));
-    } else {
-      wzatgc4Display->SetBinContent(ibin,th1wzhisc->GetBinContent(ibin));
-      wzatgc4Display->SetBinError  (ibin,th1wzhisc->GetBinError  (ibin));
-    }
-  }
-
   wzatgc4Display->Scale(WZ_scale_NLO * (domu ? intLUMIinvpb_mu : intLUMIinvpb_el));
 
-  cout << "wwatgc4Display nentries = " << wwatgc4Display->GetEntries() << endl;
+  cout << "wwatgc4Display nentries = " << wwatgc4Display->hobs->GetEntries() << endl;
 
-  // ----- need to subtract the diboson contribution 
   wwatgc4Display->SetLineWidth(2);
   wwatgc4Display->SetLineColor(1);
   wwatgc4Display->SetFillColor(0);
 
-  // ----- need to subtract the diboson contribution 
   wzatgc4Display->SetLineWidth(2);
   wzatgc4Display->SetLineColor(1);
   wzatgc4Display->SetFillColor(0);
   wzatgc4Display->SetLineStyle(2);
 
   //-------- Add overflow bin ----------------
-  AddOverflowBin(wwatgc4Display);
-  AddOverflowBin(wzatgc4Display);
+  AddOverflowBin(wwatgc4Display->hobs);
+  AddOverflowBin(wzatgc4Display->hobs);
 }                                            // makeSignalHistos4Display
+
+//======================================================================
+
+void DrawItAll(int channel, 
+	       THStack *hs, 
+	       TH1 *htot,
+	       TH1 *hdata,
+	       TH1 *hratio,
+	       const TString& outfile)
+{
+  // ------- Setup the canvas ------- 
+  gStyle->SetOptStat(0);
+  gStyle->SetOptTitle(0);
+  // gStyle->SetPadTopMargin(0.1);
+  gStyle->SetPadLeftMargin(0.15);
+  // gStyle->SetPadRightMargin(0.2);
+  gStyle->SetPadBottomMargin(0.3);
+  // gStyle->SetErrorX(0.5);
+
+  TCanvas* c1 = new TCanvas(hs->GetName(), "", 10,10, 500, 500);
+
+  TPad *d1, *d2;
+  c1->Divide(1,2,0,0);
+  d1 = (TPad*)c1->GetPad(1);
+  d1->SetPad(0.01,0.30,0.95,0.99);
+  d2 = (TPad*)c1->GetPad(2);
+  d2->SetPad(0.01,0.02,0.95,0.30);
+  d1->cd();
+
+  gPad->SetBottomMargin(0.005);
+
+  gPad->SetTopMargin(0.1);
+  gPad->SetRightMargin(0.04);
+  // gPad->SetLeftMargin(0.14);
+
+
+  // Draw it all
+  double ymax= 5000000.;
+  double ymin= 7.0;
+  if(channel>1) { 
+    ymax= 3000.;
+    ymin= 0.10;
+  }
+
+  th1totempty->GetYaxis()->SetRangeUser(ymin, ymax);
+
+  th1totempty->Draw();
+  hs->Draw("samehist");
+  for (int i=1;i<=bins;i++)
+    {
+      double val = htot->GetBinContent(i); // / (ptbins_boosted[i]-ptbins_boosted[i-1]);
+      double err = fabs(htot->GetBinError(i)); // / (ptbins_boosted[i]-ptbins_boosted[i-1]);
+      TBox *b = new TBox(htot->GetBinLowEdge(i),
+			 val-err,htot->GetBinLowEdge(i+1),val+err);
+      b->SetLineColor(1);
+      b->SetFillColor(1);
+      b->SetFillStyle(3001);
+      b->SetLineStyle(3001);	 
+      b->Draw();
+    }
+  //data2draw->Draw("esame");
+
+  hdata->SetMarkerStyle(20);
+  hdata->SetMarkerSize(1.25);
+  hdata->SetLineWidth(2);
+  hdata->SetMinimum(0.0);
+  hdata->GetYaxis()->SetRangeUser(ymin, ymax);
+  hdata->SetBinErrorOption(TH1::kPoisson);
+
+  cout << "Bin error option = " << hdata->GetBinErrorOption() << endl;
+  cout << "fSumw2.fN = " << hdata->GetSumw2N() << endl;
+
+  hdata->Draw("E0 same");
+
+  cout << "Bin error option = " << hdata->GetBinErrorOption() << endl;
+  cout << "fSumw2.fN = " << hdata->GetSumw2N() << endl;
+
+  cmspre(); 
+  // Set up the legend
+  TLegend* Leg = GetLegend(channel);   
+  Leg->Draw();  
+  gPad->SetLogy();
+  gPad->RedrawAxis();
+
+  d2->cd();
+  gPad->SetTopMargin(0.02);
+  gPad->SetRightMargin(0.04);
+  gPad->SetFrameBorderSize(0);
+  gPad->SetBottomMargin(0.45);
+  gPad->SetTickx();
+
+  th1emptyclone->Draw();
+
+  hratio->Draw("E0 same");
+  //hhratioUp->Draw("hist lsame");
+  //hhratioDown->Draw("hist lsame");
+
+#if 1
+  {
+    TF1 *f1 = new TF1("f1", "pol1", dm_min, dm_max);
+    f1->SetParameters(1.0,0.0);
+    f1->SetParameters(1,0.0);
+    //f1->FixParameter(0,1);
+    //f1->FixParameter(1,0);
+    //cout<<" par1   "f1->GetParameter(0)<<endl;
+    //cout<<" par2   "f1->GetParameter(1)<<endl;
+
+    //TFitResultPtr r =  hratio->Fit("f1", "RBS");
+    //TFitResultPtr r = hratio->Fit(myFunc,"S");
+    //r->Print("V");     // print full information of fit including covariance matrix
+  }
+#endif
+
+  TLine *line; line = new TLine(dm_min,1.0,dm_max,1.0);
+  line->SetLineStyle(1);
+  line->SetLineWidth(1);
+  line->SetLineColor(1);
+  line->Draw();
+
+  //gPad->WaitPrimitive();
+  c1->Modified();
+  c1->Update();
+
+  TString outfilename = TString("OutDir/")+outfile;
+
+  if (injectSignal)
+    outfilename += TString("_fatjetPt");
+  else if (blinded)
+    outfilename += TString("_fatjetPt_blinded");
+  else
+    outfilename += TString("_fatjetPt_unblinded");
+
+  if (TString(hs->GetName()).Contains("cum"))
+    outfilename += TString("_cum");
+
+  c1->Print (outfilename + TString(".png"));
+  c1->SaveAs(outfilename + TString(".pdf"));
+  c1->SaveAs(outfilename + TString(".C"));
+}                                                           // DrawItAll   
 
 //======================================================================
 
@@ -973,6 +1039,8 @@ void makeATGCLimitDataCards(int channel) {
   domu = true;
   if(channel==1 || channel==3) domu = false;
 
+  //histos_t th1qcd;
+  //histos_t th1zjets;
 
   TString outfile = (domu?TString("mu"):TString("el"))+ 
                     (channel<2?TString("dijet"):TString("boosted")) +
@@ -983,13 +1051,30 @@ void makeATGCLimitDataCards(int channel) {
     outputForLimit = TFile::Open(outfile+".root", "recreate");
   }
 
+  // histos with different norm. scale factors
+  th1data    = new histos_t("th1data",false);
+  th1ww      = new histos_t("th1ww");
+  th1wz      = new histos_t("th1wz");
+  th1wv      = new histos_t("th1wv");
+  th1wjets   = new histos_t("th1wjets");
+  th1ttbar   = new histos_t("th1ttbar");
+  //th1stops   = new histos_t("th1stops");
+  //th1stopt   = new histos_t("th1stopt");
+  //th1stopstbar  = new histos_t("th1stopstbar");
+  //th1stopttbar  = new histos_t("th1stopttbar");
+  th1stoptw    = new histos_t("th1stoptw");
+  th1stoptbarw = new histos_t("th1stoptbarw");
+  th1Top       = new histos_t("th1Top");
+
+  th1tot     = new histos_t();
+
   TString cutsDijet("(W_pt<200.) && (dijetPt>70.) && (abs(JetPFCor_Eta[0])<2.4) && (abs(JetPFCor_Eta[1])<2.4) && (abs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5) &&(abs(JetPFCor_dphiMET[0])>0.4) &&(JetPFCor_Pt[0]>40.) &&(JetPFCor_Pt[1]>35.) &&(JetPFCor_Pt[2]<30.) &&(JetPFCor_bDiscriminatorCSV[0]<0.244) &&(JetPFCor_bDiscriminatorCSV[1]<0.244) && (Mass2j_PFCor>70. && Mass2j_PFCor<100.)");
 
 
   // Do not put jet pt in the cut string here, since it is going to be smeared
   TString cutsMerged("(vbf_event==0) && (W_pt>200.) &&(abs(GroomedJet_CA8_eta[0])<2.4)&&(ggdboostedWevt==1) && (GroomedJet_CA8_deltaphi_METca8jet[0]>2.0) && (GroomedJet_CA8_deltaR_lca8jet[0]>1.57) && (numPFCorJetBTags<1) && (GroomedJet_CA8_tau2tau1[0]<0.55) && (GroomedJet_CA8_mass_pr[0]>70. && GroomedJet_CA8_mass_pr[0]<100.)");
 
-  // 
+  TString wtstr = "(puwt*effwt)";
 
   TString        lepton_cut = "(event_met_pfmet >30) && (W_mt>30.) && (W_electron_pt>35.)";
   if(channel==0) lepton_cut = "(event_met_pfmet >25) && (W_mt>30.) && (W_muon_pt>25.) && (abs(W_muon_eta)<2.1)";
@@ -998,6 +1083,8 @@ void makeATGCLimitDataCards(int channel) {
   if(channel==3) lepton_cut = "(event_met_pfmet >70) && (W_mt>30.) && (W_electron_pt>35.)";
 
   TString And = " && ";
+  TString Open = "(";
+  TString Close = ")";
 
   TString jet_cut = cutsDijet;
   TString jetptcuts,mcjetptcuts,wwhimcjetptcuts,wzhimcjetptcuts;
@@ -1018,111 +1105,99 @@ void makeATGCLimitDataCards(int channel) {
       (GroomedJet_CA8_pt[4]>jetthresh)+\
       (GroomedJet_CA8_pt[5]>jetthresh)";*/
 
+#if 0
+    mcobservable = "W_pt";
+    observable = "W_pt";
+#else
     mcobservable = "GroomedJet_CA8_pt_smeared[0]";
-    //mcobservable = "GroomedJet_CA8_pt[0]";
     observable = "GroomedJet_CA8_pt[0]";
+#endif
+
+    char *jet1var= "GroomedJet_CA8_pt[0]";
     char *jet2var= "GroomedJet_CA8_pt[1]";
+    char *mcjet1var="GroomedJet_CA8_pt_smeared[0]";
     char *mcjet2var="GroomedJet_CA8_pt_smeared[1]";
+
     jetptcutval = 200.;
     wwjetptcutoff = 1300.; // value where the WW hi pt MC starts to run out of statistics
     wzjetptcutoff = 1100.; // value where the WZ hi pt MC starts to run out of statistics
-    jetptcuts   = Form("(%s > %f) && (%s < %f)",  observable,jetptcutval,jet2var,jetthresh);
-    //mcjetptcut = Form("(%s > %f)",mcobservable,jetptcutval);
-    mcjetptcuts     = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcobservable,jetptcutval,mcobservable,wwjetptcutoff,mcjet2var,jetthresh);
-    wwhimcjetptcuts = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcobservable,jetptcutval,mcobservable,wwjetptcutoff,mcjet2var,jetthresh);
-    wzhimcjetptcuts = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcobservable,jetptcutval,mcobservable,wzjetptcutoff,mcjet2var,jetthresh);
+    jetptcuts   = Form("(%s > %f) && (%s < %f)",  jet1var,jetptcutval,jet2var,jetthresh);
+    //mcjetptcut = Form("(%s > %f)",jet1var,jetptcutval);
+    mcjetptcuts     = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcjet1var,jetptcutval,mcjet1var,wwjetptcutoff,mcjet2var,jetthresh);
+    wwhimcjetptcuts = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcjet1var,jetptcutval,mcjet1var,wwjetptcutoff,mcjet2var,jetthresh);
+    wzhimcjetptcuts = Form("((%s > %f) && (%s < %f))&&(%s < %f)",mcjet1var,jetptcutval,mcjet1var,wzjetptcutoff,mcjet2var,jetthresh);
     xtitle = "p_{T}^{j} [GeV]";
   }
 
 
-  TCut mccut( TString("(effwt*puwt)*(")+lepton_cut+And+jet_cut+And+mcjetptcuts+TString(")") );
+  TCut mccut( Open+lepton_cut+And+jet_cut+And+mcjetptcuts+Close );
 
   TCut datacut;
   if (blinded)
-    datacut = TCut( TString("(") + lepton_cut + And + jet_cut + And + jetptcuts + And +
-		    Form("(%s < 520.))", observable) );
+    datacut = TCut( Open + lepton_cut + And + jet_cut + And + jetptcuts + And +
+		    Form("(%s < 520.)", observable) + Close );
   else
-    datacut = TCut( TString("(") + lepton_cut + And + jet_cut + And + jetptcuts + TString(")") );
-
-
-  // for combining ttbar files
-  TString mttstr
-    ("sqrt((W_top_E+W_atop_E)^2 -(W_top_px+W_atop_px)^2 -(W_top_py+W_atop_py)^2 -(W_top_pz+W_atop_pz)^2)");
-
-  // weight default sample by 1 for mtt<700, by half above for adding the high mtt samples
-  TCut mttwt(TString("(")+mttstr+TString("<700)?1.0:0.5"));
+    datacut = TCut( Open + lepton_cut + And + jet_cut + And + jetptcuts + Close );
 
   InstantiateTrees();
 
-
-  //th1data  = new TH1D("th1data",  "th1data",  bins, ptbins_boosted); // bins, dm_min, dm_max);
-  th1data  = new TH1D("th1data",  "th1data",  bins, dm_min, dm_max);
-
-  th1data->SetMarkerStyle(20);
-  th1data->SetMarkerSize(1.25);
-  th1data->SetLineWidth(2);
-  th1data->SetMinimum(0.0);
-
-  TString drawstr = TString(observable)+TString(">>th1data");
-
   if (!injectSignal) {
-    cout <<
-      TString("treedata->Draw(\"")+drawstr+TString("\", \"")+
-      TString((const char*)datacut)+TString("\", \"goff\")") << endl;
-    
-    treedata->Draw(drawstr, datacut, "goff");
+    th1data->fillFromTree(treedata,observable,datacut);
+    cout << "th1data->hobs fSumw2.fN = " << th1data->hobs->GetSumw2N() << endl;
   }
 
   // ------- Get WW/WZ ------- 
-  th1ww   = new TH1D("th1ww", "th1ww", bins, dm_min, dm_max);
-  th1wz   = new TH1D("th1wz", "th1wz", bins, dm_min, dm_max);
-  th1ww->Sumw2();
-  th1wz->Sumw2();
 
-  th1wwlo = fillMChisto("th1wwlo",treewwlo,mcobservable,mccut);
-  th1wzlo = fillMChisto("th1wzlo",treewzlo,mcobservable,mccut);
+  th1ww->fillFromTree(treewwlo,mcobservable,mccut,wtstr,WW_scale_lo,0,stitchwwgev);
+  th1wz->fillFromTree(treewzlo,mcobservable,mccut,wtstr,WZ_scale_lo,0,stitchwzgev);
 
   // cut off integration of high tail when statistics become low and the parametrization is invalid: 
-  TCut wwhimccut( TString("(effwt*puwt)*(")+ lepton_cut+And+jet_cut+And+wwhimcjetptcuts + TString(")") );
-  TCut wzhimccut( TString("(effwt*puwt)*(")+ lepton_cut+And+jet_cut+And+wzhimcjetptcuts + TString(")") );
+  TCut wwhimccut( Open + lepton_cut+And+jet_cut+And+wwhimcjetptcuts + Close );
+  TCut wzhimccut( Open + lepton_cut+And+jet_cut+And+wzhimcjetptcuts + Close );
 
-  th1wwhi = fillMChisto("th1wwhi",treewwhi,mcobservable,wwhimccut);
-  th1wzhi = fillMChisto("th1wzhi",treewzhi,mcobservable,wzhimccut);
+  th1ww->fillFromTree(treewwhi,mcobservable,wwhimccut,wtstr,WW_scale_hi,stitchwwgev);
+  th1wz->fillFromTree(treewzhi,mcobservable,wzhimccut,wtstr,WZ_scale_hi,stitchwzgev);
 
   // ------- Get ttbar ------- 
-  th1Top   = new TH1D("th1Top", "th1Top", bins, dm_min, dm_max);
-  th1Top->Sumw2();
 
-  th1toplo = fillMChisto("th1toplo",treettblo,mcobservable,mttwt*mccut);
-  th1topmd = fillMChisto("th1topmd",treettbmd,mcobservable,mccut);
-  th1tophi = fillMChisto("th1tophi",treettbhi,mcobservable,mccut);
+  // for combining ttbar files
+  TString mttstr = 
+    TString("sqrt((W_top_E+W_atop_E)^2 -") +
+    TString("     (W_top_px+W_atop_px)^2 -") +
+    TString("     (W_top_py+W_atop_py)^2 -") +
+    TString("     (W_top_pz+W_atop_pz)^2)");
+
+  // weight default sample by 1 for mtt<700, by half above for adding the high mtt samples
+  TString mttwt = Open+Open+mttstr+TString("<700)?1.0:0.5")+Close + TString("*") + wtstr;
+
+  th1ttbar->fillFromTree(treettblo,mcobservable,mccut,mttwt,ttbar_scale);
+  th1ttbar->fillFromTree(treettbmd,mcobservable,mccut,wtstr,0.5*mtt700_scale);
+  th1ttbar->fillFromTree(treettbhi,mcobservable,mccut,wtstr,0.5*mtt1k_scale);
 
     // ------- Get WJets ------- 
-  th1wjets = new TH1D("th1wjets", "th1wjets", bins, dm_min, dm_max);
+  //th1wjets = new TH1D("th1wjets", "th1wjets", bins, dm_min, dm_max);
 
-  th1wjlo = fillMChisto("th1wjlo",treewjlo,mcobservable,mccut);
-  th1wjhi = fillMChisto("th1wjhi",treewjhi,mcobservable,mccut);
+  th1wjets->fillFromTree(treewjlo,mcobservable,mccut,wtstr,WJ_scale_lo,0,stitchwjgev);
+  th1wjets->fillFromTree(treewjhi,mcobservable,mccut,wtstr,WJ_scale_hi,stitchwjgev);
+
+  // sherpa sample
+  //th1wjets->fillFromTree("th1wjets",treewjsherpa,mcobservable,mccut,wtstr);
 
   // ------- Get QCD ------- 
-  //th1qcd = new TH1D("th1qcd", "th1qcd", bins, dm_min, dm_max);
-  //th1qcd = new TH1D("th1qcd", "th1qcd", bins, ptbins_boosted);
-  //th1qcd->Sumw2();
   //treeqcd->Draw(TString(observable)+TString(">>th1qcd"), mccut, "goff");
 
   // ------- Get Z+Jets ------- 
-  //th1zjets = new TH1D("th1zjets", "th1zjets", bins, dm_min, dm_max);
-  //th1zjets->Sumw2();
   //treezj->Draw(TString(observable)+TString(">>th1zjets"), mccut, "goff");
 
 
   // ------- Get Single top ------- 
   
-  th1stops   = fillMChisto("th1stops",treests,mcobservable,mccut);
-  th1stopt   = fillMChisto("th1stopt",treestt,mcobservable,mccut);
-  th1stoptw  = fillMChisto("th1stoptw",treestw,mcobservable,mccut);
-  th1stopps  = fillMChisto("th1stopps",tree64,mcobservable,mccut);
-  th1stoppt  = fillMChisto("th1stoppt",tree65,mcobservable,mccut);
-  th1stopptw = fillMChisto("th1stopptw",tree66,mcobservable,mccut);
+  //th1stops->fillFromTree  (treests,mcobservable,mccut,wtstr,STopS_scale);
+  //th1stopt->fillFromTree  (treestt,mcobservable,mccut,wtstr,STopT_scale);
+  //th1stopps->fillFromTree (tree64, mcobservable,mccut,wtstr,SToppS_scale);
+  //th1stoppt->fillFromTree (tree65, mcobservable,mccut,wtstr,SToppT_scale);
+  th1stoptw->fillFromTree   (treestoptw,mcobservable,mccut,wtstr,STopTW_scale);
+  th1stoptbarw->fillFromTree(treestoptbarw, mcobservable,mccut,wtstr,STopTbarW_scale);
 
   // ---- Scale the histos ---- 
   ScaleHistos(channel);
@@ -1140,24 +1215,25 @@ void makeATGCLimitDataCards(int channel) {
   SetupEmptyHistogram(xtitle);
   
   // ---- Sum all backgrounds ----------
-  TH1D* th1wv_no_overflow = (TH1D *)th1wv->Clone("th1wv_no_overflow");
+  TH1D* th1wv_no_overflow = (TH1D *)th1wv->hobs->Clone("th1wv_no_overflow");
   SumAllBackgrounds();
 
+  makeSignalHistos4Display(mcobservable, mccut, wtstr);
 
-  makeSignalHistos4Display(mcobservable, mccut);
-
-
-  // ---- Compose the stack ----------
+  // ---- Compose the stacks ----------
   THStack* hs = new THStack("hs","MC contribution");
+
+  THStack* hscum = new THStack("hscum","MC contribution");
 
   //hs->Add(th1zjets); 
  //hs->Add(th1qcd);
-  hs->Add(th1Top);
-  hs->Add(th1wjets);
-  hs->Add(th1wv);  // add WW in with backgrounds for display only
-  hs->Add(wwatgc4Display);
-  hs->Add(wzatgc4Display);
+  hs->Add(th1Top->hobs);         hscum->Add(th1Top->hcum);
+  hs->Add(th1wjets->hobs);       hscum->Add(th1wjets->hcum);
+  hs->Add(th1wv->hobs);          hscum->Add(th1wv->hcum); // add WW in with backgrounds for display only
+  hs->Add(wwatgc4Display->hobs); hscum->Add(wwatgc4Display->hcum);
+  hs->Add(wzatgc4Display->hobs); hscum->Add(wzatgc4Display->hcum);
 
+#if 0
   if (injectSignal) {
     TH1D* th1splusb = ( TH1D*) th1tot->Clone("th1splusb");
     th1splusb->Add(th1wv);
@@ -1170,6 +1246,7 @@ void makeATGCLimitDataCards(int channel) {
 
     th1data->Scale(1./scale);
   }
+#endif
 
   makeRatioHisto();
 
@@ -1187,24 +1264,24 @@ void makeATGCLimitDataCards(int channel) {
   TF1* formScaleUp = new TF1("formScaleUp", "1.0-0.0002*x", dm_min, dm_max);
   TF1* formScaleDn = new TF1("formScaleDn", "1.0+0.0002*x", dm_min, dm_max);
 
-  systUp = (TH1D*) th1wjets->Clone("systUp");
+  TH1D *systUp = (TH1D*) th1wjets->hobs->Clone("systUp");
   systUp->Multiply(formScaleUp);
-  systUp->Scale(th1wjets->Integral()/systUp->Integral());
+  systUp->Scale(th1wjets->hobs->Integral()/systUp->Integral());
   //systUp->Add(th1zjets);
   //systUp->Add(th1qcd);
-  systUp->Add(th1Top);
+  systUp->Add(th1Top->hobs);
   systUp->SetFillColor(0);
   systUp->SetLineStyle(2);
   systUp->SetLineColor(2);
   systUp->SetLineWidth(3);
 
   // ---- Stack for shape systematics Down ----------
-  systDown = (TH1D*) th1wjets->Clone("systDown");
+  TH1D *systDown = (TH1D*) th1wjets->hobs->Clone("systDown");
   systDown->Multiply(formScaleDn);
-  systDown->Scale(th1wjets->Integral()/systDown->Integral());
+  systDown->Scale(th1wjets->hobs->Integral()/systDown->Integral());
   //systDown->Add(th1zjets);
   //systDown->Add(th1qcd);
-  systDown->Add(th1Top);
+  systDown->Add(th1Top->hobs);
   systDown->SetFillColor(0);
   systDown->SetLineWidth(3);
   systDown->SetLineStyle(2);
@@ -1215,114 +1292,18 @@ void makeATGCLimitDataCards(int channel) {
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
   
-
-  // ------- Setup the canvas ------- 
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  // gStyle->SetPadTopMargin(0.1);
-  gStyle->SetPadLeftMargin(0.15);
-  // gStyle->SetPadRightMargin(0.2);
-  gStyle->SetPadBottomMargin(0.3);
-  // gStyle->SetErrorX(0.5);
-
-  TCanvas* c1 = new TCanvas("dijetPt", "", 10,10, 500, 500);
-
-  TPad *d1, *d2;
-  c1->Divide(1,2,0,0);
-  d1 = (TPad*)c1->GetPad(1);
-  d1->SetPad(0.01,0.30,0.95,0.99);
-  d2 = (TPad*)c1->GetPad(2);
-  d2->SetPad(0.01,0.02,0.95,0.30);
-  d1->cd();
-
-  gPad->SetBottomMargin(0.005);
-
-  gPad->SetTopMargin(0.1);
-  gPad->SetRightMargin(0.04);
-  // gPad->SetLeftMargin(0.14);
-
-
-  // Draw it all
-  double ymax= 5000000.;
-  double ymin= 7.0;
-  if(channel>1) { 
-    ymax= 3000.;
-    ymin= 0.10;
-  }
-
-  th1totempty->GetYaxis()->SetRangeUser(ymin, ymax);
-  th1data->GetYaxis()->SetRangeUser(ymin, ymax);
-  th1totempty->Draw();
-  hs->Draw("samehist");
-  for (int i=1;i<=th1tot->GetNbinsX();i++)
-    {
-      double val = th1tot->GetBinContent(i); // / (ptbins_boosted[i]-ptbins_boosted[i-1]);
-      double err = fabs(th1tot->GetBinError(i)); // / (ptbins_boosted[i]-ptbins_boosted[i-1]);
-      TBox *b = new TBox(th1tot->GetBinLowEdge(i),
-			 val-err,th1tot->GetBinLowEdge(i+1),val+err);
-      b->SetLineColor(1);
-      b->SetFillColor(1);
-      b->SetFillStyle(3001);
-      b->SetLineStyle(3001);	 
-      b->Draw();
-    }
-  //data2draw->Draw("esame");
-
-  th1data->Draw("esame");
-
-  cmspre(); 
-  // Set up the legend
-  TLegend* Leg = GetLegend(channel);   
-  Leg->Draw();  
-  gPad->SetLogy();
-  gPad->RedrawAxis();
-
-  d2->cd();
-  gPad->SetTopMargin(0.02);
-  gPad->SetRightMargin(0.04);
-  gPad->SetFrameBorderSize(0);
-  gPad->SetBottomMargin(0.45);
-  gPad->SetTickx();
-
-  th1emptyclone->Draw();
-
-  hhratio->Draw("esame");
-  //hhratioUp->Draw("hist lsame");
-  //hhratioDown->Draw("hist lsame");
-
-  TLine *line; line = new TLine(dm_min,1.0,dm_max,1.0);
-  line->SetLineStyle(1);
-  line->SetLineWidth(1);
-  line->SetLineColor(1);
-  line->Draw();
-
-  //gPad->WaitPrimitive();
-  c1->Modified();
-  c1->Update();
-
-  TString outfilename = TString("OutDir/")+outfile;
-
-  if (injectSignal)
-    outfilename += TString("_fatjetPt");
-  else if (blinded)
-    outfilename += TString("_fatjetPt_blinded");
-  else
-    outfilename += TString("_fatjetPt_unblinded");
-
-  c1->Print (outfilename + TString(".png"));
-  c1->SaveAs(outfilename + TString(".pdf"));
-  c1->SaveAs(outfilename + TString(".C"));
-   
+  DrawItAll(channel, hs, th1tot->hobs, th1data->hobs, hhratio->hobs, outfile);
+  DrawItAll(channel, hscum, th1tot->hcum, th1data->hcum, hhratio->hcum, outfile);
 
   ///// -------------------------------//////
 
   if(saveDataCards_) {
     outputForLimit->cd();
-    th1data->SetName("data_obs");     th1data->Write("data_obs");
-    th1tot->SetName("background");    th1tot->Write("background");
-    th1ww->SetName("ww");             th1ww->Write("ww");
-    th1ww->SetName("wz");             th1wz->Write("wz");
-    th1wv->SetName("diboson");        th1wv->Write("diboson");
+    th1data->hobs->SetName("data_obs");     th1data->hobs->Write("data_obs");
+    th1tot->hobs->SetName("background");    th1tot->hobs->Write("background");
+    th1ww->hobs->SetName("ww");             th1ww->hobs->Write("ww");
+    th1ww->hobs->SetName("wz");             th1wz->hobs->Write("wz");
+    th1wv->hobs->SetName("diboson");        th1wv->hobs->Write("diboson");
 
     th1wv_no_overflow->Write("th1wv_no_overflow");
     char* tempname = "background_backshapeUp";
