@@ -1,0 +1,363 @@
+cd Blue_2.0.0/ (ran from ~ilyao/nobackup/Diboson8TeV/Blue_2.0.0/).
+
+root [0] gSystem->Load("libBlue.so")
+(int)0
+root [1] .L processDibosonFitOutput_BLUE.cc++
+Info in <TUnixSystem::ACLiC>: creating shared library /uscms_data/d3/ilyao/Diboson8TeV/Blue_2.0.0/./processDibosonFitOutput_BLUE_cc.so
+In file included from /cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/gcc/4.6.2/bin/../lib/gcc/x86_64-unknown-linux-gnu/4.6.2/../../../../include/c++/4.6.2/backward/strstream:52:0,
+                 from /uscms_data/d3/ilyao/Diboson8TeV/Blue_2.0.0/./processDibosonFitOutput_BLUE.cc:4,
+                 from /uscms_data/d3/ilyao/Diboson8TeV/Blue_2.0.0/processDibosonFitOutput_BLUE_cc_ACLiC_dict.h:34,
+                 from /uscms_data/d3/ilyao/Diboson8TeV/Blue_2.0.0/processDibosonFitOutput_BLUE_cc_ACLiC_dict.cxx:17:
+/cvmfs/cms.cern.ch/slc5_amd64_gcc462/external/gcc/4.6.2/bin/../lib/gcc/x86_64-unknown-linux-gnu/4.6.2/../../../../include/c++/4.6.2/backward/backward_warning.h:33:2: warning: #warning This file includes at least one deprecated or antiquated header which may be removed without further notice at a future date. Please use a non-deprecated interface with equivalent functionality instead. For a listing of replacement headers and interfaces, consult the file backward_warning.h. To disable this warning use -Wno-deprecated. [-Wcpp]
+In file included from /uscms_data/d3/ilyao/Diboson8TeV/Blue_2.0.0/processDibosonFitOutput_BLUE_cc_ACLiC_dict.h:34:0,
+                 from /uscms_data/d3/ilyao/Diboson8TeV/Blue_2.0.0/processDibosonFitOutput_BLUE_cc_ACLiC_dict.cxx:17:
+/uscms_data/d3/ilyao/Diboson8TeV/Blue_2.0.0/./processDibosonFitOutput_BLUE.cc: In function 'void processDibosonFitOutput_BLUE()':
+/uscms_data/d3/ilyao/Diboson8TeV/Blue_2.0.0/./processDibosonFitOutput_BLUE.cc:794:8: warning: variable 'statErrIsgtPartialTotErr' set but not used [-Wunused-but-set-variable]
+root [2] processDibosonFitOutput_BLUE()
+Extracted Diboson Events : 9152.84\pm 1171.52
+Corrected Diboson Events : 9236.64\pm 1361.52
+muons_anti-btagged   ||   electrons_anti-btagged   Results Summary
+------------------------------- table:FitTotalsAndComparisons --------------------------
+ Predicted Yield & Fitted Frac || Predicted Yield & Fitted Frac  
+Diboson & 2262 & 1.77$\pm$0.36   &   2046 & 1.96$\pm$0.39
+Corrected Diboson & 2262 & 1.89$\pm$0.49   &   2046 & 1.90$\pm$0.35
+Data & 126764 & ---        & 121709 & --- 
+
+------------------------------- tab:dibosonYield --------------------------
+ Corrected Val || Corrected Val  
+N Diboson & 4271$\pm$356$\pm$1060   &   3886$\pm$349$\pm$632
+$\sigma^{fid}_{WW+WZ}$(pb) & 0.221$\pm$0.018$\pm$0.055   &   0.202$\pm$0.018$\pm$0.033
+$\sigma_{WW+WZ}$(pb) & 155.84$\pm$12.99$\pm$38.68   &   156.90$\pm$14.09$\pm$25.52
+
+------------------------------- tab:SystematicCorrections --------------------------
+ Corrected Val || Corrected Val  
+Fit Yield & 4271$\pm$1118   &   3886$\pm$722
+-------------------------------------------------------------------------------
+
+
+muons_btagged   ||   electrons_btagged   Results Summary
+------------------------------- table:FitTotalsAndComparisons --------------------------
+ Predicted Yield & Fitted Frac || Predicted Yield & Fitted Frac  
+Diboson & 172 & 1.49$\pm$0.79   &   125 & 1.71$\pm$0.88
+Corrected Diboson & 172 & 1.52$\pm$0.84   &   125 & 1.52$\pm$0.94
+Data & 14001 & ---        & 12586 & --- 
+
+------------------------------- tab:dibosonYield --------------------------
+ Corrected Val || Corrected Val  
+N Diboson & 262$\pm$118$\pm$83   &   189$\pm$103$\pm$57
+$\sigma^{fid}_{WW+WZ}$(pb) & 0.014$\pm$0.006$\pm$0.004   &   0.010$\pm$0.005$\pm$0.003
+$\sigma_{WW+WZ}$(pb) & 125.65$\pm$56.77$\pm$40.02   &   125.44$\pm$68.48$\pm$37.51
+
+------------------------------- tab:SystematicCorrections --------------------------
+ Corrected Val || Corrected Val  
+Fit Yield & 262$\pm$145   &   189$\pm$118
+-------------------------------------------------------------------------------
+
+
+muons_boosted   ||   electrons_boosted   Results Summary
+------------------------------- table:FitTotalsAndComparisons --------------------------
+ Predicted Yield & Fitted Frac || Predicted Yield & Fitted Frac  
+Diboson & 205 & 1.35$\pm$0.77   &   172 & 2.23$\pm$0.84
+Corrected Diboson & 205 & 1.26$\pm$0.75   &   172 & 2.15$\pm$0.89
+Data & 4194 & ---        & 3481 & --- 
+
+------------------------------- tab:dibosonYield --------------------------
+ Corrected Val || Corrected Val  
+N Diboson & 259$\pm$65$\pm$141   &   369$\pm$59$\pm$141
+$\sigma^{fid}_{WW+WZ}$(pb) & 0.013$\pm$0.003$\pm$0.007   &   0.019$\pm$0.003$\pm$0.007
+$\sigma_{WW+WZ}$(pb) & 101.75$\pm$25.42$\pm$55.22   &   173.28$\pm$27.68$\pm$66.08
+
+------------------------------- tab:SystematicCorrections --------------------------
+ Corrected Val || Corrected Val  
+Fit Yield & 259$\pm$155   &   369$\pm$153
+-------------------------------------------------------------------------------
+
+
+------------------------------ Summary Table --------------------------
+Channel muons_anti-btagged | electrons_anti-btagged | muons_btagged | electrons_btagged | muons_boosted | electrons_boosted
+Data Events & 126764 & 121709 & 14001 & 12586 & 4194 & 3481  \\
+$N_{WW+WZ}$ Predicted & 2262 & 2046 & 172 & 125 & 205 & 172  \\
+$Frac_{WW+WZ}$ & 1.77$\pm$0.36 & 1.96$\pm$0.39 & 1.49$\pm$0.79 & 1.71$\pm$0.88 & 1.35$\pm$0.77 & 2.23$\pm$0.84  \\
+$Frac_{WW+WZ}$ Corrected & 1.89$\pm$0.49 & 1.90$\pm$0.35 & 1.52$\pm$0.84 & 1.52$\pm$0.94 & 1.26$\pm$0.75 & 2.15$\pm$0.89  \\
+$\sigma^{fid}_{WW+WZ}$(\unit{pb}) & 0.221$\pm$0.058 & 0.202$\pm$0.038 & 0.014$\pm$0.008 & 0.010$\pm$0.006 & 0.013$\pm$0.008 & 0.019$\pm$0.008 &   \\
+$\mathcal{A}\varepsilon$ & 1.42e-03 & 1.29e-03 & 1.08e-04 & 7.86e-05 & 1.32e-04 & 1.11e-04  \\
+$\sigma^{Fit}_{WW+WZ}$(\unit{pb}) & 155.8$\pm$40.8 & 156.9$\pm$29.1 & 125.7$\pm$69.5 & 125.4$\pm$78.1 & 101.8$\pm$60.8 & 173.3$\pm$71.6  \\
+
+-------------------------------------------------------------------------------
+
+
+------------------------------ Comparison Table --------------------------
+Channel muons_anti-btagged | electrons_anti-btagged | muons_btagged | electrons_btagged | muons_boosted | electrons_boosted
+$N_{WW+WZ}$ Fitted & 4007.9$\pm$812.0 & 4017.5$\pm$798.0 & 255.9$\pm$136.4 & 212.8$\pm$109.9 & 276.6$\pm$157.9 & 382.1$\pm$144.1  \\
+Yield Bias & -263.0 & 131.5 & -6.0 & 23.5 & 17.4 & 12.8  \\
+Fractional Error Bias & 0.88 & 0.84 & 0.91 & 0.93 & 0.85 & 0.99  \\
+V+Jets MC Systematic & 796 & 224 & 61 & 57 & 0 & 0  \\
+Shape Systematic & 331 & 140 & 43 & 18 & 77 & 56  \\
+$N_{WW+WZ}$ Corrected & 4270.9$\pm$1118.2 & 3886.0$\pm$721.9 & 261.9$\pm$144.8 & 189.3$\pm$117.8 & 259.2$\pm$154.9 & 369.3$\pm$152.7  \\
+$\mathcal{A}\varepsilon$ & 0.00142 & 0.00129 & 0.00011 & 0.00008 & 0.00013 & 0.00011 \\
+$\sigma^{Fit}_{WW+WZ}$(\unit{pb}) & 155.8$\pm$40.8 & 156.9$\pm$29.1 & 125.7$\pm$69.5 & 125.4$\pm$78.1 & 101.8$\pm$60.8 & 173.3$\pm$71.6  \\
+
+-------------------------------------------------------------------------------
+
+
+Computing the total cross section:
+Covariance Matrix:
+2329.6 932.2 1387.4 1624.5 64.6 110.1 
+932.2 1523.5 804.9 878.1 65.1 110.8 
+1387.4 804.9 5256.4 1530.9 52.1 88.7 
+1624.5 878.1 1530.9 6527.1 52.0 88.6 
+64.6 65.1 52.1 52.0 4807.0 1893.1 
+110.1 110.8 88.7 88.6 1893.1 8356.7 
+Inverse of the Covariance Matrix:
+0.0006865 -0.0003041 -0.0001038 -0.0001056 -0.0000019 -0.0000024 
+-0.0003041 0.0008861 -0.0000458 -0.0000327 -0.0000048 -0.0000058 
+-0.0001038 -0.0000458 0.0002311 -0.0000222 -0.0000002 -0.0000002 
+-0.0001056 -0.0000327 -0.0000222 0.0001891 0.0000000 0.0000000 
+-0.0000019 -0.0000048 -0.0000002 0.0000000 0.0002285 -0.0000517 
+-0.0000024 -0.0000058 -0.0000002 0.0000000 -0.0000517 0.0001315 
+Uncorrelated Covariance Matrix:
+1486.0 0.0 0.0 0.0 0.0 0.0 
+0.0 1441.6 0.0 0.0 0.0 0.0 
+0.0 0.0 4397.2 0.0 0.0 0.0 
+0.0 0.0 0.0 5120.4 0.0 0.0 
+0.0 0.0 0.0 0.0 4807.0 0.0 
+0.0 0.0 0.0 0.0 0.0 8356.7 
+Inverse of the Uncorrelated Covariance Matrix:
+0.0006729 -0.0000000 -0.0000000 -0.0000000 -0.0000000 -0.0000000 
+0.0000000 0.0006937 -0.0000000 -0.0000000 -0.0000000 -0.0000000 
+0.0000000 0.0000000 0.0002274 -0.0000000 -0.0000000 -0.0000000 
+0.0000000 0.0000000 0.0000000 0.0001953 -0.0000000 -0.0000000 
+0.0000000 0.0000000 0.0000000 0.0000000 0.0002080 -0.0000000 
+0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0001197 
+Channel 0 : 
+crossX = 155.8 : Error=48.3=13.0(stat)\pm 46.3(syst)  :  UncorrErr=38.5, Weight=0.170, UncorrWeight=0.318
+Channel 1 : 
+crossX = 156.9 : Error=39.0=14.1(stat)\pm 36.2(syst)  :  UncorrErr=38.0, Weight=0.498, UncorrWeight=0.328
+Channel 2 : 
+crossX = 125.7 : Error=72.5=56.8(stat)\pm 45.0(syst)  :  UncorrErr=66.3, Weight=0.059, UncorrWeight=0.107
+Channel 3 : 
+crossX = 125.4 : Error=80.8=68.5(stat)\pm 42.7(syst)  :  UncorrErr=71.6, Weight=0.029, UncorrWeight=0.092
+Channel 4 : 
+crossX = 101.8 : Error=69.3=25.4(stat)\pm 64.4(syst)  :  UncorrErr=69.3, Weight=0.172, UncorrWeight=0.098
+Channel 5 : 
+crossX = 173.3 : Error=91.4=27.7(stat)\pm 87.0(syst)  :  UncorrErr=91.4, Weight=0.072, UncorrWeight=0.057
+Channel Parameters: 
+Channel 0: 155.838 28.657 38.994 23.788
+Channel 1: 156.897 27.708 19.065 23.949
+Channel 2: 125.651 62.968 37.335 19.180
+Channel 3: 125.438 68.481 45.514 19.147
+Channel 4: 101.751 60.789 6.496 32.703
+Channel 5: 173.275 71.644 11.063 55.691
+Correlations: 
+Uncertainty Type 0: 1.000 0.000 0.000 0.000 0.000 0.000 0.000 1.000 0.000 0.000 0.000 0.000 0.000 0.000 1.000 0.000 0.000 0.000 0.000 0.000 0.000 1.000 0.000 0.000 0.000 0.000 0.000 0.000 1.000 0.000 0.000 0.000 0.000 0.000 0.000 1.000
+Uncertainty Type 1: 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+Uncertainty Type 2: 1.000 1.000 1.000 1.000 0.000 0.000 1.000 1.000 1.000 1.000 0.000 0.000 1.000 1.000 1.000 1.000 0.000 0.000 1.000 1.000 1.000 1.000 0.000 0.000 0.000 0.000 0.000 0.000 1.000 1.000 0.000 0.000 0.000 0.000 1.000 1.000
+... Blue->SetFilledEst: All estimates ( 6) filled 
+... Blue->SetFilledUnc: All uncertainties ( 3) filled 
+... Blue->SetFilledInp: All input filled! 
+... Blue->SetPrintLevel( 1): Print level is set to  1 
+... Blue->FixInp(): Fixed to InpEst =  6, InpUnc =  3, InpObs = 1
+... Blue->SetFixedInp(l): Input fixed for solving! 
+... Blue->Solve(): The present situation is 
+
+... Blue->PrintStatus(): This is the BLUE Software Version 2.0.0 run on Feb 25, 2016 
+... Blue->PrintStatus(): Constructed InpEst =  6, InpUnc =  3, InpObs = 1
+
+... Blue->PrintListEst(): The present list of     estimates is:  0, 1, 2, 3, 4, 5 
+... Blue->PrintListUnc(): The present list of uncertainties is:  0, 1, 2 
+... Blue->PrintNamUnc(): The names of the present list of uncertainties are: 
+... Blue->PrintNamUnc():  0 =    Stat,  1 = Syst  1,  2 = Syst  2
+... Blue->PrintListObs(): The present list of   observables is:  0 
+... Blue->PrintNamObs(): The names of the present list of observables are: 
+... Blue->PrintNamObs():  0 = Obs   0
+
+... Blue->PrintEst:                Value     Full   Stat  Syst  1  Syst  2  
+... Blue->PrintEst( 0) Est   0:  155.838 +- 53.922 (28.657 +- 38.994 +- 23.788)
+... Blue->PrintEst( 1) Est   1:  156.897 +- 41.289 (27.708 +- 19.065 +- 23.949)
+... Blue->PrintEst( 2) Est   2:  125.651 +- 75.675 (62.968 +- 37.335 +- 19.180)
+... Blue->PrintEst( 3) Est   3:  125.438 +- 84.426 (68.481 +- 45.514 +- 19.147)
+... Blue->PrintEst( 4) Est   4:  101.751 +- 69.332 (60.789 +- 6.496 +- 32.703)
+... Blue->PrintEst( 5) Est   5:  173.275 +- 91.415 (71.644 +- 11.063 +- 55.691)
+
+... Blue->PrintParams( 0): Sigma_i/Sigma_j i<j 
+... Blue->PrintParams( 0):         Est   0 Est   1 Est   2 Est   3 Est   4 Est   5
+... Blue->PrintParams( 0): Est   0
+... Blue->PrintParams( 0): Est   1   +1.31
+... Blue->PrintParams( 0): Est   2   +0.71   +0.55
+... Blue->PrintParams( 0): Est   3   +0.64   +0.49   +0.90
+... Blue->PrintParams( 0): Est   4   +0.78   +0.60   +1.09   +1.22
+... Blue->PrintParams( 0): Est   5   +0.59   +0.45   +0.83   +0.92   +0.76
+
+... Blue->PrintParams( 1): Beta 
+... Blue->PrintParams( 1):         Est   0 Est   1 Est   2 Est   3 Est   4 Est   5
+... Blue->PrintParams( 1): Est   0
+... Blue->PrintParams( 1): Est   1   +0.20
+... Blue->PrintParams( 1): Est   2   +0.21   +0.10
+... Blue->PrintParams( 1): Est   3   +0.12   +0.06   +0.42
+... Blue->PrintParams( 1): Est   4   +0.37   +0.25   +0.45   +0.40
+... Blue->PrintParams( 1): Est   5   +0.24   +0.15   +0.40   +0.46   +0.31
+
+... Blue->PrintParams( 2): Sigma_x/Sigma_i 
+... Blue->PrintParams( 2):         Est   0 Est   1 Est   2 Est   3 Est   4 Est   5
+... Blue->PrintParams( 2): Est   0
+... Blue->PrintParams( 2): Est   1   +0.98
+... Blue->PrintParams( 2): Est   2   +0.96   +0.98
+... Blue->PrintParams( 2): Est   3   +0.99   +0.99   +0.86
+... Blue->PrintParams( 2): Est   4   +0.81   +0.88   +0.75   +0.79
+... Blue->PrintParams( 2): Est   5   +0.89   +0.93   +0.79   +0.76   +0.90
+
+... Blue->PrintParams( 3): dBeta/drho 
+... Blue->PrintParams( 3):         Est   0 Est   1 Est   2 Est   3 Est   4 Est   5
+... Blue->PrintParams( 3): Est   0
+... Blue->PrintParams( 3): Est   1   -0.68
+... Blue->PrintParams( 3): Est   2   -0.50   -0.49
+... Blue->PrintParams( 3): Est   3   -0.62   -0.49   -0.12
+... Blue->PrintParams( 3): Est   4   -0.14   -0.23   -0.05   -0.11
+... Blue->PrintParams( 3): Est   5   -0.25   -0.27   -0.10   -0.05   -0.26
+
+... Blue->PrintParams( 4): 1/Sigma_i dSigma_x/dRho 
+... Blue->PrintParams( 4):         Est   0 Est   1 Est   2 Est   3 Est   4 Est   5
+... Blue->PrintParams( 4): Est   0
+... Blue->PrintParams( 4): Est   1   +0.21
+... Blue->PrintParams( 4): Est   2   +0.24   +0.17
+... Blue->PrintParams( 4): Est   3   +0.17   +0.12   +0.32
+... Blue->PrintParams( 4): Est   4   +0.37   +0.36   +0.36   +0.37
+... Blue->PrintParams( 4): Est   5   +0.34   +0.31   +0.37   +0.35   +0.31
+
+... Blue->PrintParams( 5): dBeta/dz 
+... Blue->PrintParams( 5):         Est   0 Est   1 Est   2 Est   3 Est   4 Est   5
+... Blue->PrintParams( 5): Est   0
+... Blue->PrintParams( 5): Est   1   -0.75
+... Blue->PrintParams( 5): Est   2   -0.52   -0.23
+... Blue->PrintParams( 5): Est   3   -0.39   -0.16   -0.65
+... Blue->PrintParams( 5): Est   4   -0.39   -0.24   -0.48   -0.41
+... Blue->PrintParams( 5): Est   5   -0.24   -0.13   -0.42   -0.49   -0.48
+
+... Blue->PrintParams( 6): 1/Sigma_i dSigma_x/dz 
+... Blue->PrintParams( 6):         Est   0 Est   1 Est   2 Est   3 Est   4 Est   5
+... Blue->PrintParams( 6): Est   0
+... Blue->PrintParams( 6): Est   1   +0.15
+... Blue->PrintParams( 6): Est   2   +0.14   +0.06
+... Blue->PrintParams( 6): Est   3   +0.08   +0.03   +0.32
+... Blue->PrintParams( 6): Est   4   +0.23   +0.13   +0.31   +0.26
+... Blue->PrintParams( 6): Est   5   +0.13   +0.07   +0.26   +0.32   +0.21
+... Blue->PrintRho: The correlation matrix of the input 
+
+6x6 matrix is as follows
+
+     |      0    |      1    |      2    |      3    |      4    |
+----------------------------------------------------------------------
+   0 |          1      0.5898      0.4686      0.4899     0.06776 
+   1 |     0.5898           1      0.3748      0.3805     0.04326 
+   2 |     0.4686      0.3748           1      0.3234     0.04623 
+   3 |     0.4899      0.3805      0.3234           1     0.05051 
+   4 |    0.06776     0.04326     0.04623     0.05051           1 
+   5 |    0.08751     0.05588      0.0597     0.06524      0.2987 
+
+
+     |      5    |
+----------------------------------------------------------------------
+   0 |    0.08751 
+   1 |    0.05588 
+   2 |     0.0597 
+   3 |    0.06524 
+   4 |     0.2987 
+   5 |          1 
+
+... Blue->PrintCov: The covariance matrix of the input 
+
+6x6 matrix is as follows
+
+     |      0    |      1    |      2    |      3    |      4    |
+----------------------------------------------------------------------
+   0 |       2908        1313        1912        2230       253.3 
+   1 |       1313        1705        1171        1326       123.8 
+   2 |       1912        1171        5727        2066       242.5 
+   3 |       2230        1326        2066        7128       295.7 
+   4 |      253.3       123.8       242.5       295.7        4807 
+   5 |      431.4       210.9         413       503.5        1893 
+
+
+     |      5    |
+----------------------------------------------------------------------
+   0 |      431.4 
+   1 |      210.9 
+   2 |        413 
+   3 |      503.5 
+   4 |       1893 
+   5 |       8357 
+
+... Blue->SetIsSolved(l): Input was solved! 
+
+... Blue->GetPreEst( 0): The most precise estimate is:  1 
+... Blue->GetPreEst( 0): The most precise estimate is:  1 
+... Blue->GetPreEst( 0): The most precise estimate is:  1 
+... Blue->GetPreEst( 0): The most precise estimate is:  1 
+... Blue->GetPreEst( 0): The most precise estimate is:  1 
+... Blue->GetPreEst( 0): The most precise estimate is:  1 
+... Blue->PrintChiPro(): ChiQua = 1.062 for NDof =  5 Probability = 95.74 % 
+... Blue->SolvePosWei(): Not needed all weights are positive 
+... Blue->SetIsSolvedPosWei(l): Input was solved with only Pos-itive Wei-ghts! 
+
+... Blue->PrintEst:                Value     Full   Stat  Syst  1  Syst  2  
+... Blue->PrintEst( 0) Est   0:  155.838 +- 53.922 (28.657 +- 38.994 +- 23.788)
+... Blue->PrintEst( 1) Est   1:  156.897 +- 41.289 (27.708 +- 19.065 +- 23.949)
+... Blue->PrintEst( 2) Est   2:  125.651 +- 75.675 (62.968 +- 37.335 +- 19.180)
+... Blue->PrintEst( 3) Est   3:  125.438 +- 84.426 (68.481 +- 45.514 +- 19.147)
+... Blue->PrintEst( 4) Est   4:  101.751 +- 69.332 (60.789 +- 6.496 +- 32.703)
+... Blue->PrintEst( 5) Est   5:  173.275 +- 91.415 (71.644 +- 11.063 +- 55.691)
+... Blue->PrintResult: Linear combination of estimates for observables 
+               xi =     Est   0       Est   1       Est   2       Est   3       Est   4       Est   5    
+Obs   0 = 145.454 = +0.090 * x0 + +0.580 * x1 + +0.046 * x2 + +0.007 * x3 + +0.199 * x4 + +0.078 * x5 
+
+... Blue->PrintResult: Breakdown of uncertainties 
+ Uncert =                    Stat  Syst  1  Syst  2  
+Obs   0 = 145.454 +- 34.805 (21.236 +- 18.762 +- 20.208)
+
+... Blue->PrintResult: Breakdown in stat (k==0)+ sys (all k>0)
+ Result =   Value (+-  stat +-  syst) = +-  full 
+Obs   0 = 145.454 (+- 21.236 +- 27.575) = +- 34.805
+
+... Blue->GetResult:Return matrix of the result as Double_t array 
+... Blue->GetResult: Return matrix of the result as TMatrixD 
+... Blue~Blue: Delete object for InpEst=  6, InpUnc=  3, InpObs= 1
+WeightTot = 1.000, WeightTotUncorr = 1.000 (should be 1)
+TotalCrossX = 145.5 \pm 9.6\text{(stat)} \pm 33.2\text{(syst)} \pm 3.8\text{(lumi)}
+Without Correlations : TotalCrossX = 145.8 \pm 11.1\text{(stat)} \pm 18.3\text{(syst)} \pm 3.8\text{(lumi)}
+19 fb^{-1} (8 TeV)
+Info in <TCanvas::Print>: file WW_WZ_crossX_6chan_8TeV.png has been created
+
+
+---------------------------------
+Make additional tables (from test/)
+
+root [0] .L inputDibosonMCInfoFitAndValidationResults.cpp++
+Info in <TUnixSystem::ACLiC>: creating shared library /uscms_data/d3/ilyao/CMSSW_5_3_15_patch1/src/ElectroWeakAnalysis/VPlusJets/test/./inputDibosonMCInfoFitAndValidationResults_cpp.so
+root [1] printSummaryTables()
+SMP-13-008 - tab:yields - Expected event yields and ...
+Quantity                       & $\Pgm$ anti-b-tag  & $\Pe$ anti-b-tag   & $\Pgm$ b-tag       & $\Pe$ b-tag        & $\Pgm$ merged      & $\Pe$ merged       \\
+\hline
+Data Events                    & 126764             & 121709             & 14001              & 12586              & 4194               & 3481               \\
+V+Jets Predicted               & 118257             & 102230             & 6884               & 6247               & 2636               & 2149               \\
+$Frac_{V+Jets}$                & 1.00$\pm$0.01      & 1.05$\pm$0.03      & 0.98$\pm$0.04      & 1.01$\pm$0.04      & 1.22$\pm$0.06      & 1.17$\pm$0.07      \\
+Top Predicted                  & 4568               & 3873               & 7491               & 6180               & 706                & 579                \\
+$Frac_{Top}$                   & 1.00$\pm$0.06      & 1.00$\pm$0.06      & 0.94$\pm$0.03      & 0.98$\pm$0.04      & 1.00$\pm$0.08      & 1.00$\pm$0.10      \\
+Multijet Predicted             & ---                & 8520               & ---                & ---                & ---                & ---                \\
+$Frac_{Multijet}$              & ---                & 0.80$\pm$0.34      & ---                & ---                & ---                & ---                \\
+$WHbb(125)$ Predicted          & ---                & ---                & 23                 & 20                 & ---                & ---                \\
+$Frac_{WHbb(125)}$             & ---                & ---                & 1.00               & 1.00               & ---                & ---                \\
+\hline
+$N_{WW+WZ}$ Predicted          & 2262               & 2046               & 172                & 125                & 205                & 172                \\
+$Frac_{WW+WZ}$                 & 1.77$\pm$0.36      & 1.96$\pm$0.39      & 1.49$\pm$0.79      & 1.71$\pm$0.88      & 1.35$\pm$0.77      & 2.23$\pm$0.84      \\
+$Frac_{WW+WZ}$ Corrected       & 1.89$\pm$0.49      & 1.90$\pm$0.35      & 1.52$\pm$0.84      & 1.52$\pm$0.94      & 1.26$\pm$0.75      & 2.15$\pm$0.89      \\
+NOTE: The last three lines of the table should come from running 'processDibosonFitOutput_BLUE.cc'
+
+
+
+\
+
+
+
+
+
+
