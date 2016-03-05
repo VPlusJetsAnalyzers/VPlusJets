@@ -1,0 +1,411 @@
+Muons (standard):
+
+python -i fitComponentShapePdf.py -j 2 --comp diboson --bn "dibosonDibosonParameters_mu" -m Diboson8TeVConfig dibosonDibosonParameters_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WpJDibosonParameters_mu" -m Diboson8TeVConfig WpJDibosonParameters_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp top --bn "topDibosonParameters_mu" -m Diboson8TeVConfig topDibosonParameters_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp HWW --bn "HWWDibosonBtagParameters_mu" -m Diboson8TeVConfig HWWDibosonBtagParameters_mu.txt <-not used
+
+
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --fitparfn DibosonStandardFitOutPars_mu.txt --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_mu.txt > Fit_DibosonStandard_mu.log  <-Use with the constrainedfit
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --comp WZ --bn "WZDibosonParameters_mu" -m Diboson8TeVConfig WZDibosonParameters_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --fitparfn DibosonStandardFitOutPars_mu.txt --noNull --plotDibosonContributions --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_mu.txt WZDibosonParameters_mu.txt
+
+
+-------------Shape Validation Using an Alternate Parametrization:-------------
+python -i fitComponentShapePdf.py -j 2 --ws WpJDibosonParametersAlt_mu.root --comp WpJ --alternateModel --makeFree --bn "WpJDibosonParametersAlt_mu" -m Diboson8TeVConfig WpJDibosonParametersAlt_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --ws Dibosonlnujj_muon_output.root --fitparfn DibosonStandardAltFitOutPars_mu.txt --noNull --useAlternateModelsToFit --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersAlt_mu.txt > Fit_DibosonStandard_WpJAltDef_mu.log
+-------------
+
+---------------Sherpa Fit:-----------------------
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WpJDibosonParameters_Sherpa_mu" -m Diboson8TeVConfig WpJDibosonParameters_Sherpa_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --ws Dibosonlnujj_muon_output.root --fitparfn DibosonStandardWpJSherpaasDefFitOutPars_mu.txt --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParameters_Sherpa_mu.txt > Fit_DibosonStandard_WpJSherpaasDef_mu.log
+-------------
+
+---------------Unconstrained Fit (Not Used):-----------------------
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParameters_mu.txt > Fit_DibosonStandard_mu.log <-Use With WpJ Unconstrained
+
+
+
+
+Alternate Matching and Scaling fits:
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --morphingComp +1 --makeFree --bn "WpJDibosonParametersMU_mu" -m Diboson8TeVConfig WpJDibosonParametersMU_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --morphingComp -1 --makeFree --bn "WpJDibosonParametersMD_mu" -m Diboson8TeVConfig WpJDibosonParametersMD_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --morphingComp +2 --makeFree --bn "WpJDibosonParametersSU_mu" -m Diboson8TeVConfig WpJDibosonParametersSU_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --morphingComp -2 --makeFree --bn "WpJDibosonParametersSD_mu" -m Diboson8TeVConfig WpJDibosonParametersSD_mu.txt
+
+
+Shape Validation Using an Alternate Parametrization:
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --alternateModel --makeFree --bn "WpJDibosonParametersJ2BinAlt" -m Diboson8TeVConfig WpJDibosonParametersJ2BinAlt.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --fitparfn DibosonJ2BinAltFitOutPars_mu.txt --noNull --useAlternateModelsToFit --nosig topDibosonParametersJ2Bin.txt dibosonDibosonParametersJ2Bin.txt WpJDibosonParametersJ2BinAlt.txt
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --comp WZ --bn "WZDibosonParameters_mu" -m Diboson8TeVConfig WZDibosonParameters_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --noNull --plotDibosonContributions --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_mu.txt WZDibosonParameters_mu.txt
+
+
+Top Sideband & Template Fit CrossCheck:
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --noNull --nosig TopControlSampleDefCutsInputYields_mu.txt <-Get The Convolution Funcion Parrameters
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --nosig AllDefCutsMorphInputDibosonParameters_mu.txt > Fit_DibosonStandardMorphConvolved_mu.log <-StandardFit
+
+
+Inflated resolution based on top control sample studies (as a function of PU):
+Diboson resonance mean +1.0
+Diboson resonance sigma *1.09
+
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --nosig topDibosonParameters_SidebandModified_mu.txt dibosonDibosonParameters_SidebandModified_mu.txt WpJDibosonParametersMSCorr_mu.txt > Fit_DibosonSidebandModified_mu.log
+
+
+Alternate Scale Cross-Check:
+Note: for the SD the V2 parameterization yields a more consistent result.
+
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WpJDibosonParameters_SUasDef_mu" -m Diboson8TeVConfig WpJDibosonParameters_SUasDef_mu.txt - edit the Config and subsequently adjust a kfactor
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WpJDibosonParameters_SDasDef_mu" -m Diboson8TeVConfig WpJDibosonParameters_SDasDef_mu.txt - edit the Config and subsequently adjust a kfactor
+
+
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParameters_mu.txt > Fit_DibosonStandard_WpJDefault_mu.log
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --fitparfn DibosonStandardWpJSUasDefFitOutPars_mu.txt --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParameters_SUasDef_mu.txt > Fit_DibosonStandard_WpJSUasDef_mu.log
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --fitparfn DibosonStandardWpJSDasDefFitOutPars_mu.txt --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParameters_SDasDef_mu.txt > Fit_DibosonStandard_WpJSDasDef_mu.log
+
+
+Unconstrained V+Jets Fit:
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig_UnconstWpJ --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_mu.txt > Fit_DibosonStandard_UnconstWpJ_mu.log
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig_UnconstWpJ  --noNull --plotDibosonContributions --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_mu.txt WZDibosonParameters_mu.txt
+
+
+Sherpa MC Cross-Check:
+
+python -i fitComponentShapePdf.py -j 2 --ws WpJDibosonParametersSherpa30M_mu.root --comp WpJ --makeFree --bn "WpJDibosonParametersSherpa30M_mu" -m Diboson8TeVConfig WpJDibosonParametersSherpa30M_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --ws Dibosonlnujj_muon_output.root --fitparfn DibosonStandardWpJSherpaasDefFitOutPars_mu.txt --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersSherpa53M_mu.txt > Fit_DibosonStandard_WpJSherpaasDef53M_mu.log
+
+
+Fit with the resonance parameters corrected based on the control sample:
+V-boson Gauss: Offset factors: mean+1.44, sigma - unchanged
+
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_mu.txt > Fit_DibosonStandard_mu.log
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_SidebandModified_mu.txt dibosonDibosonParameters_SidebandModified_mu.txt WpJDibosonParametersMSCorr_mu.txt > Fit_DibosonSidebandModified_mu.log
+
+6.5% difference in the event yield (SidebandModified fit has fewer events).
+
+
+Central Gauss Fits on top:
+
+sideband:
+python -i fitComponentShapePdf.py -j 2 --comp top --ws topDibosonTopSidebandParameters_CentralGauss_mu.root --bn "topDibosonTopSidebandParameters_CentralGauss_mu" -m Diboson8TeVConfig topDibosonParametersSidebandInputPureGauss_mu.txt > Fit_DibosonStandard_TopSidebandCentralGauss_mu.log
+python -i fitComponentShapePdf.py -j 2 --comp top --ws topDibosonTopSidebandMCParameters_CentralGauss_mu.root --bn "topDibosonTopSidebandMCParameters_CentralGauss_mu" -m Diboson8TeVConfig topDibosonParametersSidebandInputPureGauss_mu.txt > Fit_DibosonStandard_TopSidebandMCCentralGauss_mu.log
+python -i fitComponentShapePdf.py -j 2 --comp top --ws topDibosonTopMCParameters_CentralGauss_mu.root --bn "topDibosonTopMCParameters_CentralGauss_mu" -m Diboson8TeVConfig topDibosonParametersSidebandInputPureGauss_mu.txt > Fit_DibosonStandard_TopMCCentralGauss_mu.log
+
+
+WWpTreweighting Syst:
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --noNull --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu_MUWWpTwt.txt WpJDibosonParametersMSCorr_mu.txt > Fit_DibosonStandard_mu_MUWWpTwt.log
+
+4.8% error (based on the fraction of the expectation)
+
+
+
+
+Fits in W+ vs W- regions:
+
+python -i fitComponentShapePdf.py -j 2 --comp diboson --bn "dibosonDibosonParameters_Wplus_mu" -m Diboson8TeVConfig dibosonDibosonParameters_Wplus_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WpJDibosonParameters_Wplus_mu" -m Diboson8TeVConfig WpJDibosonParameters_Wplus_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp top --bn "topDibosonParameters_Wplus_mu" -m Diboson8TeVConfig topDibosonParameters_Wplus_mu.txt
+WpJ total expected yield: 67342.5
+
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --fitparfn DibosonStandardFitOutPars_Wplus_mu.txt --nosig topDibosonParameters_Wplus_mu.txt dibosonDibosonParameters_Wplus_mu.txt WpJDibosonParameters_Wplus_mu.txt > Fit_DibosonStandard_Wplus_mu.log
+
+**Change the config**
+python -i fitComponentShapePdf.py -j 2 --comp diboson --bn "dibosonDibosonParameters_Wminus_mu" -m Diboson8TeVConfig dibosonDibosonParameters_Wminus_mu.txt 
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WpJDibosonParameters_Wminus_mu" -m Diboson8TeVConfig WpJDibosonParameters_Wminus_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp top --bn "topDibosonParameters_Wminus_mu" -m Diboson8TeVConfig topDibosonParameters_Wminus_mu.txt
+WpJ total expected yield: 49736.4
+
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --fitparfn DibosonStandardFitOutPars_Wminus_mu.txt --nosig topDibosonParameters_Wminus_mu.txt dibosonDibosonParameters_Wminus_mu.txt WpJDibosonParameters_Wminus_mu.txt > Fit_DibosonStandard_Wminus_mu.log
+
+
+
+Fit with V+Jets fixed to 1.02xexpectation and top floating
+**Change the config and create WpJDibosonParametersMSCorr_VJetsInfx1p02_mu.txt**
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_VJetsInfx1p02_mu.txt
+
+Fit with V+Jets central value at 1.02xexpectation and 0.9xexpectation. The uncertainties/constraints are standard:
+**The config is the same as default, but topDibosonParameters_topInfx0p9_mu.txt needs to be created**
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --ws Dibosonlnujj_muon_output.root --nosig topDibosonParameters_topInfx0p9_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_VJetsInfx1p02_mu.txt > Fit_DibosonStandard_CrossCheck_VJetsx1p02Topx0p9_mu.log
+
+
+
+Check Wgamma* by fitting with V+Jets pars:
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WGammaStarDibosonParameters_WpJPdf_mu" -m Diboson8TeVConfig WGammaStarDibosonParameters_WpJPdf_mu.txt
+
+
+
+
+
+
+
+===========================================================================ELECTRONS=====================================================================================================
+Electrons (standard):
+
+python -i fitComponentShapePdf.py -j 2 --electron --comp diboson --bn "dibosonDibosonParameters_el" -m Diboson8TeVConfig dibosonDibosonParameters_el.txt
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --makeFree --bn "WpJDibosonParameters_el" -m Diboson8TeVConfig WpJDibosonParameters_el.txt
+python -i fitComponentShapePdf.py -j 2 --electron --comp top --bn "topDibosonParameters_el" -m Diboson8TeVConfig topDibosonParameters_el.txt
+python -i fitComponentShapePdf.py -j 2 --electron --comp QCD --bn "QCDDibosonParameters_el" -m Diboson8TeVConfig QCDDibosonParameters_el.txt
+
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --fitparfn DibosonStandardFitOutPars_el.txt --nosig topDibosonParameters_el.txt dibosonDibosonParameters_el.txt WpJDibosonParametersMSCorr_el.txt QCDDibosonParameters_el.txt > Fit_DibosonStandard_el.log
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --electron --comp WZ --bn "WZDibosonParameters_el" -m Diboson8TeVConfig WZDibosonParameters_el.txt
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --noNull --plotDibosonContributions --ws Dibosonlnujj_electron_output.root --nosig topDibosonParameters_el.txt dibosonDibosonParameters_el.txt WpJDibosonParametersMSCorr_el.txt QCDDibosonParameters_el.txt WZDibosonParameters_el.txt
+
+
+-------------Shape Validation Using an Alternate Parametrization:-----------------------
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --ws WpJDibosonParametersAlt_el.root --alternateModel --makeFree --bn "WpJDibosonParametersAlt_el" -m Diboson8TeVConfig WpJDibosonParametersAlt_el.txt *** Use muon parameters as a starting point
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --electron --ws Dibosonlnujj_electron_output.root --fitparfn DibosonStandardAltFitOutPars_el.txt --noNull --useAlternateModelsToFit --nosig topDibosonParameters_el.txt dibosonDibosonParameters_el.txt WpJDibosonParametersAlt_el.txt QCDDibosonParameters_el.txt > Fit_DibosonStandard_WpJAltDef_el.log
+-------------
+
+---------------Sherpa Fit:-----------------------
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --makeFree --bn "WpJDibosonParameters_Sherpa_el" -m Diboson8TeVConfig WpJDibosonParameters_Sherpa_el.txt
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --ws Dibosonlnujj_electron_output.root --fitparfn DibosonStandardWpJSherpaasDefFitOutPars_el.txt --nosig topDibosonParameters_el.txt dibosonDibosonParameters_el.txt QCDDibosonParameters_el.txt WpJDibosonParameters_Sherpa_el.txt > Fit_DibosonStandard_WpJSherpaasDef_el.log
+-------------
+
+---------------Unconstrained (Not Used):-----------------------
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --fitparfn DibosonStandardFitOutPars_el.txt --nosig topDibosonParameters_el.txt dibosonDibosonParameters_el.txt WpJDibosonParameters_el.txt QCDDibosonParameters_el.txt > Fit_DibosonStandard_el.log <-Use With WpJ Unconstrained
+
+
+
+
+
+
+Alternate Matching and Scaling fits:
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --morphingComp +1 --makeFree --bn "WpJDibosonParametersMU_el" -m Diboson8TeVConfig WpJDibosonParametersMU_el.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --morphingComp -1 --makeFree --bn "WpJDibosonParametersMD_el" -m Diboson8TeVConfig WpJDibosonParametersMD_el.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --morphingComp +2 --makeFree --bn "WpJDibosonParametersSU_el" -m Diboson8TeVConfig WpJDibosonParametersSU_el.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --morphingComp -2 --makeFree --bn "WpJDibosonParametersSD_el" -m Diboson8TeVConfig WpJDibosonParametersSD_el.txt
+
+
+Shape Validation Using an Alternate Parametrization:
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --alternateModel --makeFree --bn "WpJDibosonParametersAlt_el" -m Diboson8TeVConfig WpJDibosonParametersAlt_el.txt ***Take the initial values from muon pars
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --electron --fitparfn DibosonStandardAltFitOutPars_el.txt --noNull --useAlternateModelsToFit --nosig topDibosonParameters_el.txt dibosonDibosonParameters_el.txt WpJDibosonParametersAlt_el.txt QCDDibosonParameters_el.txt
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --electron --comp WZ --bn "WZDibosonParameters_el" -m Diboson8TeVConfig WZDibosonParameters_el.txt
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --noNull --plotDibosonContributions --fitparfn DibosonStandardFitOutPars_el.txt --ws Dibosonlnujj_electron_output.root --nosig topDibosonParameters_el.txt dibosonDibosonParameters_el.txt WpJDibosonParametersMSCorr_el.txt QCDDibosonParameters_el.txt WZDibosonParameters_el.txt
+
+
+
+Top Sideband & Template Fit CrossCheck:
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --noNull --nosig TopControlSampleDefCutsInputYields_el.txt <-Get The Convolution Funcion Parrameters
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --nosig AllDefCutsMorphInputDibosonParameters_el.txt > Fit_DibosonStandardMorphConvolved_el.log <-StandardFit
+
+
+
+
+
+
+
+===========================================================================BOOSTED MUONS=========================================================================
+Boosted Regime, Muons:
+python -i fitComponentShapePdf.py -j 2 --comp diboson --bn "dibosonDibosonBoostedParameters_mu" -m DibosonBoosted8TeVConfig dibosonDibosonBoostedParameters_mu.txt  ***Corrrect Using the control sample
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WpJDibosonBoostedParameters_mu" -m DibosonBoosted8TeVConfig WpJDibosonBoostedParameters_mu.txt ***Extend the range of the free parameters
+python -i fitComponentShapePdf.py -j 2 --comp top --bn "topDibosonBoostedParameters_mu" -m DibosonBoosted8TeVConfig topDibosonBoostedParameters_mu.txt ***Corrrect Using the control sample
+
+
+python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --nosig topDibosonBoostedParameters_mu.txt dibosonDibosonBoostedParameters_mu.txt WpJDibosonBoostedParameters_mu.txt <-MC Gen Validation (not used anymore)
+python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --fitparfn DibosonBoostedFitOutPars_mu.txt --nosig topDibosonBoostedParameters_SidebandModified_mu.txt dibosonDibosonBoostedParameters_SidebandModified_mu.txt WpJDibosonBoostedParameters_mu.txt > Fit_DibosonBoosted_mu.log <-use
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --comp WZ --bn "WZDibosonBoostedParameters_mu" -m DibosonBoosted8TeVConfig WZDibosonBoostedParameters_mu.txt  ***Corrrect Using the control sample
+python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --noNull --plotDibosonContributions --ws DibosonBoostedlnuJ_muon_output.root --nosig topDibosonBoostedParameters_SidebandModified_mu.txt dibosonDibosonBoostedParameters_SidebandModified_mu.txt WpJDibosonBoostedParameters_mu.txt WZDibosonBoostedParameters_SidebandModified_mu.txt
+
+
+
+Shape Validation Using an Alternate Parametrization:
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --alternateModel --bn "WpJDibosonBoostedParametersAlt_mu" -m DibosonBoosted8TeVConfig WpJDibosonBoostedParametersAlt_mu.txt
+python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --ws DibosonBoostedlnuJ_muon_output.root --nosig --fitparfn DibosonBoostedAltWpJFitOutPars_mu.txt --noNull --useAlternateModelsToFit topDibosonBoostedParameters_SidebandModified_mu.txt dibosonDibosonBoostedParameters_SidebandModified_mu.txt WpJDibosonBoostedParametersAlt_mu.txt > Fit_DibosonBoostedAltWpJ_mu.log
+
+
+
+Alternate MC Cross-Checks:
+
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --makeFree --bn "WpJDibosonBoostedParametersHERWIG_mu" -m DibosonBoosted8TeVConfig WpJDibosonBoostedParametersHERWIG_mu.txt
+
+python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --fitparfn DibosonBoostedWpJHERWIGFitOutPars_mu.txt --nosig topDibosonBoostedParameters_SidebandModified_mu.txt dibosonDibosonBoostedParameters_SidebandModified_mu.txt WpJDibosonBoostedParametersHERWIG_mu.txt > Fit_DibosonBoosted_WpJHERWIG_mu.log
+
+
+
+
+
+===========================================================================BOOSTED ELECTRONS=========================================================================
+Boosted Regime, Electrons:
+python -i fitComponentShapePdf.py -j 2 --electron --comp diboson --bn "dibosonDibosonBoostedParameters_el" -m DibosonBoosted8TeVConfig dibosonDibosonBoostedParameters_el.txt ***Corrrect Using the control sample
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --makeFree --bn "WpJDibosonBoostedParameters_el" -m DibosonBoosted8TeVConfig WpJDibosonBoostedParameters_el.txt ***Extend the range of the free parameters
+python -i fitComponentShapePdf.py -j 2 --electron --comp top --bn "topDibosonBoostedParameters_el" -m DibosonBoosted8TeVConfig topDibosonBoostedParameters_el.txt ***Corrrect Using the control sample
+
+python -i runDibosonBoosted8TeVFit.py -j 2 --electron -m DibosonBoosted8TeVConfig --fitparfn DibosonBoostedFitOutPars_el.txt  --nosig topDibosonBoostedParameters_SidebandModified_el.txt dibosonDibosonBoostedParameters_SidebandModified_el.txt WpJDibosonBoostedParameters_el.txt > Fit_DibosonBoosted_el.log
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --electron --comp WZ --bn "WZDibosonBoostedParameters_el" -m DibosonBoosted8TeVConfig WZDibosonBoostedParameters_el.txt  ***Corrrect Using the control sample
+python -i runDibosonBoosted8TeVFit.py -j 2 --electron -m DibosonBoosted8TeVConfig --noNull --plotDibosonContributions --ws DibosonBoostedlnuJ_electron_output.root --nosig topDibosonBoostedParameters_SidebandModified_el.txt dibosonDibosonBoostedParameters_SidebandModified_el.txt WpJDibosonBoostedParameters_el.txt WZDibosonBoostedParameters_SidebandModified_el.txt
+
+
+Shape Validation Using an Alternate Parametrization:
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --alternateModel --makeFree --bn "WpJDibosonBoostedParametersAlt_el" -m DibosonBoosted8TeVConfig WpJDibosonBoostedParametersAlt_el.txt
+python -i runDibosonBoosted8TeVFit.py -j 2 --electron -m DibosonBoosted8TeVConfig --ws DibosonBoostedlnuJ_electron_output.root --nosig --fitparfn DibosonBoostedAltWpJFitOutPars_el.txt --noNull --useAlternateModelsToFit topDibosonBoostedParameters_SidebandModified_el.txt dibosonDibosonBoostedParameters_SidebandModified_el.txt WpJDibosonBoostedParametersAlt_el.txt  > Fit_DibosonBoostedAltWpJ_el.log
+
+
+
+Corrections based on the top sideband sample:
+Diboson Gauss: mean +1.1GeV, sigma*1.16 ('resolution' for the WW+WZ params)
+
+
+
+
+===========================================================================BTAG MUONS=========================================================================
+Btag (standardmuons):
+python -i fitComponentShapePdf.py -j 2 --comp diboson --btag --bn "dibosonDibosonBtagParameters_mu" -m Diboson8TeVConfig dibosonDibosonBtagParameters_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --btag --makeFree --bn "WpJDibosonBtagParameters_mu" -m Diboson8TeVConfig WpJDibosonBtagParameters_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp top --btag --bn "topDibosonBtagParameters_mu" -m Diboson8TeVConfig topDibosonBtagParameters_mu.txt
+python -i fitComponentShapePdf.py -j 2 --comp WHbb --btag --bn "WHbbDibosonBtagParameters_mu" -m Diboson8TeVConfig WHbbDibosonBtagParameters_mu.txt : WHbb total expected yield: 13.7 for the medium b-tag, 22.7 for the loose b-tag
+
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --btag --fitparfn DibosonBtagFitOutPars_mu.txt --nosig topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParameters_mu.txt WHbbDibosonBtagParameters_mu.txt  > Fit_DibosonBtag_mu.log
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --comp WZ --btag --bn "WZDibosonBtagParameters_mu" -m Diboson8TeVConfig WZDibosonBtagParameters_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --btag --noNull --plotDibosonContributions --ws DibosonBtaglnujj_muon_output.root --nosig topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParameters_mu.txt WHbbDibosonBtagParameters_mu.txt WZDibosonBtagParameters_mu.txt
+
+-------------Shape Validation Using an Alternate Parametrization:-------------
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --btag --ws WpJDibosonBtagParameters_mu.root --makeFree --alternateModel --bn "WpJDibosonBtagParametersAlt_mu" -m Diboson8TeVConfig WpJDibosonBtagParametersAlt_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --btag --fitparfn DibosonBtagFitOutParsAlt_mu.txt --useAlternateModelsToFit --ws DibosonBtaglnujj_muon_output.root --nosig topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParametersAlt_mu.txt WHbbDibosonBtagParameters_mu.txt  > Fit_DibosonBtagAlt_mu.log
+-------------
+
+---------------Sherpa Fit:-----------------------
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --btag --makeFree --bn "WpJDibosonBtagParameters_Sherpa_mu" -m Diboson8TeVConfig WpJDibosonBtagParameters_Sherpa_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --ws DibosonBtaglnujj_muon_output.root --btag --fitparfn DibosonBtagWpJSherpaasDefFitOutPars_mu.txt --nosig topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParameters_Sherpa_mu.txt WHbbDibosonBtagParameters_mu.txt  > Fit_DibosonBtag_WpJSherpaasDef_mu.log
+-------------
+
+---------------Unconstrained (Not Used):-----------------------
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --btag --fitparfn DibosonBtagFitOutPars_mu.txt --nosig topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParameters_mu.txt WHbbDibosonBtagParameters_mu.txt  > Fit_DibosonBtag_mu.log
+
+
+
+Crosschecks:
+Alternate Shape Fit:
+python -i fitComponentShapePdf.py -j 2 --comp WpJ --btag --makeFree --alternateModel --bn "WpJDibosonBtagParametersAlt_mu" -m Diboson8TeVConfig WpJDibosonBtagParametersAlt_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --btag --fitparfn DibosonBtagFitOutPars_mu.txt --useAlternateModelsToFit --nosig topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParametersAlt_mu.txt WHbbDibosonBtagParameters_mu.txt  > Fit_DibosonBtagAlt_mu.log
+
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --comp WZ --btag --bn "WZDibosonBtagParameters_mu" -m Diboson8TeVConfig WZDibosonBtagParameters_mu.txt
+python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --btag --noNull --plotDibosonContributions --ws DibosonBtaglnujj_muon_output.root --nosig topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParameters_mu.txt WHbbDibosonBtagParameters_mu.txt WZDibosonBtagParameters_mu.txt
+
+
+
+===========================================================================BTAG ELECTRONS=========================================================================
+---------------------------
+Btag Electrons (standard):
+
+python -i fitComponentShapePdf.py -j 2 --electron --comp diboson --btag --bn "dibosonDibosonBtagParameters_el" -m Diboson8TeVConfig dibosonDibosonBtagParameters_el.txt
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --btag --makeFree --bn "WpJDibosonBtagParameters_el" -m Diboson8TeVConfig WpJDibosonBtagParameters_el.txt
+python -i fitComponentShapePdf.py -j 2 --electron --comp top --btag --bn "topDibosonBtagParameters_el" -m Diboson8TeVConfig topDibosonBtagParameters_el.txt
+python -i fitComponentShapePdf.py -j 2 --electron --comp WHbb --btag --bn "WHbbDibosonBtagParameters_el" -m Diboson8TeVConfig WHbbDibosonBtagParameters_el.txt
+python -i fitComponentShapePdf.py -j 2 --electron --comp QCD --btag --bn "QCDDibosonBtagParameters_el" -m Diboson8TeVConfig QCDDibosonBtagParameters_el.txt ***Not used in the fit due to similarities with WpJ
+
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --btag --fitparfn DibosonBtagFitOutPars_el.txt --nosig topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParameters_el.txt WHbbDibosonBtagParameters_el.txt > Fit_DibosonBtag_el.log
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --electron --comp WZ --btag --bn "WZDibosonBtagParameters_el" -m Diboson8TeVConfig WZDibosonBtagParameters_el.txt
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --btag --noNull --plotDibosonContributions --ws DibosonBtaglnujj_electron_output.root --nosig topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParameters_el.txt WHbbDibosonBtagParameters_el.txt WZDibosonBtagParameters_el.txt
+
+-------------Shape Validation Using an Alternate Parametrization:-------------
+python -i fitComponentShapePdf.py -j 2 --electron --ws WpJDibosonBtagParameters_el.root --comp WpJ --btag --makeFree --alternateModel --bn "WpJDibosonBtagParametersAlt_el" -m Diboson8TeVConfig WpJDibosonBtagParametersAlt_el.txt
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --ws DibosonBtaglnujj_electron_output.root --btag --fitparfn DibosonBtagFitOutParsAlt_el.txt  --useAlternateModelsToFit --nosig topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParametersAlt_el.txt WHbbDibosonBtagParameters_el.txt  > Fit_DibosonBtagAlt_el.log
+-------------
+
+---------------Sherpa Fit:-----------------------
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --btag --makeFree --bn "WpJDibosonBtagParameters_Sherpa_el" -m Diboson8TeVConfig WpJDibosonBtagParameters_Sherpa_el.txt
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --ws DibosonBtaglnujj_electron_output.root --btag --fitparfn DibosonBtagWpJSherpaasDefFitOutPars_el.txt --nosig topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParameters_Sherpa_el.txt WHbbDibosonBtagParameters_el.txt  > Fit_DibosonBtag_WpJSherpaasDef_el.log
+-------------
+
+---------------Unconstrained (Not Used):-----------------------
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --btag --fitparfn DibosonBtagFitOutPars_el.txt --nosig topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParameters_el.txt WHbbDibosonBtagParameters_el.txt > Fit_DibosonBtag_el.log
+
+
+
+
+
+
+
+
+
+
+
+
+QCD/Data:
+anti-btagged: 11275/121709=0.0926
+b-tagged: 236/3776=0.0625 -medium, 898/12586=0.0713
+
+Crosschecks:
+Alternate Shape Fit:
+python -i fitComponentShapePdf.py -j 2 --electron --comp WpJ --btag --makeFree --alternateModel --bn "WpJDibosonBtagParametersAlt_el" -m Diboson8TeVConfig WpJDibosonBtagParametersAlt_el.txt
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --btag --useAlternateModelsToFit --nosig topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParametersAlt_el.txt WHbbDibosonBtagParameters_el.txt  > Fit_DibosonBtagAlt_el.log
+
+
+With the diboson contributions drawn separately:
+python -i fitComponentShapePdf.py -j 2 --electron --comp WZ --btag --bn "WZDibosonBtagParameters_el" -m Diboson8TeVConfig WZDibosonBtagParameters_el.txt
+python -i runDiboson8TevFit.py -j 2 --electron -m Diboson8TeVConfig --btag --noNull --plotDibosonContributions --ws DibosonBtaglnujj_electron_output.root --nosig topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParameters_el.txt WHbbDibosonBtagParameters_el.txt WZDibosonBtagParameters_el.txt
+
+
+
+
+=====================================================================================================================
+Top Control Sample:
+
+python -i fitComponentShapePdf.py -j 2 --ws topDibosonBoostedParameters_Sideband_mu.root --comp top --bn "topDibosonBoostedParameters_Sideband_mu" -m DibosonBoosted8TeVConfig topDibosonBoostedParameters_Sideband_mu.txt
+
+(((W_pt>200.)&&(GroomedJet_CA8_pt[0]>200)&&(abs(GroomedJet_CA8_eta[0])<2.4)&&(GroomedJet_CA8_mass_pr[0]>40)&&(GroomedJet_CA8_tau2tau1[0]<0.55)&&(GroomedJet_numberbjets_csvm>=1)&&(vbf_event==0)&&(event_met_pfmet >50)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>30.))&&(GroomedJet_CA8_mass_pr[0]>40.000)&&(GroomedJet_CA8_mass_pr[0]<140.000)
+
+python -i fitComponentShapePdf.py --electron --ws topDibosonBoostedParameters_Sideband_el.root -j 2 --comp top --bn "topDibosonBoostedParameters_Sideband_el" -m DibosonBoosted8TeVConfig topDibosonBoostedParameters_Sideband_el.txt
+
+
+
+
+==========================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
