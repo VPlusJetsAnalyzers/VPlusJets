@@ -1,0 +1,4 @@
+n_top = 7278.9 +/- 85.3 C
+n_WpJ = 111.5 +/- 10.6 C
+mean_Global_conv_TopWm = 4.2783 +/- 0.496  L(-INF - +INF)
+sigma_Global_conv_TopWm = 3.2297 +/- 0.488  L(-INF - +INF)

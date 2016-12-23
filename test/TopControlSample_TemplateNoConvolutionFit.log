@@ -1,0 +1,241 @@
+[ilyao@cmslpc23 test]$ python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --noNull --nosig
+Error in <TUnixSystem::DynamicPathName>: $CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so does not exist in /uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw/CMSSW_5_3_2/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib64:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib:/opt/lam/gnu/lib:.:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/lib::/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/cint/cint/stl
+adding RooFit ... done
+importing RooFit PDF classes
+Error in <PyROOT::TPyROOTApplication::ProcessLine>: macro alphaFunction.cxx not found in path .:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/macros:
+end of pyroot_logon
+link found for qqHtable8tev.txt
+lepton HLT : EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+lepton id : EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+full cuts: (((sqrt(JetPFCor_Pt[0]**2+JetPFCor_Pt[1]**2+2*JetPFCor_Pt[0]*JetPFCor_Pt[1]*cos(JetPFCor_Phi[0]-JetPFCor_Phi[1]))>70.)&&(abs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5)&&(abs(JetPFCor_dphiMET[0])>0.4)&&(W_mt>30.)&&(JetPFCor_Pt[1]>35.)&&(JetPFCor_Pt[0]>40.)&&(TopWm>0)&&(W_pt<200.)&&(vbf_event==0)&&(event_met_pfmet>25)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>25.))&&(TopWm>48.000)&&(TopWm<160.000))
+RooRealVar::TopWm = 104  L(48 - 160) B(14) // [GeV]
+making ComponentPdf top
+histCmd= TH1D("histtop","histtop",14,48.000000,160.000000)
+histCmd= TH1D("histtop_0","histtop_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root
+130404 13:33:06 001 Xrd: GoToAnotherServer: Going to: cmseos6.fnal.gov:1095
+selected events: 16197
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root acc x eff: 0.0021
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root N_expected: 9130.4
+histCmd= TH1D("histtop_1","histtop_1",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root
+130404 13:35:03 001 Xrd: GoToAnotherServer: Going to: cmseos5.fnal.gov:1095
+selected events: 14
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root acc x eff: 8.32e-05
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root N_expected: 2.8
+histCmd= TH1D("histtop_2","histtop_2",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root
+130404 13:35:07 001 Xrd: GoToAnotherServer: Going to: cmseos1.fnal.gov:1095
+selected events: 38
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root acc x eff: 0.000125
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root N_expected: 9.4
+histCmd= TH1D("histtop_3","histtop_3",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root
+130404 13:35:35 001 Xrd: GoToAnotherServer: Going to: cmseos1.fnal.gov:1095
+selected events: 113
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root acc x eff: 4.93e-05
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root N_expected: 28.6
+histCmd= TH1D("histtop_4","histtop_4",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root
+130404 13:36:54 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 202
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root acc x eff: 4.65e-05
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root N_expected: 49.8
+histCmd= TH1D("histtop_5","histtop_5",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root
+130404 13:37:11 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 353
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root acc x eff: 0.000619
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root N_expected: 133.5
+histCmd= TH1D("histtop_6","histtop_6",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root
+130404 13:37:19 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 342
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root acc x eff: 0.000612
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root N_expected: 132.0
+top acc x eff: 0.00145
+Number of expected top events: 9486.4
+making ComponentPdf WpJ
+histCmd= TH1D("histWpJ","histWpJ",14,48.000000,160.000000)
+histCmd= TH1D("histWpJ_0","histWpJ_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W2Jets_CMSSW532.root
+130404 13:37:26 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 3
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W2Jets_CMSSW532.root acc x eff: 6.93e-08
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W2Jets_CMSSW532.root N_expected: 2.7
+histCmd= TH1D("histWpJ_1","histWpJ_1",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W3Jets_CMSSW532.root
+130404 13:37:36 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 8
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W3Jets_CMSSW532.root acc x eff: 4.94e-07
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W3Jets_CMSSW532.root N_expected: 5.7
+histCmd= TH1D("histWpJ_2","histWpJ_2",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W4Jets_CMSSW532.root
+130404 13:37:54 001 Xrd: GoToAnotherServer: Going to: cmseos5.fnal.gov:1095
+selected events: 388
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W4Jets_CMSSW532.root acc x eff: 2.6e-05
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W4Jets_CMSSW532.root N_expected: 124.6
+histCmd= TH1D("histWpJ_3","histWpJ_3",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_ZpJ_CMSSW532.root
+130404 13:40:51 001 Xrd: GoToAnotherServer: Going to: cmseos8.fnal.gov:1095
+selected events: 6
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_ZpJ_CMSSW532.root acc x eff: 1.32e-07
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_ZpJ_CMSSW532.root N_expected: 8.9
+WpJ acc x eff: 1.15e-06
+Number of expected WpJ events: 142.0
+startpars:
+  1) 0x2aaac072c410 RooRealVar:: WpJ_nrm = 1  L(-0.5 - 5)  "WpJ_nrm"
+  2) 0x2aaac0ebd8b0 RooRealVar::   n_WpJ = 142.016 C  L(0 - 1e+06)  "n_WpJ"
+  3) 0x1d7bdb60 RooRealVar::   n_top = 9486.39 C  L(0 - 1e+06)  "n_top"
+  4) 0x1d018a10 RooRealVar:: top_nrm = 1  L(-0.5 - 5)  "top_nrm"
+130404 13:40:58 001 Xrd: GoToAnotherServer: Going to: cmseos5.fnal.gov:1095
+selected events: 9646
+
+
+RooDataSet::data_obs[TopWm] = 9646 entries
+resetting yields...
+RooRealVar::n_top = 9486.39 +/- 664.047 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 142.016 +/- 7.1008 C  L(0 - 1e+06) 
+Time elapsed: 1231.3 sec
+CPU time used: 689.5 sec
+starting fitting routine
+construct fit pdf ...
+load data ...
+resetting yields...
+RooRealVar::n_top = 9486.39 +/- 664.047 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 142.016 +/- 7.1008 C  L(0 - 1e+06) 
+resetting yields...
+RooRealVar::n_top = 9486.39 +/- 664.047 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 142.016 +/- 7.1008 C  L(0 - 1e+06) 
+
+fit constraints
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.07 ] = 1
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.05 ] = 1
+
+RooWorkspace(wjj2dfitter) wjj2dfitter contents
+
+variables
+---------
+(TopWm,WpJ_nrm,n_WpJ,n_top,r_signal,top_nrm)
+
+p.d.f.s
+-------
+RooHistPdf::WpJ[ pdfObs=(TopWm) ] = 1.46954
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.05 ] = 1
+RooExtendPdf::WpJ_extended[ pdf=WpJ n=f_WpJ_norm ] = 1.46954
+RooHistPdf::top[ pdfObs=(TopWm) ] = 57.2207
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.07 ] = 1
+RooExtendPdf::top_extended[ pdf=top n=f_top_norm ] = 57.2207
+RooAddPdf::total[ top_extended + WpJ_extended ] = 56.3984
+RooProdPdf::totalFit_const[ top_const * WpJ_const * total ] = 56.3984
+
+functions
+--------
+RooProduct::f_WpJ_norm[ n_WpJ * WpJ_nrm ] = 142.016
+RooProduct::f_top_norm[ n_top * top_nrm ] = 9486.39
+
+datasets
+--------
+RooDataHist::top_hist(TopWm)
+RooDataHist::WpJ_hist(TopWm)
+RooDataSet::data_obs(TopWm)
+
+parameter snapshots
+-------------------
+initPars = (n_top=9486.39[C],top_nrm=1,n_WpJ=142.016[C],WpJ_nrm=1)
+
+named sets
+----------
+constrainedSet:(top_nrm,WpJ_nrm)
+constraintSet:(top_const,WpJ_const)
+obsSet:(TopWm)
+params:(WpJ_nrm,n_WpJ,n_top,top_nrm)
+
+fitting ...
+ **********
+ **    9 **SET NOWARNINGS           0
+ **********
+ **********
+ **   12 **MIGRAD        1000           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=-35270.6 FROM MIGRAD    STATUS=INITIATE        6 CALLS           7 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.00000e+00   5.00000e-02   2.04149e-02  -3.90793e+00
+   2  top_nrm      1.00000e+00   7.00000e-02   2.85843e-02  -3.91895e+01
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-35270.6 FROM MIGRAD    STATUS=CONVERGED      31 CALLS          32 TOTAL
+                     EDM=1.38656e-07    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.00341e+00   4.99467e-02   2.63565e-03   1.57157e-02
+   2  top_nrm      1.00162e+00   1.02673e-02   5.42007e-04  -4.02039e-02
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  2    ERR DEF=0.5
+  2.495e-03 -3.668e-05 
+ -3.668e-05  1.054e-04 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2
+        1  0.07153   1.000 -0.072
+        2  0.07153  -0.072  1.000
+ **********
+ **   15 **HESSE        1000
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-35270.6 FROM HESSE     STATUS=OK             10 CALLS          42 TOTAL
+                     EDM=1.39896e-07    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  WpJ_nrm      1.00341e+00   4.99521e-02   1.05426e-04  -4.70468e-01
+   2  top_nrm      1.00162e+00   1.02688e-02   2.16803e-05  -4.71199e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  2    ERR DEF=0.5
+  2.496e-03 -3.676e-05 
+ -3.676e-05  1.054e-04 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2
+        1  0.07166   1.000 -0.072
+        2  0.07166  -0.072  1.000
+
+  RooFitResult: minimized FCN value: -35270.6, estimated distance to minimum: 1.39896e-07
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Floating Parameter    FinalValue +/-  Error   
+  --------------------  --------------------------
+               WpJ_nrm    1.0034e+00 +/-  5.00e-02
+               top_nrm    1.0016e+00 +/-  1.03e-02
+
+total expected: 9644
+data events: 9646
+plotting top ... events 9501.78692037
+plotting WpJ ... events 142.500905572
+
+
+  RooFitResult: minimized FCN value: -35270.6, estimated distance to minimum: 1.39896e-07
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Constant Parameter    Value     
+  --------------------  ------------
+                 n_WpJ    1.4202e+02
+                 n_top    9.4864e+03
+
+    Floating Parameter  InitialValue    FinalValue +/-  Error     GblCorr.
+  --------------------  ------------  --------------------------  --------
+               WpJ_nrm    1.0000e+00    1.0034e+00 +/-  5.00e-02  <none>
+               top_nrm    1.0000e+00    1.0016e+00 +/-  1.03e-02  <none>
+
+0 free parameters in the fit
+>>> print '%i degrees of freedom' % ndf
+14 degrees of freedom
+>>> print 'chi2: %.2f / %i = %.2f' % (chi2_1, ndf, (chi2/ndf))
+chi2: 24.77 / 14 = 1.77
+>>> print 'chi2 probability: %.4g' % (TMath.Prob(chi2, ndf))
+chi2 probability: 0.03689

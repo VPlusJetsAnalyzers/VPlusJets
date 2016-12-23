@@ -1,0 +1,108 @@
+[ilyao@cmslpc23 test]$ python -i fitComponentShapePdf.py -j 2 --comp top --bn "topDibosonSidebandParameters" -m Diboson8TeVConfig topDibosonSidebandParameters.txt
+Error in <TUnixSystem::DynamicPathName>: $CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so does not exist in /uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw/CMSSW_5_3_2/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib64:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib:/opt/lam/gnu/lib:.:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/lib::/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/cint/cint/stl
+adding RooFit ... done
+importing RooFit PDF classes
+Error in <PyROOT::TPyROOTApplication::ProcessLine>: macro alphaFunction.cxx not found in path .:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/macros:
+end of pyroot_logon
+link found for qqHtable8tev.txt
+component top
+models [27]
+files [('root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_WmunuJets_DataAll_GoldenJSON_19p3invfb.root', 1, 1)]
+lepton HLT : EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+lepton id : EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+full cuts: (((sqrt(JetPFCor_Pt[0]**2+JetPFCor_Pt[1]**2+2*JetPFCor_Pt[0]*JetPFCor_Pt[1]*cos(JetPFCor_Phi[0]-JetPFCor_Phi[1]))>70.)&&(abs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5)&&(abs(JetPFCor_dphiMET[0])>0.4)&&(W_mt>30.)&&(JetPFCor_Pt[1]>35.)&&(JetPFCor_Pt[0]>40.)&&(TopWm>0)&&(W_pt<200.)&&(vbf_event==0)&&(event_met_pfmet>25)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>25.))&&(TopWm>75.000)&&(TopWm<95.000))
+RooRealVar::TopWm = 85  L(75 - 95) B(10) // [GeV]
+integrated lumi: 19300.0
+including weights for eff
+130404 11:44:23 001 Xrd: GoToAnotherServer: Going to: cmseos5.fnal.gov:1095
+selected events: 3897
+RooDataSet::data0[TopWm,weight:evtWgt] = 3897 entries (3897 weighted)
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_WmunuJets_DataAll_GoldenJSON_19p3invfb.root effective integrated lumi: 1
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_WmunuJets_DataAll_GoldenJSON_19p3invfb.root A x eff: 3.9e+03
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_WmunuJets_DataAll_GoldenJSON_19p3invfb.root expected yield: 75212100.0
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_WmunuJets_DataAll_GoldenJSON_19p3invfb.root scale: 1.0
+top total expected yield: 75212100.0
+top overall A x eff: 3.9e+03
+RooDataSet::data[TopWm,weight:evtWgt] = 3897 entries (3897 weighted)
+making ComponentPdf top
+
+RooWorkspace(wjj2dfitter) wjj2dfitter contents
+
+variables
+---------
+(TopWm,mean_top_TopWm,sigma_top_TopWm)
+
+p.d.f.s
+-------
+RooGaussian::top[ x=TopWm mean=mean_top_TopWm sigma=sigma_top_TopWm ] = 0.852999
+
+datasets
+--------
+RooDataSet::data0(TopWm)
+
+named sets
+----------
+obsSet:(TopWm)
+
+ **********
+ **   13 **MIGRAD        1000           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=11653.3 FROM MIGRAD    STATUS=INITIATE       10 CALLS          11 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  mean_top_TopWm   8.37250e+01   2.00000e+02   2.02108e-01  -5.67402e+03
+   2  sigma_top_TopWm   1.18870e+01   5.94350e+00   2.52680e-02  -1.61796e+02
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=11650.5 FROM MIGRAD    STATUS=CONVERGED      47 CALLS          48 TOTAL
+                     EDM=1.71502e-06    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  mean_top_TopWm   8.47068e+01   3.86553e-01   2.87514e-05  -3.30106e+00
+   2  sigma_top_TopWm   1.14823e+01   8.45590e-01   2.61417e-04  -1.15953e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  2    ERR DEF=0.5
+  1.494e-01 -2.892e-02 
+ -2.892e-02  7.150e-01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2
+        1  0.08849   1.000 -0.088
+        2  0.08849  -0.088  1.000
+ **********
+ **   18 **HESSE        1000
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=11650.5 FROM HESSE     STATUS=OK             10 CALLS          58 TOTAL
+                     EDM=1.70752e-06    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  mean_top_TopWm   8.47068e+01   3.86908e-01   5.75028e-06   8.48084e-02
+   2  sigma_top_TopWm   1.14823e+01   8.46415e-01   1.04567e-05  -1.47492e+00
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  2    ERR DEF=0.5
+  1.497e-01 -3.217e-02 
+ -3.217e-02  7.164e-01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2
+        1  0.09823   1.000 -0.098
+        2  0.09823  -0.098  1.000
+[#0] ERROR:Plotting -- RooAbsPdf::plotOn(top) ERROR: component selection expression '*tail' does not select any components of p.d.f.
+Info in <TCanvas::Print>: file Dibosonlnujj_top_muon_2jets.png has been created
+
+  RooFitResult: minimized FCN value: 11650.5, estimated distance to minimum: 1.70752e-06
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Floating Parameter  InitialValue    FinalValue +/-  Error     GblCorr.
+  --------------------  ------------  --------------------------  --------
+        mean_top_TopWm    8.3725e+01    8.4707e+01 +/-  3.87e-01  <none>
+       sigma_top_TopWm    1.1887e+01    1.1482e+01 +/-  8.46e-01  <none>
+
+2 free parameters in the fit
+chi2: ( 4.84 ) /8 = 0.60
+chi2 probability: 0.7748

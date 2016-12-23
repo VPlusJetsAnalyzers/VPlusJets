@@ -1,0 +1,162 @@
+[ilyao@cmslpc23 test]$ python -i fitComponentShapePdf.py -j 2 --comp top --bn "topDibosonSidebandParameters" -m Diboson8TeVConfig topDibosonSidebandParameters.txt
+Error in <TUnixSystem::DynamicPathName>: $CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so does not exist in /uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw/CMSSW_5_3_2/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib64:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib:/opt/lam/gnu/lib:.:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/lib::/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/cint/cint/stl
+adding RooFit ... done
+importing RooFit PDF classes
+Error in <PyROOT::TPyROOTApplication::ProcessLine>: macro alphaFunction.cxx not found in path .:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/macros:
+end of pyroot_logon
+link found for qqHtable8tev.txt
+component top
+models [27]
+files [('root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root', 6893735, 225.197), ('root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root', 139974, 1.75776), ('root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root', 259960, 3.8939400000000002), ('root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root', 1935066, 30.004200000000001), ('root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root', 3758221, 55.530999999999999), ('root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root', 493458, 11.177300000000001), ('root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root', 497657, 11.177300000000001)]
+lepton HLT : EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+lepton id : EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+full cuts: (((sqrt(JetPFCor_Pt[0]**2+JetPFCor_Pt[1]**2+2*JetPFCor_Pt[0]*JetPFCor_Pt[1]*cos(JetPFCor_Phi[0]-JetPFCor_Phi[1]))>70.)&&(abs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5)&&(abs(JetPFCor_dphiMET[0])>0.4)&&(W_mt>30.)&&(JetPFCor_Pt[1]>35.)&&(JetPFCor_Pt[0]>40.)&&(TopWm>0)&&(W_pt<200.)&&(vbf_event==0)&&(event_met_pfmet>25)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>25.))&&(TopWm>75.000)&&(TopWm<95.000))
+RooRealVar::TopWm = 85  L(75 - 95) B(10) // [GeV]
+integrated lumi: 19300.0
+including weights for eff
+130404 11:31:35 001 Xrd: GoToAnotherServer: Going to: cmseos6.fnal.gov:1095
+selected events: 6725
+RooDataSet::data0[TopWm,weight:evtWgt] = 6725 entries (6063.27 weighted)
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root effective integrated lumi: 30612.0196983
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root A x eff: 0.00088
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root expected yield: 3822.7
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root scale: 1.0
+including weights for eff
+130404 11:33:35 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 2
+RooDataSet::data1[TopWm,weight:evtWgt] = 2 entries (0.756611 weighted)
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root effective integrated lumi: 79632.0316767
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root A x eff: 1.41e-05
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root expected yield: 0.5
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root scale: 0.384418418741
+including weights for eff
+130404 11:33:36 001 Xrd: GoToAnotherServer: Going to: cmseos1.fnal.gov:1095
+selected events: 9
+RooDataSet::data2[TopWm,weight:evtWgt] = 9 entries (3.57117 weighted)
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root effective integrated lumi: 66760.1452513
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root A x eff: 3e-05
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root expected yield: 2.3
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root scale: 0.458537344145
+including weights for eff
+130404 11:33:47 001 Xrd: GoToAnotherServer: Going to: cmseos1.fnal.gov:1095
+selected events: 29
+RooDataSet::data3[TopWm,weight:evtWgt] = 29 entries (11.1833 weighted)
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root effective integrated lumi: 64493.1709561
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root A x eff: 1.22e-05
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root expected yield: 7.1
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root scale: 0.474655211467
+including weights for eff
+130404 11:34:09 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 40
+RooDataSet::data4[TopWm,weight:evtWgt] = 40 entries (15.6569 weighted)
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root effective integrated lumi: 67677.8916281
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root A x eff: 9.21e-06
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root expected yield: 9.9
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root scale: 0.452319346272
+including weights for eff
+130404 11:34:24 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 163
+RooDataSet::data5[TopWm,weight:evtWgt] = 163 entries (98.1122 weighted)
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root effective integrated lumi: 44148.2289998
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root A x eff: 0.000287
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root expected yield: 61.9
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root scale: 0.693391793778
+including weights for eff
+130404 11:34:31 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 160
+RooDataSet::data6[TopWm,weight:evtWgt] = 160 entries (101.438 weighted)
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root effective integrated lumi: 44523.901121
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root A x eff: 0.000296
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root expected yield: 64.0
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root scale: 0.687541273958
+top total expected yield: 3968.2
+top overall A x eff: 0.000607
+RooDataSet::data[TopWm,weight:evtWgt] = 7128 entries (6293.99 weighted)
+making ComponentPdf top
+
+RooWorkspace(wjj2dfitter) wjj2dfitter contents
+
+variables
+---------
+(TopWm,mean_top_TopWm,sigma_top_TopWm)
+
+p.d.f.s
+-------
+RooGaussian::top[ x=TopWm mean=mean_top_TopWm sigma=sigma_top_TopWm ] = 0.985403
+
+datasets
+--------
+RooDataSet::data0(TopWm)
+RooDataSet::data1(TopWm)
+RooDataSet::data2(TopWm)
+RooDataSet::data3(TopWm)
+RooDataSet::data4(TopWm)
+RooDataSet::data5(TopWm)
+RooDataSet::data6(TopWm)
+
+named sets
+----------
+obsSet:(TopWm)
+
+ **********
+ **   13 **MIGRAD        1000           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=18816 FROM MIGRAD    STATUS=INITIATE       10 CALLS          11 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  mean_top_TopWm   8.39170e+01   2.00000e+02   2.02111e-01   2.75004e+03
+   2  sigma_top_TopWm   1.28850e+01   6.44250e+00   2.63099e-02   4.31865e+02
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=18814.7 FROM MIGRAD    STATUS=CONVERGED      42 CALLS          43 TOTAL
+                     EDM=5.75268e-07    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  mean_top_TopWm   8.37252e+01   3.51194e-01   3.08042e-05   1.39204e+00
+   2  sigma_top_TopWm   1.18874e+01   7.31740e-01   2.62374e-04   2.65797e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  2    ERR DEF=0.5
+  1.233e-01 -9.948e-02 
+ -9.948e-02  5.354e-01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2
+        1  0.38711   1.000 -0.387
+        2  0.38711  -0.387  1.000
+ **********
+ **   18 **HESSE        1000
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=18814.7 FROM HESSE     STATUS=OK             10 CALLS          53 TOTAL
+                     EDM=5.72824e-07    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  mean_top_TopWm   8.37252e+01   3.53559e-01   6.16085e-06   8.38233e-02
+   2  sigma_top_TopWm   1.18874e+01   7.36710e-01   1.04950e-05  -1.47324e+00
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  2    ERR DEF=0.5
+  1.250e-01 -1.046e-01 
+ -1.046e-01  5.427e-01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2
+        1  0.40148   1.000 -0.401
+        2  0.40148  -0.401  1.000
+[#0] ERROR:Plotting -- RooAbsPdf::plotOn(top) ERROR: component selection expression '*tail' does not select any components of p.d.f.
+Info in <TCanvas::Print>: file Dibosonlnujj_top_muon_2jets.png has been created
+
+  RooFitResult: minimized FCN value: 18814.7, estimated distance to minimum: 5.72824e-07
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Floating Parameter  InitialValue    FinalValue +/-  Error     GblCorr.
+  --------------------  ------------  --------------------------  --------
+        mean_top_TopWm    8.3917e+01    8.3725e+01 +/-  3.54e-01  <none>
+       sigma_top_TopWm    1.2885e+01    1.1887e+01 +/-  7.37e-01  <none>
+
+2 free parameters in the fit
+chi2: ( 7.64 ) /8 = 0.95
+chi2 probability: 0.4698
