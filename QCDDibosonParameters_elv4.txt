@@ -1,0 +1,4 @@
+a1_QCD_Mass2j_PFCor = -0.482196 +/- 0.015262 C L(-INF - +INF) 
+a2_QCD_Mass2j_PFCor =  0.085901 +/- 0.014900 C L(-INF - +INF) 
+a3_QCD_Mass2j_PFCor =  0.038733 +/- 0.013215 C L(-INF - +INF) 
+a4_QCD_Mass2j_PFCor = -0.0732790 +/- 0.012931 C L(-INF - +INF) 
