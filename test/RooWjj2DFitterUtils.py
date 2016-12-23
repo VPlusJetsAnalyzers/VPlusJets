@@ -3,12 +3,12 @@ from RooWjj2DFitterPars import Wjj2DFitterPars
 from ROOT import TH2D, TFile, gDirectory, TTreeFormula, RooDataHist, \
     RooHistPdf, RooArgList, RooArgSet, RooFit, RooDataSet, RooRealVar, \
     TRandom3, RooPowerLaw, RooClassFactory, gROOT, TClass, TH1D, \
-    RooChebyshevPDF, TH1F, RooExpPoly
+    RooChebyshevPDF, TH1F
 from array import array
 from EffLookupTable import EffLookupTable
 import random
 
-from HWWSignalShapes import HiggsCPWeight
+##from HWWSignalShapes import HiggsCPWeight
 import warnings
 warnings.filterwarnings( action='ignore', category=RuntimeWarning, message='creating converter for unknown type "const char\*\*".*' )
 
@@ -78,34 +78,11 @@ class Wjj2DFitterUtils:
                 veto = True
 
         return veto
-
-    def MyRunningWidthBW(self, mww, mH, gamma):
-        #running width BW without normalizations
-        numerator = (mww*mww*gamma/mH)
-        denominator = (mww*mww-mH*mH)*(mww*mww-mH*mH) + \
-            (mww*mww*gamma/mH)*(mww*mww*gamma/mH)
-        pdf = numerator/denominator
-        return pdf
-
-    def lineshapeWidthReweight(self, point, meanSM, gammaSM, Cprime):
-        weight2 = self.MyRunningWidthBW(point,meanSM,gammaSM*Cprime)/ \
-            self.MyRunningWidthBW(point,meanSM,gammaSM);
-        return weight2;
-
-    def IntfRescale(self, curIntfRw,cPrime,BRnew):
-
-        curIoverS = curIntfRw - 1
-        newWeight = 1 + ((1-BRnew)*curIoverS)/cPrime
-        # if newWeight < 0: 
-        #     newWeight = 0.01
-        ratio = newWeight/curIntfRw
-
-        return ratio
-
+            
     # generator function for looping over an event tree and applying the cuts
     def TreeLoopFromFile(self, fname, noCuts = False,
                          cutOverride = None, CPweight = False, 
-                         interference = 0, BRnew = 0, Cprime = 1):
+                         interference = 0):
 
         # open file and get tree
         treeFile = TFile.Open(fname)
@@ -125,178 +102,75 @@ class Wjj2DFitterUtils:
         else:
             theCuts = self.fullCuts()
 
+        # create an entry list which apply the cuts to the tree
         if gDirectory.Get('cuts_evtList'):
             gDirectory.Delete('cuts_evtList')
-        theList = None
+        theTree.Draw('>>cuts_evtList', theCuts, 'entrylist')
+        theList = gDirectory.Get('cuts_evtList')
 
         # create fomulae for the variables of interest
         rowVs = []
         for (i,v) in enumerate(self.pars.var):
             rowVs.append(TTreeFormula('v%i' % i, v, theTree))
 
-        extraDraw = ''
-        varsRemaining = 4-len(self.pars.var)
-        ExtraDrawCP = False
-        ExtraDrawInterf = False
-        CPWHist = None
-        AvgCPW = 1.0
-        CPWFile = TFile.Open('ComplexPoleWeights/CPSHiggs%dShapes.root' % \
-                                 (self.pars.mHiggs))
-        if CPWFile:
-            CPWFile.ls()
-            avgCPS = CPWFile.Get('avgCPS')
-            avgCPS.GetEntry(0)
-            AvgCPW = avgCPS.avgcps
-            fr = CPWFile.Get('unbinnedFit_HWW%d_newCPS' % self.pars.mHiggs)
-            SM_H_mean = fr.floatParsFinal().find('mH').getVal()
-            SM_H_width = fr.floatParsFinal().find('Gamma').getVal()
-        if CPweight:
-            if CPWFile:
-                CPWHist = CPWFile.Get('ratio_HWW%d' % (self.pars.mHiggs))
-                CPWHist.SetDirectory(0)
-
-            if not CPWHist and hasattr(theTree, 'complexpolewtggH%i' % \
-                                           self.pars.mHiggs):
-                extraDraw += ':(complexpolewtggH%i/avecomplexpolewtggH%i)' % \
-                             (self.pars.mHiggs, self.pars.mHiggs)
-            elif hasattr(theTree, 'W_H_mass_gen'):
-                extraDraw += ':W_H_mass_gen'
-            else:
-                extraDraw += ':(complexpolewtggH%i/avecomplexpolewtggH%i)' % \
-                             (self.pars.mHiggs, self.pars.mHiggs)
-                CPWHist = None
-            varsRemaining -= 1
-            ExtraDrawCP = True
-        if interference == 1:
-            extraDraw += ':interferencewtggH%i' % self.pars.mHiggs
-            varsRemaining -= 1
-            ExtraDrawInterf = True
-        elif interference == 2:
-            extraDraw += ':interferencewt_upggH%i' % self.pars.mHiggs
-            varsRemaining -= 1
-            ExtraDrawInterf = True
-        elif interference == 3:
-            extraDraw += ':interferencewt_downggH%i' % self.pars.mHiggs
-            varsRemaining -= 1
-            ExtraDrawInterf = True
-                            
-        if varsRemaining >= 0:
-            if len(theCuts) > 0:
-                theCuts = 'puwt*effwt*' + theCuts
-            # print ':'.join(self.pars.var) + extraDraw
-            # print 'weighted cuts:',theCuts
-            Nsel = theTree.Draw(':'.join(self.pars.var) + extraDraw,
-                                theCuts, 'goff')
-        else:
-            # create an entry list which apply the cuts to the tree
-            Nsel = theTree.Draw('>>cuts_evtList', theCuts, 'entrylist')
-            theList = gDirectory.Get('cuts_evtList')
-
-
         # loop over the selected events calculate their weight and yield
         # the two variable values and the weight for each selected event.
-        print "selected events:",Nsel
+        print "selected events:",theList.GetN()
+        while theTree.GetEntry(theList.Next()):
+            if self.pars.isElectron:
+                lep_pt = theTree.W_electron_pt
+                lep_eta = theTree.W_electron_eta
+            else:
+                lep_pt = theTree.W_muon_pt
+                lep_eta = theTree.W_muon_eta
+            # jet_pt = []
+            # jet_eta = []
+            # for (idx, pt) in enumerate(theTree.JetPFCor_Pt):
+            #     if pt > 0:
+            #         jet_pt.append(pt)
+            #         jet_eta.append(theTree.JetPFCor_Eta[idx])
 
-        if theList:
-            while theTree.GetEntry(theList.Next()):
-                # if self.pars.isElectron:
-                #     lep_pt = theTree.W_electron_pt
-                #     lep_eta = theTree.W_electron_eta
-                # else:
-                #     lep_pt = theTree.W_muon_pt
-                #     lep_eta = theTree.W_muon_eta
-                # jet_pt = []
-                # jet_eta = []
-                # for (idx, pt) in enumerate(theTree.JetPFCor_Pt):
-                #     if pt > 0:
-                #         jet_pt.append(pt)
-                #         jet_eta.append(theTree.JetPFCor_Eta[idx])
+            # effWgt = self.effWeight(lepton_pt = lep_pt, lepton_eta = lep_eta, 
+            #                         #jet_pt = jet_pt, jet_eta,
+            #                         mt_pt = theTree.W_mt, mt_eta = lep_eta,
+            #                         met_pt = theTree.event_met_pfmet, 
+            #                         met_eta = 0.)
+            if (hasattr(self.pars, 'btagVeto')) and (self.pars.btagVeto) and \
+                    self.btagVeto(theTree):
+                continue
 
-                # effWgt = self.effWeight(lepton_pt = lep_pt, lepton_eta = lep_eta, 
-                #                         #jet_pt = jet_pt, jet_eta,
-                #                         mt_pt = theTree.W_mt, mt_eta = lep_eta,
-                #                         met_pt = theTree.event_met_pfmet, 
-                #                         met_eta = 0.)
-                # if (hasattr(self.pars, 'btagVeto')) and (self.pars.btagVeto) and \
-                #         self.btagVeto(theTree):
-                #     continue
-
-                effWgt = theTree.puwt*theTree.effwt
-                if CPweight:
-                    if hasattr(theTree, 'complexpolewtggH%i' % self.pars.mHiggs):
-                        cpw = getattr(theTree, 
-                                      'complexpolewtggH%i' % self.pars.mHiggs)
-                        cpw /= getattr(theTree, 
-                                       'avecomplexpolewtggH%i' % self.pars.mHiggs)
-                    else:
-                        cpw = HiggsCPWeight(self.pars.mHiggs, theTree.W_H_mass_gen)
-                else:
-                    cpw = 1.
-                if interference == 1:
-                    iwt = getattr(theTree, 
-                                  'interferencewtggH%i' % self.pars.mHiggs)
-                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
-                elif interference == 2:
-                    iwt = getattr(theTree, 
-                                  'interferencewt_upggH%i' % self.pars.mHiggs)
-                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
-                elif interference == 3:
-                    iwt = getattr(theTree,
-                                  'interferencewt_downggH%i' % self.pars.mHiggs)
-                    iwt = self.IntfRescale(iwt,Cprime,BRnew)
-                else:
-                    iwt = 1.
-                row = [ v.EvalInstance() for v in rowVs ]
-                if CPWHist:
-                    cpw = CPWHist.Interpolate(theTree.W_H_mass_gen)/AvgCPW
-                    cpw *= self.lineshapeWidthReweight(theTree.W_H_mass_gen, 
-                                                       SM_H_mean, SM_H_width,
-                                                       Cprime/(1-BRnew))
-                effWgt *= Cprime*(1-BRnew)
-                yield (row, effWgt, cpw, iwt)
-        else:
-            for rowi in range(0, theTree.GetSelectedRows()):
-                effWgt = theTree.GetW()[rowi]
-                effWgt *= Cprime*(1-BRnew)
-                row = []
-                for vi in range(0, len(self.pars.var)):
-                    row.append(getattr(theTree, 'GetV%i' % (vi+1))()[rowi])
-                cpw = 1.
-                vi = len(self.pars.var)
-                if ExtraDrawCP:
-                    cpw = getattr(theTree, 'GetV%i' % (vi+1))()[rowi]
-                    vi += 1
-                    if CPWHist:
-                        W_H_mass_gen = cpw
-                        cpw = CPWHist.Interpolate(W_H_mass_gen)/AvgCPW
-                        # print 'W_H_mass_gen: %.3f cpw: %.3f AvgCPW: %.3f' % \
-                        #     (W_H_mass_gen, cpw, AvgCPW),
-                        cpw *= self.lineshapeWidthReweight(W_H_mass_gen, 
-                                                           SM_H_mean, 
-                                                           SM_H_width,
-                                                           Cprime/(1-BRnew))
-                        # print 'Cprime: %.2f BRnew: %.2f new cpw: %.3f' % \
-                        #     (Cprime, BRnew, cpw),
+            effWgt = theTree.puwt*theTree.effwt
+##             if CPweight:
+##                 if hasattr(theTree, 'complexpolewtggH%i' % self.pars.mHiggs):
+##                     cpw = getattr(theTree, 
+##                                   'complexpolewtggH%i' % self.pars.mHiggs)
+##                     cpw /= getattr(theTree, 
+##                                    'avecomplexpolewtggH%i' % self.pars.mHiggs)
+##                 else:
+##                     cpw = HiggsCPWeight(self.pars.mHiggs, theTree.W_H_mass_gen)
+##             else:
+            cpw = 1.
+            if interference == 1:
+                iwt = getattr(theTree, 
+                              'interferencewtggH%i' % self.pars.mHiggs)
+            elif interference == 2:
+                iwt = getattr(theTree, 
+                              'interferencewt_upggH%i' % self.pars.mHiggs)
+            elif interference == 3:
+                iwt = getattr(theTree,
+                              'interferencewt_downggH%i' % self.pars.mHiggs)
+            else:
                 iwt = 1.
-                if ExtraDrawInterf:
-                    iwt = getattr(theTree, 'GetV%i' % (vi+1))()[rowi]
-                    # print 'iwt: %.3f' % iwt,
-                    iwt *= self.IntfRescale(iwt,Cprime,BRnew)
-                    # print 'new iwt: %.3f' % iwt
-                    vi += 1
-                # print 'cpw: %.3f iwt: %.3f effWgt: %.3f' % (cpw, iwt, effWgt)
-                yield (row, effWgt, cpw, iwt)
-                
+            row = [ v.EvalInstance() for v in rowVs ]
+            yield (row, effWgt, cpw, iwt)
 
-        treeFile.Close()
         return
         
 
     # from a file fill a 2D histogram
     def File2Hist(self, fname, histName, noCuts = False, 
                   cutOverride = None, CPweight = False,
-                  doWeights = True, interference = 0, Cprime = 1,
-                  BRnew = 0.):
+                  doWeights = True, interference = 0):
         theHist = self.newEmptyHist(histName)
 
         print 'filename:',fname
@@ -307,14 +181,12 @@ class Wjj2DFitterUtils:
                                                              noCuts, 
                                                              cutOverride,
                                                              CPweight,
-                                                             interference,
-                                                             Cprime = Cprime,
-                                                             BRnew = BRnew):
+                                                             interference):
             #print 'entry:',v1val,v2val,effWgt
             if not doEffWgt:
                 effWgt = 1.0
-            if CPweight:
-                effWgt *= cpw
+##             if CPweight:
+##                 effWgt *= cpw
             if interference in [1,2,3]:
                 effWgt *= iwt
             if len(row) == 1:
@@ -351,8 +223,7 @@ class Wjj2DFitterUtils:
     # from a file fill and return a RooDataSet
     def File2Dataset(self, fnames, dsName, ws, noCuts = False, 
                      weighted = False, CPweight = False, cutOverride = None,
-                     interference = 0, additionalWgt = 1.0, Cprime = 1,
-                     BRnew = 0.):
+                     interference = 0, additionalWgt = 1.0):
         if ws.data(dsName):
             return ws.data(dsName)
 
@@ -364,13 +235,9 @@ class Wjj2DFitterUtils:
             ds = RooDataSet(dsName, dsName, cols, 'evtWgt')
             print 'including weights for eff',
             if CPweight:
-                print 'and CP weight',
+                print 'No CP weighting !!!',
             if interference in [1,2,3]:
                 print 'and interference',
-            if Cprime < 1.:
-                print 'using Cprime = %.2f' % (Cprime),
-            if BRnew > 0.:
-                print 'using BRnew = %.2f' % (BRnew),
             print
         else:
             ds = RooDataSet(dsName, dsName, cols)
@@ -388,8 +255,7 @@ class Wjj2DFitterUtils:
                     self.TreeLoopFromFile(fname, noCuts,
                                           CPweight = CPweight,
                                           cutOverride = cutOverride,
-                                          interference = interference,
-                                          Cprime = Cprime, BRnew = BRnew):
+                                          interference = interference):
                 inRange = True
                 for (i,v) in enumerate(obs):
                     inRange = (inRange and ws.var(v).inRange(row[i], ''))
@@ -449,7 +315,7 @@ class Wjj2DFitterUtils:
 
     # various analytic models that can be selected easily.
     def analyticPdf(self, ws, var, model, pdfName, idString = None, 
-                    auxModel = None, systMult = None):
+                    auxModel = None):
         if ws.pdf(pdfName):
             return ws.pdf(pdfName)
 
@@ -460,7 +326,7 @@ class Wjj2DFitterUtils:
                        )
         elif model==1:
             # power-law model
-            ws.factory("power_%s[-4., -30., 30.]" % idString)
+            ws.factory("power_%s[-2., -30., 30.]" % idString)
             ws.factory("RooPowerLaw::%s(%s, power_%s)" % \
                            (pdfName, var, idString)
                        )
@@ -484,16 +350,11 @@ class Wjj2DFitterUtils:
         elif model==5:
             # a double gaussian
             self.analyticPdf(ws, var, 27, '%s_core' % pdfName,
-                             '%s_core' % idString, 84., systMult)
+                             '%s_core' % idString, 84.)
             self.analyticPdf(ws, var, 27, '%s_tail' % pdfName,
-                             '%s_tail' % idString, 100., systMult)
-            fcore = ws.factory("f_%s_core[0.5, 0, 1]" % idString)
-            if systMult:
-                fcore.setConstant()
-                kappa = ws.factory("RooPowerFunction::func_kappa_%s(kappa_%s[1.0], %s[0.])" % (fcore.GetName(), fcore.GetName(), systMult))
-                fcore = ws.factory("prod::func_%s(%s, %s)" % (fcore.GetName(), fcore.GetName(), kappa.GetName()))
-            ws.factory("SUM::%s(%s * %s_core, %s_tail)" % \
-                           (pdfName, fcore.GetName(), pdfName, pdfName)
+                             '%s_tail' % idString, 100.)
+            ws.factory("SUM::%s(f_%s_core[0.5,0,1] * %s_core, %s_tail)" % \
+                           (pdfName, idString, pdfName, pdfName)
                        )
         elif model==6:
             # a CB + gaussian with same means
@@ -510,6 +371,251 @@ class Wjj2DFitterUtils:
             ws.factory("SUM::%s(f_%s_core[0.5,0,1] * %s_core, %s_tail)" % \
                            (pdfName, idString, pdfName, pdfName)
                        )
+
+
+        elif model==306:
+            # A CB + two small gaussians to compensate for interference near 110 GeV
+            print 'auxModel=', auxModel
+            ### Parameters For GaussianA
+            mean_GausA = ws.factory("mean_%s_GausA[116.,110,120]" % idString)
+            sigma_GausA = ws.factory("sigma_%s_GausA[5.,0,100]" % idString)
+            frac_GausA = ws.factory("f_%s_GausA[0.00,0.0,0.05]" % idString)
+            ### Parameters For GaussianB
+            mean_GausB = ws.factory("mean_%s_GausB[97.,90,105]" % idString)
+            sigma_GausB = ws.factory("sigma_%s_GausB[5.,0,100]" % idString)
+            frac_GausB = ws.factory("f_%s_GausB[-0.00,-0.05,-0.0]" % idString)
+            ### CB parameters
+            mean_CB = ws.factory("mean_%s_CB[84.,0,1000]" % idString)
+            sigma_CB = ws.factory("sigma_%s_CB[10.,0,500]" % idString)
+            alpha_CB = ws.factory("alpha_%s_CB[-1.0,-10,10]" % idString)
+            npow_CB = ws.factory("npow_%s_CB[4.0,0.1,10]" % idString)
+            ### Set the parameter values depending on the choice of auxModel
+            if auxModel == -1:
+                #float GausA
+                mean_GausA.setConstant(False)
+                sigma_GausA.setConstant(False)
+                frac_GausA.setConstant(False)
+                mean_GausB.setConstant(True)
+                sigma_GausB.setConstant(True)
+                frac_GausB.setConstant(True)
+                mean_CB.setConstant(True)
+                sigma_CB.setConstant(True)
+                alpha_CB.setConstant(True)
+                npow_CB.setConstant(True)
+            elif auxModel == -2:
+                #float GausB
+                mean_GausA.setConstant(True)
+                sigma_GausA.setConstant(True)
+                frac_GausA.setConstant(True)
+                mean_GausB.setConstant(False)
+                sigma_GausB.setConstant(False)
+                frac_GausB.setConstant(False)
+                mean_CB.setConstant(True)
+                sigma_CB.setConstant(True)
+                alpha_CB.setConstant(True)
+                npow_CB.setConstant(True)
+            elif auxModel == -3:
+                #float GausA and GausB
+                mean_GausA.setConstant(False)
+                sigma_GausA.setConstant(False)
+                frac_GausA.setConstant(False)
+                mean_GausB.setConstant(False)
+                sigma_GausB.setConstant(False)
+                frac_GausB.setConstant(False)
+                mean_CB.setConstant(True)
+                sigma_CB.setConstant(True)
+                alpha_CB.setConstant(True)
+                npow_CB.setConstant(True)
+            else:
+                #float the CB
+                mean_GausA.setConstant(True)
+                sigma_GausA.setConstant(True)
+                frac_GausA.setConstant(True)
+                mean_GausB.setConstant(True)
+                sigma_GausB.setConstant(True)
+                frac_GausB.setConstant(True)
+                mean_CB.setConstant(False)
+                sigma_CB.setConstant(False)
+                alpha_CB.setConstant(False)
+                npow_CB.setConstant(False)
+
+                
+            pdfGausA = ws.factory("RooGaussian::%s_GausA" % pdfName + "(%s, mean_%s_GausA,sigma_%s_GausA)" % (var, idString, idString))
+            pdfGausB = ws.factory("RooGaussian::%s_GausB" % pdfName + "(%s, mean_%s_GausB,sigma_%s_GausB)" % (var, idString, idString))
+            pdfCB = ws.factory("RooCBShape::%s_tail" % pdfName + "(%s, mean_%s_CB,sigma_%s_CB,alpha_%s_CB, npow_%s_CB)" % (var, idString, idString, idString, idString) )
+
+
+            ws.factory("SUM::%s(f_%s_GausA * %s_GausA, f_%s_GausB * %s_GausB, %s_tail)" % \
+                           (pdfName, idString, pdfName, idString, pdfName, pdfName)
+                       )  
+
+        elif model==307:
+            # A 2ParPowerLaw * Erf + two small gaussians to compensate for interference near 110 GeV
+            print 'auxModel=', auxModel
+            ### Parameters For GaussianA
+            mean_GausA = ws.factory("mean_%s_GausA[116.,110,120]" % idString)
+            sigma_GausA = ws.factory("sigma_%s_GausA[5.,0,100]" % idString)
+            frac_GausA = ws.factory("f_%s_GausA[0.00,0.0,0.05]" % idString)
+            ### Parameters For GaussianB
+            mean_GausB = ws.factory("mean_%s_GausB[97.,90,105]" % idString)
+            sigma_GausB = ws.factory("sigma_%s_GausB[5.,0,100]" % idString)
+            frac_GausB = ws.factory("f_%s_GausB[-0.00,-0.05,-0.0]" % idString)
+            ### 2ParPowerLaw * Erf parameters
+            offset = ws.factory("offset_%s_tail[61., 50, 70]" % idString)
+            width = ws.factory("width_%s_tail[34, 20, 50]" % idString)
+            power1 = ws.factory("power_%s_tail[1.5, 0.5, 2.0]" % idString)
+            power2 = ws.factory("power2_%s_tail[0.62, 0.4, 1.0]" % idString)
+            ### Set the parameter values depending on the choice of auxModel
+            if auxModel == -3:
+                #float GausA and GausB
+                mean_GausA.setConstant(False)
+                sigma_GausA.setConstant(False)
+                frac_GausA.setConstant(False)
+                mean_GausB.setConstant(False)
+                sigma_GausB.setConstant(False)
+                frac_GausB.setConstant(False)
+                offset.setConstant(True)
+                width.setConstant(True)
+                power1.setConstant(True)
+                power2.setConstant(True)
+            else:
+                mean_GausA.setConstant(True)
+                sigma_GausA.setConstant(True)
+                frac_GausA.setConstant(True)
+                mean_GausB.setConstant(True)
+                sigma_GausB.setConstant(True)
+                frac_GausB.setConstant(True)
+                offset.setConstant(False)
+                width.setConstant(False)
+                power1.setConstant(False)
+                power2.setConstant(False)
+##             else:
+##                 offset.setVal(ws.var(var).getMin())
+##                 offset.setError(offset.getVal()*0.2)
+##                 width.setVal(offset.getVal()*0.2)
+##                 width.setError(width.getVal()*0.2) 
+                
+
+            pdfGausA = ws.factory("RooGaussian::%s_GausA" % pdfName + "(%s, mean_%s_GausA,sigma_%s_GausA)" % (var, idString, idString))
+            pdfGausB = ws.factory("RooGaussian::%s_GausB" % pdfName + "(%s, mean_%s_GausB,sigma_%s_GausB)" % (var, idString, idString))
+            factoryStatement = "RooErfPdf::%s_tail_erf(%s, offset_%s_tail, width_%s_tail)"%\
+                               (pdfName, var, idString, idString)
+            pdfErf = ws.factory(factoryStatement)
+##             pdfErf = self.analyticPdf(ws, var, 25, '%s_tail_turnon' % pdfName,
+##                                       idString)
+
+            pdfPower = ws.factory("EXPR::%s_tail_power('1./TMath::Power(@0,@1+@2*log(@0/@3))', %s, power_%s_tail, power2_%s_tail, 8000)" % \
+                           (pdfName, var, idString, idString)
+                       )
+##             ws.factory("PROD::%s(%s,%s)" % (pdfName, pdfErf.GetName(),
+##                                             pdfPower.GetName()))
+
+            pdfErfPow = ws.factory("PROD::%s_tail(%s,%s)" % (pdfName, pdfErf.GetName(),
+                                            pdfPower.GetName()))
+##             ws.factory("SUM::%s(f_%s_GausA * %s_GausA, %s_tail)" % \
+##                            (pdfName, idString, pdfName, pdfName)
+##                        )  
+            ws.factory("SUM::%s(f_%s_GausA * %s_GausA, f_%s_GausB * %s_GausB, %s_tail)" % \
+                           (pdfName, idString, pdfName, idString, pdfName, pdfName)
+                       )  
+
+
+
+        elif model==308:
+            print 'auxModel=', auxModel
+            ### Parameters For GaussianA
+            mean_GausA = ws.factory("mean_%s_GausA[116.,110,120]" % idString)
+            sigma_GausA = ws.factory("sigma_%s_GausA[5.,0,100]" % idString)
+            frac_GausA = ws.factory("f_%s_GausA[0.00,0.0,0.1]" % idString)
+            ### 3ParPowerLaw * Erf parameters
+            offset = ws.factory("offset_%s_tail[61]" % idString)
+            width = ws.factory("width_%s_tail[34]" % idString)
+            power1 = ws.factory("power_%s_tail[1.5,1.0,2.0]" % idString)
+            power2 = ws.factory("power2_%s_tail[-6.0,-10.0,10.0]" % idString)
+            power3 = ws.factory("power3_%s_tail[9.0,7.0,11.0]" % idString)
+            ### Set the parameter values depending on the choice of auxModel
+            if auxModel == -1:
+                mean_GausA.setConstant(True)
+                sigma_GausA.setConstant(True)
+                frac_GausA.setConstant(True)
+                offset.setConstant(False)
+                width.setConstant(False)
+                power1.setConstant(False)
+                power2.setConstant(False)
+                power3.setConstant(False)
+            elif auxModel == -2:
+                offset.setConstant(True)
+                width.setConstant(True)
+                power1.setConstant(True)
+                power2.setConstant(True)
+            else:
+                offset.setVal(ws.var(var).getMin())
+                offset.setError(offset.getVal()*0.2)
+                width.setVal(offset.getVal()*0.2)
+                width.setError(width.getVal()*0.2)    
+
+                
+            # a gaus + Erf*3Param Power Law
+            pdfGausA =ws.factory("RooGaussian::%s_GausA" % pdfName + \
+                           "(%s, mean_%s_GausA,sigma_%s_GausA)" %\
+                           (var, idString, idString)
+                       )
+
+
+
+            factoryStatement = "RooErfPdf::%s_tail_erf(%s, offset_%s_tail, width_%s_tail)"%\
+                               (pdfName, var, idString, idString)
+            pdfErf = ws.factory(factoryStatement)
+##             pdfErf = self.analyticPdf(ws, var, 25, '%s_tail_turnon' % pdfName,
+##                                       idString)
+
+##             pdfPower3 = ws.factory("EXPR::%s_tail_power('1./TMath::Power(@0,@1+@2*log(@0/@3))', %s, power_%s_tail, power2_%s_tail, 8000)" % \
+##                            (pdfName, var, idString, idString) )
+
+            pdfPower = ws.factory("EXPR::%s_tail_power('TMath::Power(1.-@0/@3,@4)/TMath::Power(@0/@3,@1+@2*log(@0/@3))', %s, power_%s_tail, power2_%s_tail, 1200, power3_%s_tail)" % \
+                           (pdfName, var, idString, idString, idString) )
+
+##             pdfPower3 = ws.factory("EXPR::%s_tail_power('TMath::Power(1.-@0/@3,@4)/TMath::Power(@0/@3,@1+@2*log(@0/@3))', %s, power_%s_tail, power2_%s_tail, 1200, power3_%s_tail)" % (pdfName, var, idString, idString, idString) )
+
+##             ws.factory("PROD::%s(%s,%s)" % (pdfName, pdfErf.GetName(),
+##                                             pdfPower.GetName()))
+
+            pdfErfPow = ws.factory("PROD::%s_tail(%s,%s)" % (pdfName, pdfErf.GetName(),
+                                            pdfPower.GetName()))
+            ws.factory("SUM::%s(f_%s_GausA * %s_GausA, %s_tail)" % \
+                           (pdfName, idString, pdfName, pdfName)
+                       )  
+            
+
+
+        elif model==606:
+            # a gaus + CB
+            ws.factory("RooGaussian::%s_core" % pdfName + \
+                           "(%s, mean_%s_core[66.,60,80],sigma_%s_core[50.,0,500])" %\
+                           (var, idString, idString)
+                       )
+            self.analyticPdf(ws, var, 3, '%s_tail' % pdfName,
+                             '%s_tail' % idString)
+            ws.factory("SUM::%s(f_%s_core[0.5,0,1] * %s_core, %s_tail)" % \
+                           (pdfName, idString, pdfName, pdfName)
+                       )
+
+        elif model==607:
+            # CB + 2 Gaussians
+            ws.factory("RooGaussian::%s_GausA" % pdfName + \
+                           "(%s, mean_%s_GausA[80.,70,90],sigma_%s_GausA[50.,0,500])" %\
+                           (var, idString, idString)
+                       )
+            ws.factory("RooGaussian::%s_GausB" % pdfName + \
+                           "(%s, mean_%s_GausB[170.,140,200],sigma_%s_GausB[50.,0,500])" %\
+                           (var, idString, idString)
+                       )
+            self.analyticPdf(ws, var, 3, '%s_tail' % pdfName,
+                             '%s_tail' % idString)
+            ws.factory("SUM::%s(f_%s_GausA[0.2,0.0,0.3] * %s_GausA, f_%s_GausB[0.05,0.0,0.1] * %s_GausB, %s_tail)" % \
+                           (pdfName, idString, pdfName, idString, pdfName, pdfName)
+                       )    
+            
         elif model==7:
             # CB + exp
             self.analyticPdf(ws, var, 3, '%s_core' % pdfName,
@@ -522,9 +628,7 @@ class Wjj2DFitterUtils:
         elif model== 8:
             # erf * exponential pdf
             ws.factory("c_%s[-0.015, -10, 10]" % idString)
-            offset = ws.factory("offset_%s[70, %f, %f]" % \
-                                    (idString, ws.var(var).getMin()*0.5,
-                                     ws.var(var).getMax()))
+            offset = ws.factory("offset_%s[70, -100, 1000]" % idString)
             width = ws.factory("width_%s[20, 0, 1000]" % idString)
             offset.setVal(ws.var(var).getMin())
             offset.setError(offset.getVal()*0.2)
@@ -559,7 +663,7 @@ class Wjj2DFitterUtils:
             self.analyticPdf(ws, var, 23, pdfName, idString, 3)
         elif model == 12:
             # 2 parameter power law
-            ws.factory("power_%s[4, -30, 30]" % idString)
+            ws.factory("power_%s[2, -30, 30]" % idString)
             ws.factory("power2_%s[0, -20, 20]" % idString)
             ws.factory("EXPR::%s('1./TMath::Power(@0,@1+@2*log(@0/@3))', %s, power_%s, power2_%s, 8000)" % \
                            (pdfName, var, idString, idString)
@@ -661,7 +765,7 @@ class Wjj2DFitterUtils:
                                                         idString)
                        )
             self.analyticPdf(ws, var, 8, '%s_tail' % pdfName, idString)
-            ws.factory("SUM::%s(f_W_%s[0.4,0.,1.]*%s_W,f_Z_%s[0.1,0.,1.]*%s_Z,%s_tail)" % \
+            ws.factory("SUM::%s(f_W_%s[0.4,0.1,1.]*%s_W,f_Z_%s[0.1,0.,1.]*%s_Z,%s_tail)" % \
                        (pdfName, idString, pdfName, idString, pdfName, pdfName))
         elif model == 23:
             #Nth order polynomial where n is passed in as the auxModel
@@ -694,16 +798,13 @@ class Wjj2DFitterUtils:
                                             pdfErf.GetName()))
         elif model == 25:
             # erf model
-            offset = ws.factory("offset_%s[50, %f, %f]" % \
-                                    (idString, ws.var(var).getMin()*0.5,
-                                     ws.var(var).getMax()))
+            offset = ws.factory("offset_%s[50, -100, 1000]" % idString)
             offset.setVal(ws.var(var).getMin())
             offset.setError(offset.getVal()*0.2)
-            width = ws.factory("width_%s[5, %f, 1000]" % \
-                                   (idString,offset.getMin()*0.1))
+            width = ws.factory("width_%s[5, 0, 1000]" % idString)
             width.setVal(offset.getVal()*0.2)
             width.setError(width.getVal()*0.2)
-            factoryStatement = "RooErfPdf::%s(%s, offset_%s, width_%s, 1)"%\
+            factoryStatement = "RooErfPdf::%s(%s, offset_%s, width_%s)"%\
                                (pdfName, var, idString, idString)
             ws.factory(factoryStatement)
         elif model == 26:
@@ -713,25 +814,18 @@ class Wjj2DFitterUtils:
             pdfGaus = self.analyticPdf(ws, var, 27, '%s_wiggle' % pdfName,
                                        idString, 150)
             ws.factory('SUM::%s(f_%s[0.1, -1., 1.]*%s, %s)' % \
-                       (pdfName, idString, pdfGaus.GetName(), pdfErf.GetName()))
+                       (pdfName, idString, pdfGaus.GetName(), pdfErf.GetName()))  
         elif model == 27:
             # gaussian model with optional mean passed as auxModel
-            mean = ws.factory('mean_%s[-10000.,1000.]' % idString)
+            mean = ws.factory('mean_%s[-1000.,1000.]' % idString)
             sigma = ws.factory('sigma_%s[0.,5000.]' % idString)
             if auxModel:
                 mean.setVal(auxModel)
                 mean.setError(auxModel*0.15)
                 sigma.setVal(auxModel*0.15)
                 sigma.setError(auxModel*0.15*0.2)
-            if systMult:
-                mean.setConstant()
-                kappa_mean = ws.factory("RooPowerLaw::func_kappa_%s(kappa_%s[1.0], %s[0.])" % (mean.GetName(), mean.GetName(), systMult))
-                mean = ws.factory("prod::func_%s(%s, %s)" % (mean.GetName(), mean.GetName(), kappa_mean.GetName()))
-                sigma.setConstant()
-                kappa_sigma = ws.factory("RooPowerLaw::func_kappa_%s(kappa_%s[1.0], %s[0.])" % (sigma.GetName(), sigma.GetName(), systMult))
-                sigma = ws.factory("prod::func_%s(%s, %s)" % (sigma.GetName(), sigma.GetName(), kappa_sigma.GetName()))
-            ws.factory('RooGaussian::%s(%s,%s,%s)' % \
-                       (pdfName, var, mean.GetName(), sigma.GetName()))
+            ws.factory('RooGaussian::%s(%s,mean_%s,sigma_%s)' % \
+                       (pdfName, var, idString, idString))
         elif model == 28:
             # QCD inspired model with a erf turnon
             pdfErf = self.analyticPdf(ws, var, 25, '%s_turnon' % pdfName,
@@ -794,7 +888,7 @@ class Wjj2DFitterUtils:
             factoryString = 'SUM::%s(' % (pdfName)
             for i in range(0, auxModel):
                 pdf = ws.factory(
-                    'RooExponential::%s_%i(%s,c_%s_%i[-0.012,-10,10])' % \
+                    'RooExponential::%s_%i(%s,c_%s_%i[0.012,-10,10])' % \
                     (pdfName, i, var, idString, i))
                 f = ws.factory('f_%i[%.3f,0.,1.]' % (i, 1./auxModel))
                 if i < (auxModel-1):
@@ -804,113 +898,38 @@ class Wjj2DFitterUtils:
             print factoryString
             ws.factory(factoryString)
         elif model == 33:
-            # erf model turning off
-            theShift = 0.2
-            # offset = ws.factory("offset_%s[500, %f, %f]" % \
-            #                         (idString, 0.), 
-            #                          ws.var(var).getMax()*2))
-            offset = ws.factory("offset_%s[500]" % (idString))
-            offset.setVal(ws.var(var).getMax())
-            offset.setError(offset.getVal()*0.2)
-            offset.setConstant(False)
-            width = ws.factory("width_%s[50, 5, 1000]" % idString)
-            width.setVal(offset.getVal()*0.2)
-            width.setError(width.getVal()*0.2)
-            factoryStatement = "RooErfPdf::%s(%s, offset_%s, width_%s, -1)"%\
-                               (pdfName, var, idString, idString)
-            ws.factory(factoryStatement)
-        elif model == 34:
-            #erf turn off * 2 parameter power law
-            pdfErf = self.analyticPdf(ws, var, 33, '%s_turnoff' % pdfName,
-                                      idString)
-            pdfPower = self.analyticPdf(ws, var, 12, '%s_power' % pdfName,
-                                        idString)
-            ws.factory("PROD::%s(%s,%s)" % (pdfName, pdfErf.GetName(),
-                                            pdfPower.GetName()))
-        elif model == 35:
-            #erf turn off * 1 parameter power law
-            pdfErf = self.analyticPdf(ws, var, 33, '%s_turnoff' % pdfName,
-                                      idString)
-            pdfPower = self.analyticPdf(ws, var, 1, '%s_power' % pdfName,
-                                        idString)
-            ws.factory("PROD::%s(%s,%s)" % (pdfName, pdfErf.GetName(),
-                                            pdfPower.GetName()))
-        elif model== 36:
-            # erf (turn off) * exponential pdf
-            ws.factory("c_%s[-0.015, -10, 10]" % idString)
-            offset = ws.factory("offset_%s[500, %f, %f]" % \
-                                    (idString, ws.var(var).getMin(), 
-                                     ws.var(var).getMax()*2))
-            width = ws.factory("width_%s[20, 0, 10000]" % idString)
-            offset.setVal(ws.var(var).getMax())
-            offset.setError(offset.getVal()*0.2)
-            width.setVal(offset.getVal()*0.2)
-            width.setError(width.getVal()*0.2)
-            ws.factory("RooErfExpPdf::%s(%s, c_%s, offset_%s, width_%s, -1)" %\
-                       (pdfName, var, idString, idString, idString)
+            # diboson specific model for the resonant shape
+            # The tail used is a CB function
+            ws.factory("prod::sigma_%s_W" % (idString) + \
+                       "(mean_%s_W[80.3, 50., 100.]," % (idString) + \
+                       "resolution_%s[0.1, 0., 5.])" % (idString))
+            ws.factory('sum::mean_%s_Z' % (idString) + \
+                       "(mean_%s_W, 10.8026)" % (idString))
+            ws.factory('prod::sigma_%s_Z(mean_%s_Z,resolution_%s)' % \
+                       (idString, idString, idString))
+            ws.factory("RooGaussian::%s_W" % pdfName + \
+                       "(%s, mean_%s_W, sigma_%s_W)" % (var, idString,
+                                                        idString)
                        )
-        elif model == 37:
-            # exponentiated polynomial of degree given by auxModel
-            if auxModel == None:
-                auxModel = 2
-            coefList = RooArgList()
-            coefNames = []
-            for i in range(1,auxModel+1):
-                coefNames.append('c_%i_%s' % (i, idString))
-                c1 = ws.factory('%s[1e-5, -1, 1]' % coefNames[-1])
-                if i == 1:
-                    c1.setRange(-1., 1.)
-                    c1.setVal(-0.01)
-                c1.setError(c1.getVal()*0.1)
-                if i > 2:
-                    c1.setVal(0.)
-                coefList.add(c1)
-            # ws.factory("RooExpPoly::%s(%s,{%s})" % (pdfName, var,
-            #                                             ','.join(coefNames)))
-            ep = RooExpPoly(pdfName, pdfName, ws.var(var), coefList)
-            getattr(ws, 'import')(ep)
-        elif model == 38:
-            #Nth order Bernstein polynomial where n is passed in as the auxModel
-            print 'Bernstein polynomial with',auxModel,'coefficients'
-            parSet = []
-            parList = RooArgList('parList')
-            for i in range(0, auxModel):
-                parSet.append('a%i_%s' % (i, idString))
-                a = ws.factory('%s[0.001, 0., 10.]' % parSet[-1])
-                if i==0:
-                    a.setVal(0.9)
-                a.setConstant(False)
-                parList.add(a)
-                # print varSet[-1]
-                # a.Print()
-            factoryStatement = "RooBernstein::%s(%s,{%s})" % \
-                           (pdfName, var, ','.join(parSet))
-            #print factoryStatement
-            # pdf = RooChebyshevPDF(pdfName, pdfName, ws.var(var), parList)
-            # getattr(ws, 'import')(pdf)
-            #ws.Print()
-            ws.factory(factoryStatement)
-        elif model == 39:
-            #Nth order Bernstein polynomial where n is passed in as the auxModel
-            #fixing all even coeffiencts to zero
-            pdf = self.analyticPdf(ws, var, 38, pdfName, idString, 
-                                   auxModel)
-            for i in range(0, auxModel):
-                if i%2 == 1:
-                    parameter = ws.var('a%i_%s' % (i, idString))
-                    parameter.setVal(0.)
-                    parameter.setConstant()
-        elif model == 40:
-            #Nth order Bernstein polynomial where n is passed in as the auxModel
-            #fixing all odd coeffiencts to zero
-            pdf = self.analyticPdf(ws, var, 38, pdfName, idString, 
-                                   auxModel)
-            for i in range(0, auxModel):
-                if i%2 == 0:
-                    parameter = ws.var('a%i_%s' % (i, idString))
-                    parameter.setVal(0.)
-                    parameter.setConstant()
-            
+            ws.factory("RooGaussian::%s_Z" % pdfName + \
+                       "(%s, mean_%s_Z, sigma_%s_Z)" % (var, idString,
+                                                        idString)
+                       )
+            self.analyticPdf(ws, var, 3, '%s_tail' % pdfName, idString)
+            ws.factory("SUM::%s(f_W_%s[0.4,0.,1.]*%s_W,f_Z_%s[0.1,0.,1.]*%s_Z,%s_tail)" % \
+                       (pdfName, idString, pdfName, idString, pdfName, pdfName))
+        elif model==34:
+            # Gaus + CB
+            ws.factory("mean_%s_W[80.3, 50., 500.]" % idString)
+            ws.factory("sigma_%s_W[5.0, 0., 500.]" % idString)
+            ws.factory("RooGaussian::%s_W" % pdfName + \
+                       "(%s, mean_%s_W, sigma_%s_W)" % (var, idString, idString)
+                       )
+            self.analyticPdf(ws, var, 3, '%s_tail' % pdfName, idString)
+            #self.analyticPdf(ws, var, 14, '%s_tailPow' % pdfName, idString)
+            ws.factory("SUM::%s(f_W_%s[0.1,0.0,1.0]*%s_W,%s_tail)" % \
+                       (pdfName, idString, pdfName, pdfName)
+                       )
         elif model== 108:
             # expA+expB
             cA = ws.factory("cA_%s[-0.05,-1.0,0.0]" % idString)
@@ -921,7 +940,7 @@ class Wjj2DFitterUtils:
             fracExpB.setConstant(False)
             ws.factory("EXPR::%s('TMath::Exp(@0*@1)+@3*TMath::Exp(@0*@2)', %s, cA_%s, cB_%s, fracExpB_%s)" % \
                        (pdfName, var, idString, idString, idString)
-                       )       
+                       )
         elif model == 110:
             #power law * exp * polyD2
             pdfPowExp = self.analyticPdf(ws, var, 2, '%s_powexp' % pdfName, idString)

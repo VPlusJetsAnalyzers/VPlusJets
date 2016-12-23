@@ -1,0 +1,6 @@
+f_HWW_Mass2j_PFCor_core = 0.62722 +/- 0.11190 C L(-0.491796 - 1.74623)
+mean_HWW_Mass2j_PFCor_core = 57.459 +/- 20.437 C L(-146.91 - 261.827)
+mean_HWW_Mass2j_PFCor_tail = 148.37 +/- 2.6618 C L(121.747 - 174.983)
+sigma_HWW_Mass2j_PFCor_core = 50.331 +/- 28.568 C L(-235.348 - 336.01)
+sigma_HWW_Mass2j_PFCor_tail = 16.794 +/- 4.4392 C L(-27.5983 - 61.1865)
+n_HWW = 8.1 +/- 2.9 C

@@ -50,17 +50,26 @@ parser.add_option('--noNull', dest='nullFit', action='store_false',
                   default=True, help='do not perform the null hypothesis fit.')
 parser.add_option('--btag', dest='btag', action='store_true',
                   default=False, help='Use b-tagged selection.')
+parser.add_option('--plotDibosonContributions', dest='plotDibosonContributions', action='store_true',
+                  default=False, help='make an extra canvas with WW and WZ contributions shown separately')
 
 (opts, args) = parser.parse_args()
 
 import pyroot_logon
+import CMS_lumi
+CMS_lumi.lumi_8TeV = "19 fb^{-1}"
+CMS_lumi.relPosX = 0.135
+CMS_lumi.writeExtraText = 1
+CMS_lumi.extraText = "Preliminary"
+
+
 
 #import HWW2DConfig
 config = __import__(opts.modeConfig)
 import RooWjj2DFitter
 
 from ROOT import TCanvas, RooFit, RooDataSet, RooLinkedListIter, TMath, RooRandom, TFile, \
-    RooDataHist, RooMsgService, TStopwatch, RooStats
+    RooDataHist, RooMsgService, TStopwatch, RooStats, RooAbsReal, kGreen, kBlue
 import pulls
 
 timer = TStopwatch()
@@ -75,7 +84,7 @@ if hasattr(opts, "seed") and (opts.seed >= 0):
 pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
                         isElectron = opts.isElectron, initFile = args,
                         includeSignal = opts.includeSignal,
-                        btagged = opts.btag)
+                        btagged = opts.btag, includeExtras=opts.plotDibosonContributions)
 
 fitter = RooWjj2DFitter.Wjj2DFitter(pars)
 if opts.ws:
@@ -228,12 +237,30 @@ except AttributeError:
 xvar = fitter.ws.var(vName)
 
 plot1 = fitter.stackedPlot(vName)
-leg1 = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot1)
-plot1.addObject(leg1)
+chanlabel = '#mu, '
+if opts.isElectron:
+    chanlabel = 'el, '
 
+if pars.btagSelection:
+    chanlabel += 'btag'
+else:
+    chanlabel += 'anti-btag'
+leg1 = RooWjj2DFitter.Wjj2DFitter.legend4Plot(plot1,False,chanlabel)
+plot1.addObject(leg1)
 c1 = TCanvas('c1', xvar.GetTitle() + ' plot')
 plot1.Draw()
+#pyroot_logon.cmsPrelim(c1,19)
+CMS_lumi.CMS_lumi(c1,2,0)
 c1.Update()
+
+print 'Contributions in the diboson signal region of', fitter.pars.sigRegionMin, '-', fitter.pars.sigRegionMax, 'GeV :'
+fitter.ws.var(vName).setRange('signalRegion', fitter.pars.sigRegionMin , fitter.pars.sigRegionMax)
+for comp in fitter.pars.backgrounds:
+    sigInt = fitter.ws.pdf('%s' % (comp)).createIntegral(fitter.ws.set('obsSet'), fitter.ws.set('obsSet'), 'signalRegion')
+    fullInt = fitter.ws.pdf('%s' % (comp)).createIntegral(fitter.ws.set('obsSet'), fitter.ws.set('obsSet'))
+    n_Exp_sigRegion = sigInt.getVal()/fullInt.getVal()*fitter.ws.function('f_%s_norm' % (comp) ).getVal()
+    print '%s integral in signal region:' % (comp) , sigInt.getVal()/fullInt.getVal()
+    print '%s yield in the signal region:' % (comp) , n_Exp_sigRegion
 
 #Make the Data-NonDiboson subtracted plot
 xvar.setRange('plotRange', xvar.getMin(), xvar.getMax())
@@ -241,7 +268,7 @@ if not pars.useTopSideband:
     dibosonSubtractedFrame = xvar.frame()
     dibosonSubtractedFrame.SetName("%s_subtracted" % vName)
     dibosonResidual = plot1.residHist('theData', pars.backgrounds[1], False, True)#The first background is the diboson
-    dibosonResidual.SetTitle('subtracted data')
+    dibosonResidual.SetTitle('data-bkg')
     dibosonSubtractedFrame.addPlotable(dibosonResidual, 'p', False, True)
     fitter.ws.pdf('diboson').plotOn(dibosonSubtractedFrame)
     dibosonSubtractedFrame.getCurve().SetTitle(pars.dibosonPlotting['title'])
@@ -250,7 +277,28 @@ if not pars.useTopSideband:
     dibosonSubtractedFrame.GetYaxis().SetTitle(plot1.GetYaxis().GetTitle())
     dibosonSubtractedFrame.addObject(dibosonSubtractedLegend)
     dibosonSubtractedFrame.Draw()
+    CMS_lumi.CMS_lumi(c2,2,0)
     c2.Update()
+    if opts.plotDibosonContributions:
+        dibosonSplitFrame = xvar.frame()
+        dibosonSplitFrame.SetName("%s_splitDiboson" % vName)
+        dibosonSplitFrame.addPlotable(dibosonResidual, 'p', False, True)
+        fitter.ws.pdf('diboson').plotOn(dibosonSplitFrame,RooFit.DrawOption('LF'),RooFit.FillStyle(1001),RooFit.FillColor(kBlue+2),RooFit.LineColor(kBlue+2),RooFit.VLines(),RooFit.Range('plotRange'),RooFit.NormRange('plotRange'))
+        dibosonSplitFrame.getCurve().SetTitle('WW')
+        WZfiles = getattr(pars, 'WZFiles')
+        WZplotmodels = getattr(pars, 'WZModels')
+        WZplotPdf = fitter.makeComponentPdf('WZ',WZfiles,WZplotmodels,False,[-1])
+##         WZplotPdf.plotOn(dibosonSplitFrame,RooFit.DrawOption('LF'), RooFit.FillStyle(1001),RooFit.FillColor(kGreen+3),RooFit.LineColor(kGreen+3),RooFit.VLines(),RooFit.Range('plotRange'),RooFit.NormRange('plotRange'),RooFit.Normalization(fitter.WZExpected*fitter.ws.var('diboson_nrm').getVal(), RooAbsReal.NumEvent))
+        WZplotPdf.plotOn(dibosonSplitFrame,RooFit.DrawOption('LF'), RooFit.FillStyle(1001),RooFit.FillColor(kGreen+3),RooFit.LineColor(kGreen+3),RooFit.VLines(),RooFit.Range('plotRange'),RooFit.NormRange('plotRange'),RooFit.Normalization(fitter.ws.var('n_WZ').getVal()*fitter.ws.var('diboson_nrm').getVal(), RooAbsReal.NumEvent))
+        dibosonSplitFrame.getCurve().SetTitle('WZ')
+        dibosonSplitLegend = RooWjj2DFitter.Wjj2DFitter.legend4Plot(dibosonSplitFrame,True)
+        dibosonSplitFrame.addPlotable(dibosonResidual, 'p', False, True)
+        cWWvsWZ = TCanvas('cWWvsWZ', xvar.GetTitle() + ' Split')
+        dibosonSplitFrame.GetYaxis().SetTitle(plot1.GetYaxis().GetTitle())
+        dibosonSplitFrame.addObject(dibosonSplitLegend)
+        dibosonSplitFrame.Draw()
+        CMS_lumi.CMS_lumi(cWWvsWZ,2,0)
+        cWWvsWZ.Update()
 
 ndf = 0
 
@@ -283,7 +331,10 @@ pull1.GetXaxis().SetLimits(pars.varRanges[pars.var[0]][1],
                            pars.varRanges[pars.var[0]][2])
 pull1.GetXaxis().SetTitle(xvar.getTitle(True).Data())
 pull1.GetYaxis().SetTitle("pull (#sigma)")
+CMS_lumi.CMS_lumi(cp1,2,0)
 cp1.Update()
+
+
 
 if opts.toyOut:
     outFile = open(opts.toyOut, 'a', 1)
@@ -351,6 +402,9 @@ if opts.nullFit:
 plot1.Write()
 if not pars.useTopSideband:
     dibosonSubtractedFrame.Write()
+    if opts.plotDibosonContributions:
+        dibosonSplitFrame.Write()
+    
 pull1.Write()
 fitter.ws.SetName("w")
 fitter.ws.Write()
@@ -362,7 +416,8 @@ cp1.SaveAs("Diboson%slnujj_%s_Pull.png" % (tag, mode))
 
 if not pars.useTopSideband:
     c2.SaveAs("Diboson%slnujj_%s_Subtracted.png" % (tag, mode))
-
+    if opts.plotDibosonContributions:
+        cWWvsWZ.SaveAs("Diboson%slnujj_%s_Split.png" % (tag, mode))
     fitter.ws.var('n_diboson').Print()
     fitter.ws.var('diboson_nrm').Print()
 
@@ -382,3 +437,5 @@ if opts.nullFit:
     pval = TMath.Prob(likelihoodRatio, 1)
     print 'p-value: %.4g' % pval
     print 'Gaussian significance: %.3g' % RooStats.PValueToSignificance(pval)
+
+

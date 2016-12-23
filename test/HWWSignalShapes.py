@@ -26,7 +26,7 @@ NgenVBF = {
     200 : (197352,0),
     250 : (199788,0),
     300 : (196485,0),
-    350 : (197515,0,0.099*1.5*2, 1.05195969977),
+    350 : (197515,0),
     400 : (190587,0),
     450 : (199306,0),
     500 : (199205,0),
@@ -117,11 +117,11 @@ def findFloatInTable(mH, lines):
                 return float(tokens[1])
 
 def crossSection(mH, mode):
-    lines = open('Limits/%stable8tev.txt' % mode) #.readlines()
+    lines = open('Limits/%stable8tev.txt' % mode).readlines()
     return findFloatInTable(mH, lines)
 
 def branchingRatio(mH):
-    lines = open('Limits/twikiBRtable.txt') #.readlines()
+    lines = open('Limits/twikiBRtable.txt').readlines()
     return findFloatInTable(mH, lines)*2*1.5
 
 def NgenHiggs(mH, mode):
@@ -149,8 +149,9 @@ def makeHiggsHist(mH, pars, mode, fitUtils = None, cpw = True, iwt = 0):
     higgsDir = pars.MCDirectory
 
     if pars.includeMuons:
-        fname = makeSignalFilename(mH, mode, False)
-        thehist = fitUtils.File2Hist(higgsDir[:-3] + fname,
+        thehist = fitUtils.File2Hist(higgsDir + \
+                                         'mu_%sMH%i_CMSSW532_private.root' % \
+                                         (mode, mH),
                                      '%s%i_mu' % (mode, mH), False, 1, False,
                                      1, "", cpw, iwt)
         hist.Add(thehist)
@@ -173,9 +174,9 @@ def GenHiggsHists(pars, mH, utils = None, cpw = True, iwt = 0):
     for mode in modes:
         tmpHist = makeHiggsHist(mH, pars, mode, utils, cpw, iwt)
         if type(Ngen[mode][mH]) == type(2):
-            tmpHist.Scale(1/float(Ngen[mode][mH]), 'width')
+            tmpHist.Scale(1/float(Ngen[mode][mH]/2), 'width')
         else:
-            tmpHist.Scale(1/float(Ngen[mode][mH][0]*(Ngen['ggH'][mH][3] if cpw else 1.0)), 
+            tmpHist.Scale(1/float(Ngen[mode][mH][0]*(Ngen[mode][mH][3] if cpw else 1.0)/2.), 
                           'width')
         hists.append(tmpHist)
         
@@ -186,10 +187,10 @@ def GenHiggsHists(pars, mH, utils = None, cpw = True, iwt = 0):
 # gSystem.Load("$CMSSW_BASE/lib/$SCRAM_ARCH/libMMozerpowhegweight.so")
 # gROOT.ProcessLine(".L CPWeighter.cc+")
 
-from ROOT import getCPweight
+## from ROOT import getCPweight
 
-def HiggsCPWeight(m_h, m, BWflag = 1):
-    return getCPweight(m_h, HiggsWidth[int(m_h)], m, BWflag)/avgCPwgt[int(m_h)]
+## def HiggsCPWeight(m_h, m, BWflag = 1):
+##     return getCPweight(m_h, HiggsWidth[int(m_h)], m, BWflag)/avgCPwgt[int(m_h)]
 
 def runningWidthWeight(m_h, m):
    s = m*m

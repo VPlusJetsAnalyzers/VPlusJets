@@ -3,7 +3,7 @@ class EffLookupTable:
         self.filename = fname     
         self.EffTable = []
 
-        for line in open(fname):
+        for line in open(fname).readlines():
             #print line,
             fields = line.rstrip().split()
             #print fields

@@ -1,0 +1,6 @@
+f_Extra_Mass2j_PFCor_core = 0.38043 +/- 0.17815 C L(-1.40105 - 2.1619)
+mean_Extra_Mass2j_PFCor_core = 66.933 +/- 4.3178 C L(23.7554 - 110.111)
+mean_Extra_Mass2j_PFCor_tail = 146.09 +/- 29.444 C L(-148.342 - 440.529)
+sigma_Extra_Mass2j_PFCor_core = 11.678 +/- 6.5940 C L(-54.2625 - 77.6178)
+sigma_Extra_Mass2j_PFCor_tail = 34.728 +/- 34.566 C L(-310.936 - 380.393)
+n_Extra = 66.2 +/- 8.1 C

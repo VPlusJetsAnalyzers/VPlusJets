@@ -1,0 +1,329 @@
+adding RooFit ... done
+importing RooFit PDF classes
+end of pyroot_logon
+link found for qqHtable8tev.txt
+lepton HLT : EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+lepton id : EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+full cuts: (((sqrt(JetPFCor_Pt[0]**2+JetPFCor_Pt[1]**2+2*JetPFCor_Pt[0]*JetPFCor_Pt[1]*cos(JetPFCor_Phi[0]-JetPFCor_Phi[1]))>70.)&&(abs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5)&&(abs(JetPFCor_dphiMET[0])>0.4)&&(W_mt>30.)&&(JetPFCor_Pt[1]>35.)&&(JetPFCor_Pt[0]>40.)&&((abs(JetPFCor_Eta[0])>2.4)||(JetPFCor_Pt[0]<30.)||(JetPFCor_bDiscriminatorCSV[0]<0.244))&&((abs(JetPFCor_Eta[1])>2.4)||(JetPFCor_Pt[1]<30.)||(JetPFCor_bDiscriminatorCSV[1]<0.244))&&((abs(JetPFCor_Eta[2])>2.4)||(JetPFCor_Pt[2]<30.)||(JetPFCor_bDiscriminatorCSV[2]<0.244))&&((abs(JetPFCor_Eta[3])>2.4)||(JetPFCor_Pt[3]<30.)||(JetPFCor_bDiscriminatorCSV[3]<0.244))&&((abs(JetPFCor_Eta[4])>2.4)||(JetPFCor_Pt[4]<30.)||(JetPFCor_bDiscriminatorCSV[4]<0.244))&&((abs(JetPFCor_Eta[5])>2.4)||(JetPFCor_Pt[5]<30.)||(JetPFCor_bDiscriminatorCSV[5]<0.244))&&(W_pt<200.)&&(vbf_event==0)&&(event_met_pfmet>25)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>25.))&&(Mass2j_PFCor>48.000)&&(Mass2j_PFCor<160.000))
+RooRealVar::Mass2j_PFCor = 104  L(48 - 160) B(14) // [GeV]
+loading Alternate Models
+making ComponentPdf diboson
+loading Alternate Models
+making ComponentPdf top
+loading Alternate Models
+making ComponentPdf WpJ
+polynomial of order 6
+loading Alternate Models
+making ComponentPdf ZpJ
+loading parameters from file topDibosonParameters.txt
+loading parameters from file dibosonDibosonParameters.txt
+loading parameters from file WpJDibosonParametersAltD6.txt
+loading parameters from file ZpJDibosonParameters.txt
+startpars:
+  1) 0x4f88d00 RooRealVar::                         WpJ_nrm = 1  L(-0.5 - 5)  "WpJ_nrm"
+  2) 0x51008c0 RooRealVar::                         ZpJ_nrm = 1  L(-0.5 - 5)  "ZpJ_nrm"
+  3) 0x501eca0 RooRealVar::             a1_WpJ_Mass2j_PFCor = -0.411842 +/- 0.0120212  L(-INF - +INF)  "a1_WpJ_Mass2j_PFCor"
+  4) 0x4fea9c0 RooRealVar::             a2_WpJ_Mass2j_PFCor = 0.03972 +/- 0.0118484  L(-INF - +INF)  "a2_WpJ_Mass2j_PFCor"
+  5) 0x4fe5fb0 RooRealVar::             a3_WpJ_Mass2j_PFCor = 0.045445 +/- 0.011182  L(-INF - +INF)  "a3_WpJ_Mass2j_PFCor"
+  6) 0x4fec400 RooRealVar::             a4_WpJ_Mass2j_PFCor = -0.0481793 +/- 0.0111166  L(-INF - +INF)  "a4_WpJ_Mass2j_PFCor"
+  7) 0x4ff0ab0 RooRealVar::             a5_WpJ_Mass2j_PFCor = 0.013139 +/- 0.0095658  L(-INF - +INF)  "a5_WpJ_Mass2j_PFCor"
+  8) 0x4feb850 RooRealVar::             a6_WpJ_Mass2j_PFCor = -0.00745374 +/- 0.0093352  L(-INF - +INF)  "a6_WpJ_Mass2j_PFCor"
+  9) 0x4e98d40 RooRealVar::          c_diboson_Mass2j_PFCor = -0.00715588 +/- 0.00067282 C  L(-10 - 10)  "c_diboson_Mass2j_PFCor"
+ 10) 0x4faa9b0 RooRealVar::              c_top_Mass2j_PFCor = -0.0191269 +/- 0.010389 C  L(-10 - 10)  "c_top_Mass2j_PFCor"
+ 11) 0x504c0c0 RooRealVar::                     diboson_nrm = 1  L(-0.5 - 5)  "diboson_nrm"
+ 12) 0x505b030 RooRealVar::        f_W_diboson_Mass2j_PFCor = 0.039493 +/- 0.00060273 C  L(0 - 1)  "f_W_diboson_Mass2j_PFCor"
+ 13) 0x505bf50 RooRealVar::        f_Z_diboson_Mass2j_PFCor = 0.5309 +/- 0.0022639 C  L(0 - 1)  "f_Z_diboson_Mass2j_PFCor"
+ 14) 0x4fae440 RooRealVar::         f_top_Mass2j_PFCor_core = 0.21939 +/- 0.019697 C  L(0 - 1)  "f_top_Mass2j_PFCor_core"
+ 15) 0x4e35af0 RooRealVar::     mean_diboson_Mass2j_PFCor_W = 75.185 +/- 0.01876 C  L(50 - 100)  "mean_diboson_Mass2j_PFCor_W"
+ 16) 0x4fa6a40 RooRealVar::      mean_top_Mass2j_PFCor_core = 84.5 +/- 0.2849 C  L(0 - 1000)  "mean_top_Mass2j_PFCor_core"
+ 17) 0x4f94ce0 RooRealVar::                           n_WpJ = 136635 +/- 369.6 C  L(0 - 1e+06)  "n_WpJ"
+ 18) 0x510b260 RooRealVar::                           n_ZpJ = 8187.5 +/- 90.5 C  L(0 - 1e+06)  "n_ZpJ"
+ 19) 0x5069cc0 RooRealVar::                       n_diboson = 3605 +/- 60 C  L(0 - 1e+06)  "n_diboson"
+ 20) 0x4fb3d50 RooRealVar::                           n_top = 8254.6 +/- 90.9 C  L(0 - 1e+06)  "n_top"
+ 21) 0x4f98410 RooRealVar::         offset_ZpJ_Mass2j_PFCor = 41.241 +/- 4.0112 C  L(-100 - 1000)  "offset_ZpJ_Mass2j_PFCor"
+ 22) 0x4e7b360 RooRealVar::     offset_diboson_Mass2j_PFCor = 34.433 +/- 954.1 C  L(-100 - 1000)  "offset_diboson_Mass2j_PFCor"
+ 23) 0x4f9beb0 RooRealVar::         offset_top_Mass2j_PFCor = 96.303 +/- 34.457 C  L(-100 - 1000)  "offset_top_Mass2j_PFCor"
+ 24) 0x50592f0 RooRealVar::          power_ZpJ_Mass2j_PFCor = -1.18504 +/- 0.089544 C  L(-30 - 30)  "power_ZpJ_Mass2j_PFCor"
+ 25) 0x4f03350 RooRealVar:: resolution_diboson_Mass2j_PFCor = 0.12162 +/- 0.0001747 C  L(0 - 5)  "resolution_diboson_Mass2j_PFCor"
+ 26) 0x4fa7a00 RooRealVar::     sigma_top_Mass2j_PFCor_core = 7.8647 +/- 0.46981 C  L(0 - 500)  "sigma_top_Mass2j_PFCor_core"
+ 27) 0x4fb5120 RooRealVar::                         top_nrm = 1  L(-0.5 - 5)  "top_nrm"
+ 28) 0x5187870 RooRealVar::          width_ZpJ_Mass2j_PFCor = 20.619 +/- 7.5671 C  L(0 - 1000)  "width_ZpJ_Mass2j_PFCor"
+ 29) 0x4ea8320 RooRealVar::      width_diboson_Mass2j_PFCor = 10.978 +/- 1.8932 C  L(0 - 1000)  "width_diboson_Mass2j_PFCor"
+ 30) 0x4fa0970 RooRealVar::          width_top_Mass2j_PFCor = 50.144 +/- 11.867 C  L(0 - 1000)  "width_top_Mass2j_PFCor"
+selected events: 158863
+RooDataSet::data_obs[Mass2j_PFCor] = 158863 entries
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+Time elapsed: 906.7 sec
+CPU time used: 530.6 sec
+starting fitting routine
+construct fit pdf ...
+load data ...
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+loading parameters from file topDibosonParameters.txt
+loading parameters from file dibosonDibosonParameters.txt
+loading parameters from file WpJDibosonParametersAltD6.txt
+loading parameters from file ZpJDibosonParameters.txt
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+
+fit constraints
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.07 ] = 1
+RooGaussian::ZpJ_const[ x=ZpJ_nrm mean=1 sigma=0.05 ] = 1
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.05 ] = 1
+RooGaussian::a1_WpJ_Mass2j_PFCor_const[ x=a1_WpJ_Mass2j_PFCor mean=-0.411842 sigma=0.012021 ] = 1
+RooGaussian::a2_WpJ_Mass2j_PFCor_const[ x=a2_WpJ_Mass2j_PFCor mean=0.03972 sigma=0.011848 ] = 1
+RooGaussian::a3_WpJ_Mass2j_PFCor_const[ x=a3_WpJ_Mass2j_PFCor mean=0.045445 sigma=0.011182 ] = 1
+RooGaussian::a4_WpJ_Mass2j_PFCor_const[ x=a4_WpJ_Mass2j_PFCor mean=-0.048179 sigma=0.011117 ] = 1
+RooGaussian::a5_WpJ_Mass2j_PFCor_const[ x=a5_WpJ_Mass2j_PFCor mean=0.013139 sigma=0.009566 ] = 1
+RooGaussian::a6_WpJ_Mass2j_PFCor_const[ x=a6_WpJ_Mass2j_PFCor mean=-0.007454 sigma=0.009335 ] = 1
+
+RooWorkspace(wjj2dfitter) wjj2dfitter contents
+
+variables
+---------
+(Mass2j_PFCor,WpJ_nrm,ZpJ_nrm,a1_WpJ_Mass2j_PFCor,a2_WpJ_Mass2j_PFCor,a3_WpJ_Mass2j_PFCor,a4_WpJ_Mass2j_PFCor,a5_WpJ_Mass2j_PFCor,a6_WpJ_Mass2j_PFCor,c_diboson_Mass2j_PFCor,c_top_Mass2j_PFCor,diboson_nrm,f_W_diboson_Mass2j_PFCor,f_Z_diboson_Mass2j_PFCor,f_top_Mass2j_PFCor_core,mean_diboson_Mass2j_PFCor_W,mean_top_Mass2j_PFCor_core,n_WpJ,n_ZpJ,n_diboson,n_top,offset_ZpJ_Mass2j_PFCor,offset_diboson_Mass2j_PFCor,offset_top_Mass2j_PFCor,power_ZpJ_Mass2j_PFCor,r_signal,resolution_diboson_Mass2j_PFCor,sigma_top_Mass2j_PFCor_core,top_nrm,width_ZpJ_Mass2j_PFCor,width_diboson_Mass2j_PFCor,width_top_Mass2j_PFCor)
+
+p.d.f.s
+-------
+RooChebyshevPDF::WpJ[ x=Mass2j_PFCor coefs=(a1_WpJ_Mass2j_PFCor,a2_WpJ_Mass2j_PFCor,a3_WpJ_Mass2j_PFCor,a4_WpJ_Mass2j_PFCor,a5_WpJ_Mass2j_PFCor,a6_WpJ_Mass2j_PFCor) ] = 1.38408
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.05 ] = 1
+RooExtendPdf::WpJ_extended[ pdf=WpJ n=f_WpJ_norm ] = 1.38408
+RooProdPdf::ZpJ[ ZpJ_Mass2j_PFCor_turnon * ZpJ_Mass2j_PFCor_power ] = 0.00680588
+RooPowerLaw::ZpJ_Mass2j_PFCor_power[ x=Mass2j_PFCor power=power_ZpJ_Mass2j_PFCor ] = 0.00723192
+RooErfPdf::ZpJ_Mass2j_PFCor_turnon[ x=Mass2j_PFCor turnOn=offset_ZpJ_Mass2j_PFCor width=width_ZpJ_Mass2j_PFCor ] = 0.94109
+RooGaussian::ZpJ_const[ x=ZpJ_nrm mean=1 sigma=0.05 ] = 1
+RooExtendPdf::ZpJ_extended[ pdf=ZpJ n=f_ZpJ_norm ] = 0.00680588
+RooGaussian::a1_WpJ_Mass2j_PFCor_const[ x=a1_WpJ_Mass2j_PFCor mean=-0.411842 sigma=0.012021 ] = 1
+RooGaussian::a2_WpJ_Mass2j_PFCor_const[ x=a2_WpJ_Mass2j_PFCor mean=0.03972 sigma=0.011848 ] = 1
+RooGaussian::a3_WpJ_Mass2j_PFCor_const[ x=a3_WpJ_Mass2j_PFCor mean=0.045445 sigma=0.011182 ] = 1
+RooGaussian::a4_WpJ_Mass2j_PFCor_const[ x=a4_WpJ_Mass2j_PFCor mean=-0.048179 sigma=0.011117 ] = 1
+RooGaussian::a5_WpJ_Mass2j_PFCor_const[ x=a5_WpJ_Mass2j_PFCor mean=0.013139 sigma=0.009566 ] = 1
+RooGaussian::a6_WpJ_Mass2j_PFCor_const[ x=a6_WpJ_Mass2j_PFCor mean=-0.007454 sigma=0.009335 ] = 1
+RooAddPdf::diboson[ f_W_diboson_Mass2j_PFCor * diboson_Mass2j_PFCor_W + f_Z_diboson_Mass2j_PFCor * diboson_Mass2j_PFCor_Z + [%] * diboson_Mass2j_PFCor_tail ] = 0.349187
+RooGaussian::diboson_Mass2j_PFCor_W[ x=Mass2j_PFCor mean=mean_diboson_Mass2j_PFCor_W sigma=sigma_diboson_Mass2j_PFCor_W ] = 0.476025
+RooGaussian::diboson_Mass2j_PFCor_Z[ x=Mass2j_PFCor mean=mean_diboson_Mass2j_PFCor_Z sigma=sigma_diboson_Mass2j_PFCor_Z ] = 0.110638
+RooErfExpPdf::diboson_Mass2j_PFCor_tail[ x=Mass2j_PFCor c=c_diboson_Mass2j_PFCor offset=offset_diboson_Mass2j_PFCor width=width_diboson_Mass2j_PFCor ] = 0.632322
+RooExtendPdf::diboson_extended[ pdf=diboson n=f_diboson_norm ] = 0.349187
+RooAddPdf::top[ f_top_Mass2j_PFCor_core * top_Mass2j_PFCor_core + [%] * top_Mass2j_PFCor_tail ] = 0.0490623
+RooGaussian::top_Mass2j_PFCor_core[ x=Mass2j_PFCor mean=mean_top_Mass2j_PFCor_core sigma=sigma_top_Mass2j_PFCor_core ] = 0.0339564
+RooErfExpPdf::top_Mass2j_PFCor_tail[ x=Mass2j_PFCor c=c_top_Mass2j_PFCor offset=offset_top_Mass2j_PFCor width=width_top_Mass2j_PFCor ] = 0.0533079
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.07 ] = 1
+RooExtendPdf::top_extended[ pdf=top n=f_top_norm ] = 0.0490623
+RooAddPdf::total[ diboson_extended + top_extended + WpJ_extended + ZpJ_extended ] = 1.21796
+RooProdPdf::totalFit_const[ top_const * ZpJ_const * WpJ_const * a1_WpJ_Mass2j_PFCor_const * a2_WpJ_Mass2j_PFCor_const * a3_WpJ_Mass2j_PFCor_const * a4_WpJ_Mass2j_PFCor_const * a5_WpJ_Mass2j_PFCor_const * a6_WpJ_Mass2j_PFCor_const * total ] = 1.21796
+
+functions
+--------
+RooProduct::f_WpJ_norm[ n_WpJ * WpJ_nrm ] = 136635
+RooProduct::f_ZpJ_norm[ n_ZpJ * ZpJ_nrm ] = 8187.5
+RooProduct::f_diboson_norm[ n_diboson * diboson_nrm ] = 3605
+RooProduct::f_top_norm[ n_top * top_nrm ] = 8254.6
+RooAddition::mean_diboson_Mass2j_PFCor_Z[ mean_diboson_Mass2j_PFCor_W + 10.8026 ] = 85.9876
+RooProduct::sigma_diboson_Mass2j_PFCor_W[ mean_diboson_Mass2j_PFCor_W * resolution_diboson_Mass2j_PFCor ] = 9.144
+RooProduct::sigma_diboson_Mass2j_PFCor_Z[ mean_diboson_Mass2j_PFCor_Z * resolution_diboson_Mass2j_PFCor ] = 10.4578
+
+datasets
+--------
+RooDataSet::data_obs(Mass2j_PFCor)
+
+parameter snapshots
+-------------------
+initPars = (mean_diboson_Mass2j_PFCor_W=75.185 +/- 0.01876[C],resolution_diboson_Mass2j_PFCor=0.12162 +/- 0.0001747[C],c_diboson_Mass2j_PFCor=-0.00715588 +/- 0.00067282[C],offset_diboson_Mass2j_PFCor=34.433 +/- 954.1[C],width_diboson_Mass2j_PFCor=10.978 +/- 1.8932[C],f_W_diboson_Mass2j_PFCor=0.039493 +/- 0.00060273[C],f_Z_diboson_Mass2j_PFCor=0.5309 +/- 0.0022639[C],n_diboson=3605 +/- 60[C],diboson_nrm=1,mean_top_Mass2j_PFCor_core=84.5 +/- 0.2849[C],sigma_top_Mass2j_PFCor_core=7.8647 +/- 0.46981[C],c_top_Mass2j_PFCor=-0.0191269 +/- 0.010389[C],offset_top_Mass2j_PFCor=96.303 +/- 34.457[C],width_top_Mass2j_PFCor=50.144 +/- 11.867[C],f_top_Mass2j_PFCor_core=0.21939 +/- 0.019697[C],n_top=8254.6 +/- 90.9[C],top_nrm=1,a1_WpJ_Mass2j_PFCor=-0.411842 +/- 0.0120212,a2_WpJ_Mass2j_PFCor=0.03972 +/- 0.0118484,a3_WpJ_Mass2j_PFCor=0.045445 +/- 0.011182,a4_WpJ_Mass2j_PFCor=-0.0481793 +/- 0.0111166,a5_WpJ_Mass2j_PFCor=0.013139 +/- 0.0095658,a6_WpJ_Mass2j_PFCor=-0.00745374 +/- 0.0093352,n_WpJ=136635 +/- 369.6[C],WpJ_nrm=1,offset_ZpJ_Mass2j_PFCor=41.241 +/- 4.0112[C],width_ZpJ_Mass2j_PFCor=20.619 +/- 7.5671[C],power_ZpJ_Mass2j_PFCor=-1.18504 +/- 0.089544[C],n_ZpJ=8187.5 +/- 90.5[C],ZpJ_nrm=1)
+
+named sets
+----------
+constrainedSet:(top_nrm,ZpJ_nrm,WpJ_nrm,a1_WpJ_Mass2j_PFCor,a2_WpJ_Mass2j_PFCor,a3_WpJ_Mass2j_PFCor,a4_WpJ_Mass2j_PFCor,a5_WpJ_Mass2j_PFCor,a6_WpJ_Mass2j_PFCor)
+constraintSet:(top_const,ZpJ_const,WpJ_const,a1_WpJ_Mass2j_PFCor_const,a2_WpJ_Mass2j_PFCor_const,a3_WpJ_Mass2j_PFCor_const,a4_WpJ_Mass2j_PFCor_const,a5_WpJ_Mass2j_PFCor_const,a6_WpJ_Mass2j_PFCor_const)
+obsSet:(Mass2j_PFCor)
+params:(WpJ_nrm,ZpJ_nrm,a1_WpJ_Mass2j_PFCor,a2_WpJ_Mass2j_PFCor,a3_WpJ_Mass2j_PFCor,a4_WpJ_Mass2j_PFCor,a5_WpJ_Mass2j_PFCor,a6_WpJ_Mass2j_PFCor,c_diboson_Mass2j_PFCor,c_top_Mass2j_PFCor,diboson_nrm,f_W_diboson_Mass2j_PFCor,f_Z_diboson_Mass2j_PFCor,f_top_Mass2j_PFCor_core,mean_diboson_Mass2j_PFCor_W,mean_top_Mass2j_PFCor_core,n_WpJ,n_ZpJ,n_diboson,n_top,offset_ZpJ_Mass2j_PFCor,offset_diboson_Mass2j_PFCor,offset_top_Mass2j_PFCor,power_ZpJ_Mass2j_PFCor,resolution_diboson_Mass2j_PFCor,sigma_top_Mass2j_PFCor_core,top_nrm,width_ZpJ_Mass2j_PFCor,width_diboson_Mass2j_PFCor,width_top_Mass2j_PFCor)
+
+fitting ...
+ **********
+ **    9 **SET NOWARNINGS           0
+ **********
+ **********
+ **   12 **MIGRAD        5000           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=-1.00011e+06 FROM MIGRAD    STATUS=INITIATE       40 CALLS          41 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.00000e+00   5.00000e-02   2.04149e-02  -4.57453e+03
+   2  ZpJ_nrm      1.00000e+00   5.00000e-02   2.04149e-02  -2.94186e+02
+   3  a1_WpJ_Mass2j_PFCor  -4.11842e-01   1.20212e-02   1.20212e-02   1.06462e+03
+   4  a2_WpJ_Mass2j_PFCor   3.97200e-02   1.18484e-02   1.18484e-02   3.16744e+02
+   5  a3_WpJ_Mass2j_PFCor   4.54450e-02   1.11820e-02   1.11820e-02  -7.09112e+02
+   6  a4_WpJ_Mass2j_PFCor  -4.81793e-02   1.11166e-02   1.11166e-02   2.68884e+01
+   7  a5_WpJ_Mass2j_PFCor   1.31390e-02   9.56580e-03   9.56580e-03   1.36239e+02
+   8  a6_WpJ_Mass2j_PFCor  -7.45374e-03   9.33520e-03   9.33520e-03  -2.94563e+02
+   9  diboson_nrm   1.00000e+00   5.50000e-01   2.28102e-01  -1.79619e+02
+  10  top_nrm      1.00000e+00   7.00000e-02   2.85843e-02  -2.94534e+02
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-1.00014e+06 FROM MIGRAD    STATUS=CONVERGED     361 CALLS         362 TOTAL
+                     EDM=0.000185793    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      9.97382e-01   1.01944e-02   8.20584e-04  -1.08597e-01
+   2  ZpJ_nrm      1.00195e+00   4.98915e-02   9.80830e-03  -1.10166e-01
+   3  a1_WpJ_Mass2j_PFCor  -4.27952e-01   5.40477e-03   3.05627e-03   5.22111e-01
+   4  a2_WpJ_Mass2j_PFCor   3.94376e-02   6.40128e-03   2.94428e-03  -4.99005e-01
+   5  a3_WpJ_Mass2j_PFCor   4.16734e-02   6.12726e-03   2.61262e-03   7.48178e-01
+   6  a4_WpJ_Mass2j_PFCor  -5.54814e-02   4.84920e-03   2.59521e-03  -1.06173e+00
+   7  a5_WpJ_Mass2j_PFCor   1.83301e-02   5.84282e-03   2.53508e-03   9.01671e-01
+   8  a6_WpJ_Mass2j_PFCor  -9.24912e-03   4.55979e-03   2.51835e-03  -7.04301e-01
+   9  diboson_nrm   1.74448e+00   3.66942e-01   2.35569e-02  -6.65954e-02
+  10  top_nrm      9.80961e-01   6.91690e-02   1.06923e-02  -1.44086e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  62    NPAR= 10    ERR DEF=0.5
+  1.039e-04 -1.390e-04 -1.123e-05 -3.753e-05  3.563e-05  1.366e-05 -3.817e-05  2.008e-05 -3.098e-03 -1.058e-04 
+ -1.390e-04  2.490e-03  1.549e-05 -7.238e-06  3.403e-06  1.515e-06 -5.449e-06  3.113e-06 -3.693e-04 -6.986e-07 
+ -1.123e-05  1.549e-05  2.921e-05  2.177e-06  5.097e-06 -1.969e-06  1.091e-05 -2.316e-06  5.973e-04 -8.827e-05 
+ -3.753e-05 -7.238e-06  2.177e-06  4.098e-05 -2.102e-05  5.152e-06  1.522e-05 -3.849e-06  1.369e-03  3.252e-05 
+  3.563e-05  3.403e-06  5.097e-06 -2.102e-05  3.754e-05  9.782e-07 -9.278e-06  8.191e-06 -1.452e-03  3.766e-05 
+  1.366e-05  1.515e-06 -1.969e-06  5.152e-06  9.782e-07  2.351e-05 -1.005e-05  1.026e-05 -5.034e-04 -8.509e-06 
+ -3.817e-05 -5.449e-06  1.091e-05  1.522e-05 -9.278e-06 -1.005e-05  3.414e-05 -1.174e-05  1.491e-03 -1.108e-05 
+  2.008e-05  3.113e-06 -2.316e-06 -3.849e-06  8.191e-06  1.026e-05 -1.174e-05  2.079e-05 -7.676e-04 -1.676e-06 
+ -3.098e-03 -3.693e-04  5.973e-04  1.369e-03 -1.452e-03 -5.034e-04  1.491e-03 -7.676e-04  1.355e-01 -6.929e-03 
+ -1.058e-04 -6.986e-07 -8.827e-05  3.252e-05  3.766e-05 -8.509e-06 -1.108e-05 -1.676e-06 -6.929e-03  4.786e-03 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5      6      7      8      9     10
+        1  0.95843   1.000 -0.273 -0.204 -0.575  0.570  0.276 -0.641  0.432 -0.825 -0.150
+        2  0.71658  -0.273  1.000  0.057 -0.023  0.011  0.006 -0.019  0.014 -0.020 -0.000
+        3  0.57409  -0.204  0.057  1.000  0.063  0.154 -0.075  0.345 -0.094  0.300 -0.236
+        4  0.74595  -0.575 -0.023  0.063  1.000 -0.536  0.166  0.407 -0.132  0.581  0.073
+        5  0.78665   0.570  0.011  0.154 -0.536  1.000  0.033 -0.259  0.293 -0.644  0.089
+        6  0.63206   0.276  0.006 -0.075  0.166  0.033  1.000 -0.355  0.464 -0.282 -0.025
+        7  0.77802  -0.641 -0.019  0.345  0.407 -0.259 -0.355  1.000 -0.441  0.693 -0.027
+        8  0.60040   0.432  0.014 -0.094 -0.132  0.293  0.464 -0.441  1.000 -0.457 -0.005
+        9  0.96808  -0.825 -0.020  0.300  0.581 -0.644 -0.282  0.693 -0.457  1.000 -0.272
+       10  0.83784  -0.150 -0.000 -0.236  0.073  0.089 -0.025 -0.027 -0.005 -0.272  1.000
+ **********
+ **   15 **HESSE        5000
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-1.00014e+06 FROM HESSE     STATUS=OK             86 CALLS         448 TOTAL
+                     EDM=0.000186447    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  WpJ_nrm      9.97382e-01   1.03545e-02   3.28233e-05  -4.72931e-01
+   2  ZpJ_nrm      1.00195e+00   4.98927e-02   3.92332e-04  -4.71065e-01
+   3  a1_WpJ_Mass2j_PFCor  -4.27952e-01   5.40051e-03   1.22251e-04  -4.27952e-01
+   4  a2_WpJ_Mass2j_PFCor   3.94376e-02   6.41050e-03   1.17771e-04   3.94376e-02
+   5  a3_WpJ_Mass2j_PFCor   4.16734e-02   6.17820e-03   1.04505e-04   4.16734e-02
+   6  a4_WpJ_Mass2j_PFCor  -5.54814e-02   4.86720e-03   5.19041e-04  -5.54814e-02
+   7  a5_WpJ_Mass2j_PFCor   1.83301e-02   5.87518e-03   5.07017e-04   1.83301e-02
+   8  a6_WpJ_Mass2j_PFCor  -9.24912e-03   4.58955e-03   5.03670e-04  -9.24912e-03
+   9  diboson_nrm   1.74448e+00   3.71610e-01   9.42275e-04  -1.84879e-01
+  10  top_nrm      9.80961e-01   6.90734e-02   4.27692e-04  -4.79650e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  62    NPAR= 10    ERR DEF=0.5
+  1.072e-04 -1.431e-04 -1.125e-05 -3.836e-05  3.719e-05  1.457e-05 -3.930e-05  2.105e-05 -3.207e-03 -1.073e-04 
+ -1.431e-04  2.490e-03  1.520e-05 -6.074e-06  1.162e-06  3.442e-07 -4.103e-06  1.717e-06 -2.276e-04  5.164e-06 
+ -1.125e-05  1.520e-05  2.917e-05  2.143e-06  5.017e-06 -2.008e-06  1.090e-05 -2.368e-06  5.992e-04 -8.855e-05 
+ -3.836e-05 -6.074e-06  2.143e-06  4.109e-05 -2.139e-05  4.838e-06  1.550e-05 -4.097e-06  1.396e-03  3.261e-05 
+  3.719e-05  1.162e-06  5.017e-06 -2.139e-05  3.817e-05  1.414e-06 -9.842e-06  8.605e-06 -1.501e-03  3.634e-05 
+  1.457e-05  3.442e-07 -2.008e-06  4.838e-06  1.414e-06  2.369e-05 -1.036e-05  1.050e-05 -5.334e-04 -9.161e-06 
+ -3.930e-05 -4.103e-06  1.090e-05  1.550e-05 -9.842e-06 -1.036e-05  3.452e-05 -1.208e-05  1.529e-03 -1.087e-05 
+  2.105e-05  1.717e-06 -2.368e-06 -4.097e-06  8.605e-06  1.050e-05 -1.208e-05  2.106e-05 -7.989e-04 -2.377e-06 
+ -3.207e-03 -2.276e-04  5.992e-04  1.396e-03 -1.501e-03 -5.334e-04  1.529e-03 -7.989e-04  1.390e-01 -6.850e-03 
+ -1.073e-04  5.164e-06 -8.855e-05  3.261e-05  3.634e-05 -9.161e-06 -1.087e-05 -2.377e-06 -6.850e-03  4.772e-03 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5      6      7      8      9     10
+        1  0.95973   1.000 -0.277 -0.201 -0.578  0.581  0.289 -0.646  0.443 -0.831 -0.150
+        2  0.71662  -0.277  1.000  0.056 -0.019  0.004  0.001 -0.014  0.007 -0.012  0.001
+        3  0.57317  -0.201  0.056  1.000  0.062  0.150 -0.076  0.343 -0.096  0.298 -0.237
+        4  0.74681  -0.578 -0.019  0.062  1.000 -0.540  0.155  0.412 -0.139  0.584  0.074
+        5  0.79062   0.581  0.004  0.150 -0.540  1.000  0.047 -0.271  0.303 -0.652  0.085
+        6  0.63555   0.289  0.001 -0.076  0.155  0.047  1.000 -0.362  0.470 -0.294 -0.027
+        7  0.78080  -0.646 -0.014  0.343  0.412 -0.271 -0.362  1.000 -0.448  0.698 -0.027
+        8  0.60724   0.443  0.007 -0.096 -0.139  0.303  0.470 -0.448  1.000 -0.467 -0.007
+        9  0.96890  -0.831 -0.012  0.298  0.584 -0.652 -0.294  0.698 -0.467  1.000 -0.266
+       10  0.83736  -0.150  0.001 -0.237  0.074  0.085 -0.027 -0.027 -0.007 -0.266  1.000
+
+  RooFitResult: minimized FCN value: -1.00014e+06, estimated distance to minimum: 0.000186447
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Floating Parameter    FinalValue +/-  Error   
+  --------------------  --------------------------
+               WpJ_nrm    9.9738e-01 +/-  1.04e-02
+               ZpJ_nrm    1.0020e+00 +/-  4.99e-02
+   a1_WpJ_Mass2j_PFCor   -4.2795e-01 +/-  5.40e-03
+   a2_WpJ_Mass2j_PFCor    3.9438e-02 +/-  6.41e-03
+   a3_WpJ_Mass2j_PFCor    4.1673e-02 +/-  6.18e-03
+   a4_WpJ_Mass2j_PFCor   -5.5481e-02 +/-  4.87e-03
+   a5_WpJ_Mass2j_PFCor    1.8330e-02 +/-  5.88e-03
+   a6_WpJ_Mass2j_PFCor   -9.2491e-03 +/-  4.59e-03
+           diboson_nrm    1.7445e+00 +/-  3.72e-01
+               top_nrm    9.8096e-01 +/-  6.91e-02
+
+total expected: 158867
+data events: 158863
+plotting diboson ... events 6288.83333668
+plotting top ... events 8097.43744498
+plotting WpJ ... events 136277.134815
+plotting ZpJ ... events 8203.47792938
+
+
+  RooFitResult: minimized FCN value: -1.00014e+06, estimated distance to minimum: 0.000186447
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Constant Parameter    Value     
+  --------------------  ------------
+  c_diboson_Mass2j_PFCor   -7.1559e-03
+    c_top_Mass2j_PFCor   -1.9127e-02
+  f_W_diboson_Mass2j_PFCor    3.9493e-02
+  f_Z_diboson_Mass2j_PFCor    5.3090e-01
+  f_top_Mass2j_PFCor_core    2.1939e-01
+  mean_diboson_Mass2j_PFCor_W    7.5185e+01
+  mean_top_Mass2j_PFCor_core    8.4500e+01
+                 n_WpJ    1.3663e+05
+                 n_ZpJ    8.1875e+03
+             n_diboson    3.6050e+03
+                 n_top    8.2546e+03
+  offset_ZpJ_Mass2j_PFCor    4.1241e+01
+  offset_diboson_Mass2j_PFCor    3.4433e+01
+  offset_top_Mass2j_PFCor    9.6303e+01
+  power_ZpJ_Mass2j_PFCor   -1.1850e+00
+  resolution_diboson_Mass2j_PFCor    1.2162e-01
+  sigma_top_Mass2j_PFCor_core    7.8647e+00
+  width_ZpJ_Mass2j_PFCor    2.0619e+01
+  width_diboson_Mass2j_PFCor    1.0978e+01
+  width_top_Mass2j_PFCor    5.0144e+01
+
+    Floating Parameter  InitialValue    FinalValue +/-  Error     GblCorr.
+  --------------------  ------------  --------------------------  --------
+               WpJ_nrm    1.0000e+00    9.9738e-01 +/-  1.04e-02  <none>
+               ZpJ_nrm    1.0000e+00    1.0020e+00 +/-  4.99e-02  <none>
+   a1_WpJ_Mass2j_PFCor   -4.1184e-01   -4.2795e-01 +/-  5.40e-03  <none>
+   a2_WpJ_Mass2j_PFCor    3.9720e-02    3.9438e-02 +/-  6.41e-03  <none>
+   a3_WpJ_Mass2j_PFCor    4.5445e-02    4.1673e-02 +/-  6.18e-03  <none>
+   a4_WpJ_Mass2j_PFCor   -4.8179e-02   -5.5481e-02 +/-  4.87e-03  <none>
+   a5_WpJ_Mass2j_PFCor    1.3139e-02    1.8330e-02 +/-  5.88e-03  <none>
+   a6_WpJ_Mass2j_PFCor   -7.4537e-03   -9.2491e-03 +/-  4.59e-03  <none>
+           diboson_nrm    1.0000e+00    1.7445e+00 +/-  3.72e-01  <none>
+               top_nrm    1.0000e+00    9.8096e-01 +/-  6.91e-02  <none>
+
+1 free parameters in the fit
+Time elapsed: 968.2 sec
+CPU time used: 590.7 sec
+13 degrees of freedom
+chi2: 5.49 / 13 = 0.42
+chi2 probability: 0.9628

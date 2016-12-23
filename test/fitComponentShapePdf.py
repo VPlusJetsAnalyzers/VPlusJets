@@ -7,10 +7,6 @@ parser.add_option('-m', '--mode', default="HWW2DConfig", dest='modeConfig',
                   help='which config to select look at HWW2DConfig.py for ' +\
                       'an example.  Use the file name minus the .py extension.'
                   )
-parser.add_option('--mjj', dest='mjj_config',
-                  help='which config to select for the mjj parameters' +\
-                      'an example.  Use the file name minus the .py extension.'
-                  )
 parser.add_option('-H', '--mH', dest='mH', default=350, type='int',
                   help='Higgs Mass Point')
 parser.add_option('-j', '--Njets', dest='Nj', default=2, type='int',
@@ -24,7 +20,7 @@ parser.add_option('--electrons', dest='isElectron', action='store_true',
 parser.add_option('--makeFree', dest='makeConstant', action='store_false',
                   default=True, help='make parameters free in output')
 parser.add_option('--sideband', dest='sb', type='int',
-                  default=0, help='use sideband dataset and model instead')
+                  default=0, help='use sideband model instead')
 parser.add_option('--signal', dest='sig', action='store_true',
                   default=False, help='use signal model instead')
 parser.add_option('--alternateModel', dest='altModel', action='store_true',
@@ -41,26 +37,6 @@ parser.add_option('--ws', dest='ws', help='filename to get data from instead' +\
                   ' reading from source ntuples again.')
 parser.add_option('--btag', dest='btag', action='store_true',
                   default=False, help='Use b-tagged selection.')
-parser.add_option('--mva', dest='mvaCut', type='float',
-                  help='override cut value for mva')
-parser.add_option('--rateSyst', dest='RateSyst', type='int', 
-                  help='do a rate systematic in region of +/- 10% of mH')
-parser.add_option('--xrootd', dest='xrootd', action='store_true',
-                  help='use xrootd file opening.')
-parser.add_option('--nativeBins', dest='nativeBins', action='store_true',
-                  help='don\'t use plot bins.')
-parser.add_option('--overrideModel', dest='overrideModel', type='int',
-                  help='override the model number')
-parser.add_option('--overrideAux', dest='overrideAux', type='int',
-                  help='override the aux model number')
-parser.add_option('--fixToZero', dest='fixToZero', action='store_true',
-                  help='fixLowParametersToZero')
-parser.add_option('--Cprime', dest='Cprime', type='float',
-                  help='Cprime value')
-parser.add_option('--BRnew', dest='BRnew', type='float',
-                  help='BRnew value')
-parser.add_option('--refit', dest='refit', action='store_true',
-                  help='refit parameters')
 
 (opts, args) = parser.parse_args()
 
@@ -72,76 +48,36 @@ config = __import__(opts.modeConfig)
 #import VBF2DConfig
 import RooWjj2DFitter
 import HWWSignalShapes
+#from RooWjj2DFitterUtils import Wjj2DFitterUtils
 
 from ROOT import RooFit, TCanvas, RooArgSet, TFile, RooAbsReal, RooAbsData, \
     RooHist, TMath, kRed, kDashed, kOrange, RooMsgService, RooDataSet, \
-    RooCmdArg, TH1F
-
-from array import array
+    RooPlot
 
 import pulls
 
-RooMsgService.instance().setGlobalKillBelow(RooFit.ERROR)
+RooMsgService.instance().setGlobalKillBelow(RooFit.WARNING)
 
-configArgs = {'Nj': opts.Nj, 'mH': opts.mH, 'isElectron': opts.isElectron,
-              'initFile' : args}
-mvaCutOverride = None
-if hasattr(opts, "mvaCut") and (opts.mvaCut != None):
-    mvaCutOverride = opts.mvaCut
-    configArgs['MVACutOverride'] = opts.mvaCut
-
-if opts.mjj_config:
-    configArgs['mjj_config'] = opts.mjj_config
-
-sb = None
-if opts.sb > 0:
-    sb = 'high'
-    configArgs['sideband'] = sb
-elif opts.sb < 0:
-    sb = 'low'
-    configArgs['sideband'] = sb
-
-# pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
-#                         isElectron = opts.isElectron, initFile = args)
+pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
+                        isElectron = opts.isElectron, initFile = args)
 if opts.btag:
-    # pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
-    #                         isElectron = opts.isElectron, initFile = args,
-    #                         btagged = opts.btag)
-    configArgs['btagged'] = opts.btag
-# else:
-#     pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
-#                             isElectron = opts.isElectron, initFile = args)
-# if mvaCutOverride:
-#     pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
-#                             isElectron = opts.isElectron, initFile = args,
-#                             MVACutOverride = mvaCutOverride)
-if opts.xrootd:
-    configArgs['xrootd'] = opts.xrootd
-
-pars = config.theConfig(**configArgs)
+    pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
+                            isElectron = opts.isElectron, initFile = args,
+                            btagged = opts.btag)
+else:
+    pars = config.theConfig(Nj = opts.Nj, mH = opts.mH, 
+                            isElectron = opts.isElectron, initFile = args)
 
 
 files = getattr(pars, '%sFiles' % opts.component)
 models = getattr(pars, '%sModels' % opts.component)
-if hasattr(pars, '%sConvModels' % opts.component):
-    convModels  = getattr(pars, '%sConvModels' % opts.component)
-else:
-    convModels = None
-
+convModels  = getattr(pars, '%sConvModels' % opts.component)
 if opts.altModel:
     print 'will fit the alternate model'
     models = getattr(pars, '%sModelsAlt' % opts.component)
     convModels  = getattr(pars, '%sConvModelsAlt' % opts.component)
-# if opts.sb:
-#     pars.cuts = pars.SidebandCuts
-
-if opts.overrideModel:
-    print 'overriding models', models
-    models = [ opts.overrideModel ]
-if opts.overrideAux:
-    print 'overriding aux model'
-    setattr(pars, '%sAuxModels' % opts.component, [opts.overrideAux])
-
+if opts.sb:
+    pars.cuts = pars.SidebandCuts
 compName = opts.component
 morphingPdf = False
 if models[0] == -2:
@@ -197,13 +133,8 @@ if (compName == 'qqH') and (opts.mH == 170):
 refEffLumi = -1.
 print 'integrated lumi:',pars.integratedLumi
 in_ws = None
-loadIt = True
 if opts.ws:
     in_ws = TFile(opts.ws).Get('wjj2dfitter')
-    if in_ws.data('data'):
-        getattr(fitter.ws, 'import')(in_ws.data('data'))
-        data = fitter.ws.data('data')
-        loadIt = False
 for (ifile, (filename, ngen, xsec)) in enumerate(files):
     if refEffLumi > 0.:
         scale = refEffLumi/(ngen/xsec)
@@ -211,20 +142,12 @@ for (ifile, (filename, ngen, xsec)) in enumerate(files):
         scale = 1.0
     if in_ws and in_ws.data('data%i' % ifile):
         getattr(fitter.ws, 'import')(in_ws.data('data%i' % ifile))
-    dataArgs  = {'fnames': filename, 
-                 'dsName': 'data%i' % ifile, 
-                 'ws': fitter.ws,
-                 'weighted': weighted, 
-                 'CPweight': cpw,
-                 'cutOverride': cutOverride,
-                 'interference': opts.interference,
-                 'additionalWgt': scale}
-    if opts.Cprime != None:
-        dataArgs['Cprime'] = opts.Cprime
-    if opts.BRnew != None:
-        dataArgs['BRnew'] = opts.BRnew
-    tmpData = fitter.utils.File2Dataset(**dataArgs)
-
+    tmpData = fitter.utils.File2Dataset(filename, 'data%i' % ifile, fitter.ws,
+                                        weighted = weighted, CPweight = cpw,
+                                        cutOverride = cutOverride,
+                                        interference = opts.interference,
+                                        additionalWgt = scale)
+    
     tmpData.Print()
     print filename,'effective integrated lumi:',ngen/xsec
     expectedYield = xsec*pars.integratedLumi*tmpData.sumEntries()/scale/ngen
@@ -233,19 +156,15 @@ for (ifile, (filename, ngen, xsec)) in enumerate(files):
     print filename,'scale:',scale
     sumNExp += expectedYield
     sumxsec += xsec
-    if refEffLumi < 0:
+    if not data:
+        data = tmpData.Clone('data')
         refEffLumi = ngen/xsec
-    if loadIt:
-        if not data:
-            data = tmpData.Clone('data')
-        else:
-            data.append(tmpData)
+    else:
+        data.append(tmpData)
 
 print compName,'total expected yield: %.1f' % sumNExp
 print compName,'overall A x eff: %.3g' % (sumNExp/sumxsec/pars.integratedLumi)
 data.Print()
-if not fitter.ws.data('data'):
-    getattr(fitter.ws, 'import')(data)
 
 hist2d = None
 try:
@@ -276,12 +195,8 @@ if opts.interference in [1,2,3]:
         print 'failed to fined pdf',pdfName
 else:
     sigPdf = fitter.makeComponentPdf(compName, files, models, opts.altModel, convModels)
-    if sb:
-        sbPdf = fitter.ws.pdf('%s_%s_%s' % (compName,pars.var[0],sb))
-        if sbPdf:
-            sigPdf = sbPdf
-            sigPdf.getParameters(data).setAttribAll('Constant', False)
-        sigPdf.Print()
+    if opts.sb and fitter.ws.pdf('%s_%s_side' % (compName,pars.var[0])):
+        sigPdf = fitter.ws.pdf('%s_%s_side' % (compName,pars.var[0]))
     elif opts.sig and fitter.ws.pdf('%s_%s_sig' % (compName,pars.var[0])):
         sigPdf = fitter.ws.pdf('%s_%s_sig' % (compName,pars.var[0]))
 
@@ -307,8 +222,7 @@ if fitter.ws.var('sigma_%s_fit_mlvjj_tail%s' % (compName,extraTag)):
 if fitter.ws.var('sigma_%s_fit_mlvjj_core%s' % (compName,extraTag)):
     fitter.ws.var('sigma_%s_fit_mlvjj_core%s' % \
                       (compName,extraTag)).setVal(opts.mH*0.1)
-if (compName in ['ggH','qqH']) and \
-        fitter.ws.var('width_%s_fit_mlvjj%s' % (compName,extraTag)):
+if fitter.ws.var('width_%s_fit_mlvjj%s' % (compName,extraTag)):
     fitter.ws.var('width_%s_fit_mlvjj%s' % \
                       (compName,extraTag)).setVal(HWWSignalShapes.HiggsWidth[int(opts.mH)])
 
@@ -316,11 +230,7 @@ params = sigPdf.getParameters(data)
 parCopy = params.snapshot()
 for filename in args:
     parCopy.readFromFile(filename)
-
-if opts.refit or opts.makeConstant:
     params.assignValueOnly(parCopy)
-else:
-    params.__assign__(parCopy)
 
 params.Print('v')
 parCopy.IsA().Destructor(parCopy)
@@ -344,11 +254,7 @@ fitter.ws.Print()
 fr = None
 if models[0] >= 0:
     fr = sigPdf.fitTo(data, RooFit.Save(), 
-                      RooFit.SumW2Error(False),
-                      # RooFit.Hesse(False),
-                      RooFit.Minimizer("Minuit2", "minimize"),
-                      # RooFit.Minos(True),
-                      # RooFit.InitialHesse(True)
+                      RooFit.SumW2Error(False)
                       )
 
 
@@ -361,36 +267,13 @@ plots = []
 chi2s = []
 ndfs = []
 
-dhists = []
-fhists = []
-hchi2s = []
-
-TH1F.SetDefaultSumw2(True)
-
 for (i,m) in enumerate(models):
     par = obs[i]
     c1 = TCanvas('c%i' % i, par)
-    binArg = RooFit.Bins(fitter.ws.var(par).getBins('plotBins'))
-    if opts.nativeBins:
-        binArg = RooCmdArg.none()
-    sigPlot = fitter.ws.var(par).frame(RooFit.Name('%s_Plot' % par),
-                                       RooFit.Range('plotRange'),
-                                       binArg
-                                       )
-    dataHist = RooAbsData.createHistogram(data,'dataHist_%s' % par,
-                                          fitter.ws.var(par))
-    fitHist = sigPdf.createHistogram('sigHist_%s' % par,
-                                     fitter.ws.var(par))
-    fitHist.Scale(dataHist.Integral()/fitHist.Integral())
-    #this will let it ignore empty bins
-    for bin in range(1, dataHist.GetNbinsX()+1):
-        if dataHist.GetBinContent(bin) < 1e-9:
-            dataHist.SetBinContent(bin, fitHist.GetBinContent(bin))
-            dataHist.SetBinError(bin, 1.0)
-    h_chi2 = dataHist.Chi2Test(fitHist, 'wwpchi2')
-    fhists.append(fitHist)
-    dhists.append(dataHist)
-    hchi2s.append(h_chi2)
+    sigPlot = fitter.ws.var(par).frame(RooFit.Name('%s_Plot' % par))
+    # dataHist = RooAbsData.createHistogram(data,'dataHist_%s' % par,
+    #                                       fitter.ws.var(par),
+    #                                       RooFit.Binning('%sBinning' % par))
     # theData = RooHist(dataHist, 1., 1, RooAbsData.SumW2, 1.0, True)
     # theData.SetName('theData')
     # theData.SetTitle('data')
@@ -398,6 +281,8 @@ for (i,m) in enumerate(models):
     data.plotOn(sigPlot, RooFit.Name('theData'),
                 RooFit.DataError(RooAbsData.SumW2))
     sigPlot.getHist('theData').SetTitle('data')
+
+    
     if fr:
         sigPdf.plotOn(sigPlot, 
                       RooFit.VisualizeError(fr, 1, True),
@@ -430,60 +315,44 @@ for (i,m) in enumerate(models):
     chi2s.append(chi2_1)
     ndfs.append(ndf_1)
 
-    residuals = pulls.createResid(sigPlot.getHist('theData'),
-                                  sigPlot.getCurve('fitCurve'))
-    plots.append(residuals)
-    residuals.SetName('%s_Residuals' % par)
-    c3 = TCanvas('c%i_residual' % i, par + ' residual')
-    c3.SetGridy()
-    residuals.Draw('ap')
-    residuals.GetXaxis().SetLimits(fitter.ws.var(par).getMin(),
-                                   fitter.ws.var(par).getMax())
-    c3.Update()
-    cans.append(c3)
-
     pull = pulls.createPull(sigPlot.getHist('theData'),
                             sigPlot.getCurve('fitCurve'))
     plots.append(pull)
-    pull.SetName('%s_Pulls' % par)
     c2 = TCanvas('c%i_pull' % i, par + ' pull')
     c2.SetGridy()
     pull.Draw('ap')
-    pull.GetXaxis().SetLimits(fitter.ws.var(par).getMin(),
-                              fitter.ws.var(par).getMax())
-    c2.Update()
     cans.append(c2)
+    
 
     c1.Print('%s_compFit.png' % opts.bn)
+    c2.Print('%s_compPull.png' % opts.bn) 
 #    c1.Print('%s_compFit.pdf' % opts.bn)
 
 mode = 'muon'
 if opts.isElectron:
     mode = 'electron'
 
+## lgnd = TLegend(0.65, 0.72, 0.92, 0.89, '', 'NDC')
+## lgnd.AddEntry('fitCurve', '%s fit pdf' % opts.component, 'l')
+## lgnd.AddEntry('theData','%s MC' % opts.component,'p')
+## lgnd.Draw('same')
+
+## if pars.btagSelection:
+##     if pars.boostedSelection:
+##         c1.SaveAs("DibosonBoostedBtaglnuJ_%s_%s_%ijets.png" % (opts.component, mode, opts.Nj))
+##     else:
+##         c1.SaveAs("DibosonBtaglnujj_%s_%s_%ijets.png" % (opts.component, mode, opts.Nj))
+## else:
+##     if pars.boostedSelection:
+##         c1.SaveAs("DibosonBoostedlnuJ_%s_%s_%ijets.png" % (opts.component, mode, opts.Nj))
+##     else:
+##         c1.SaveAs("Dibosonlnujj_%s_%s_%ijets.png" % (opts.component, mode, opts.Nj))
+
 ndf = 0
+# print chi2s
+# print ndfs
 
 finalPars = params.snapshot()
-
-if fr and (opts.RateSyst):
-    var = fitter.ws.var(obs[0])
-    var.setRange("SystSignal", opts.mH*0.9, opts.mH*1.1)
-    sigPdfInt = sigPdf.createIntegral(fitter.ws.set('obsSet'),
-                                      fitter.ws.set('obsSet'))
-    sigPdfInt_sig = sigPdf.createIntegral(fitter.ws.set('obsSet'),
-                                          fitter.ws.set('obsSet'),
-                                          'SystSignal')
-    fracs = [sigPdfInt_sig.getVal()/sigPdfInt.getVal()]
-    while len(fracs) < opts.RateSyst:
-        params.assignValueOnly(fr.randomizePars())
-        frac = sigPdfInt_sig.getVal()/sigPdfInt.getVal()
-        if (frac > 0) and (frac < 1):
-            fracs.append(sigPdfInt_sig.getVal()/sigPdfInt.getVal())
-
-    farray = array('d', fracs)
-    print 'yield in signal region around %i: %.4f +/- %.4f' % \
-        (opts.mH, TMath.Mean(len(farray),farray), 
-         TMath.RMS(len(farray), farray))
 
 sigFile = TFile('%s.root' % opts.bn, 'recreate')
 if fr:
@@ -499,27 +368,9 @@ sigFile.Close()
 
 parIter = finalPars.createIterator()
 p = parIter.Next()
-fixCnt = 0
 while p:
     if not p.isConstant():
-        p.setRange(max(p.getVal()-p.getError()*20., p.getMin()),
-                   min(p.getVal()+p.getError()*20., p.getMax()))
-        if (p.getError() > abs(p.getVal()*10)):
-            fixCnt += 1
-            print p.GetName(), 'is not significantly deviated from zero',
-            print '(%f' % (p.getVal()/p.getError()), 'sigma),',
-            print 'consider fixing it to zero.'
-            if opts.fixToZero:
-                print 'fixing',p.GetName(),'to zero'
-                p.setVal(0.0)
-                p.setConstant()
-        # elif (fixCnt > 1) and opts.fixToZero:
-        #     print 'fixing',p.GetName(),'to zero'
-        #     p.setVal(0.0)
-        #     p.setConstant()
-        else:
-            fixCnt = 0
-            
+        p.setRange(p.getVal()-p.getError()*10., p.getVal()+p.getError()*10.)
     p = parIter.Next()
 
 if opts.makeConstant:
@@ -563,11 +414,6 @@ finalPars.IsA().Destructor(finalPars)
 params.IsA().Destructor(params)
 
 print '%i free parameters in the fit' % ndf
-
-for (i,chi2) in enumerate(hchi2s):
-    print 'histogram chi2:',chi2,'ndf:',dhists[i].GetNbinsX()-ndf-1,
-    print 'p-value:', TMath.Prob(chi2, dhists[i].GetNbinsX()-ndf-1)
-
 chi2 = 0
 print 'chi2: (',
 for c in chi2s:
@@ -576,8 +422,6 @@ for c in chi2s:
         print '%.2f +' % c,
     else:
         print '%.2f )' % c,
-    ndf += 1
-
 bins = 0
 for b in ndfs:
     bins += b

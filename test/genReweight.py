@@ -24,7 +24,7 @@ import HWWSignalShapes
 
 # files = ['dcap://cmsdca.fnal.gov:24136/pnfs/fnal.gov/usr/cms/WAX/11/store/user/lnujj/PatTuples_8TeV_53X-v1/shuai/GluGluToHToWWToLAndTauNuQQ_M-350_8TeV-powheg-pythia6/SQWaT_PAT_53X_ggH350_central/829f288d768dd564418efaaf3a8ab9aa/pat_53x_v03_60_1_cPR.root']
 
-files = [ x.rstrip() for x in open(args[0]) ]
+files = [ x.rstrip() for x in open(args[0]).readlines() ]
 
 print files[0]
 

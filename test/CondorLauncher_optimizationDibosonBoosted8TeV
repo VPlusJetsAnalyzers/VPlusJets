@@ -1,0 +1,13 @@
+universe = vanilla
+Executable = optimizationDibosonBoosted8TeV_runScript.sh
+Requirements = Memory >= 199 &&OpSys == "LINUX"&& (Arch != "DUMMY" )&& Disk > 1000000
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = DibosonBoosted8TeVConfig.py, runToyMCFits_Diboson8TeV.cc, FitBoostedValInput_mu.log
+Output = log/OptimizationTest_$(Process).stdout
+Error = log/OptimizationTest_$(Process).stderr
+Log = log/OptimizationTest_$(Process).log
+x509userproxy = /tmp/x509up_u44389
+notify_user = none
+Arguments = $(Process) 1
+Queue 2

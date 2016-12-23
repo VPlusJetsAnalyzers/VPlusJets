@@ -58,15 +58,6 @@ class Wjj2DFitter:
                 var1.setRange('highSideband', self.pars.exclude[v][1],
                               var1.getMax())
                 self.rangeString = 'lowSideband,highSideband'
-
-            if hasattr(self.pars, 'plotRanges'):
-                var1.setRange('plotRange', self.pars.plotRanges[v][1],
-                              self.pars.plotRanges[v][2])
-                var1.setBins(self.pars.plotRanges[v][0], 'plotBins')
-            else:
-                var1.setRange('plotRange', var1.getMin(), var1.getMax())
-                var1.setBins(var1.getBins(), 'plotBins')
-
         self.ws.defineSet('obsSet', ','.join(obs))
 
     def loadDataFromWorkspace(self, other, cut = None):
@@ -143,18 +134,14 @@ class Wjj2DFitter:
         for component in self.pars.backgrounds:
             # print 'getting compModels'
             compModels = getattr(self.pars, '%sModels' % component)
-            if hasattr(self.pars, '%sConvModels' % component):
-                convModels = getattr(self.pars, '%sConvModels' % component)
-            else:
-                convModels = None
+            convModels = getattr(self.pars, '%sConvModels' % component)
             if useAlternateModels:
                 print 'loading Alternate Models'
                 compModels = getattr(self.pars, '%sModelsAlt' % component)
                 convModels = getattr(self.pars, '%sConvModelsAlt' % component)
             # print 'compModels = %s' % compModels
             compFiles = getattr(self.pars, '%sFiles' % component)
-            compPdf = self.makeComponentPdf(component, compFiles, compModels,
-                                            useAlternateModels, convModels)
+            compPdf = self.makeComponentPdf(component, compFiles, compModels, useAlternateModels, convModels)
                 
             norm = self.ws.factory('prod::f_%s_norm' % component + \
                                        '(n_%s[0.,1e6],' % component + \
@@ -170,7 +157,29 @@ class Wjj2DFitter:
                                      norm.GetName())
                                 )
                 )
-                                    
+
+            
+        for component in self.pars.extras:
+            # print 'getting compModels'
+            compModels = getattr(self.pars, '%sModels' % component)
+            convModels = getattr(self.pars, '%sConvModels' % component)
+            if useAlternateModels:
+                print 'loading Alternate Models'
+                compModels = getattr(self.pars, '%sModelsAlt' % component)
+                convModels = getattr(self.pars, '%sConvModelsAlt' % component)
+            # print 'compModels = %s' % compModels
+            compFiles = getattr(self.pars, '%sFiles' % component)
+            compPdf = self.makeComponentPdf(component, compFiles, compModels, useAlternateModels, convModels)
+                
+            norm = self.ws.factory('prod::f_%s_norm' % component + \
+                                       '(n_%s[0.,1e6],' % component + \
+                                       '%s_nrm[1.,-0.5,5.])' % component)
+            self.ws.var('n_%s' % component).setConstant(True)
+            if hasattr(self, '%sExpected' % component):
+                self.ws.var('n_%s' % component).setVal(
+                    getattr(self, '%sExpected' % component))
+
+        
         self.ws.factory('r_signal[0., -200., 200.]')
         self.ws.var('r_signal').setConstant(False)
 
@@ -182,12 +191,8 @@ class Wjj2DFitter:
         for component in self.pars.signals:
             compFile = getattr(self.pars, '%sFiles' % component)
             compModels = getattr(self.pars, '%sModels' % component)
-            if hasattr(self.pars, '%sConvModels' % component):
-                convModels = getattr(self.pars, '%sConvModels' % component)
-            else:
-                convModels = None
-            compPdf = self.makeComponentPdf(component, compFiles, compModels,
-                                            useAlternateModels, convModels)
+            convModels = getattr(self.pars, '%sConvModels' % component)
+            compPdf = self.makeComponentPdf(component, compFiles, compModels, useAlternateModels, convModels)
             norm = self.ws.factory(
                 "prod::f_%s_norm(n_%s[0., 1e6],r_signal)" % \
                     (component, component)
@@ -270,32 +275,8 @@ class Wjj2DFitter:
 
         return self.ws.set('constraintSet')
 
-    # make the constrained fitter
-    def makeConstrainedFitter(self):
-        if self.ws.pdf('totalFit_const'):
-            return self.ws.pdf('totalFit_const')
-
-        constraintSet = self.makeConstraints()
-        fitter = self.makeFitter()
-
-        print '\nfit constraints'
-        constIter = constraintSet.createIterator()
-        constraint = constIter.Next()
-        constraints = []
-        while constraint:
-            constraint.Print()
-            constraints.append(constraint.GetName())
-            constraint = constIter.Next()
-
-        if constraintSet.getSize() > 0:
-            constraints.append(fitter.GetName())
-            fitter = self.ws.factory('PROD::totalFit_const(%s)' % \
-                                     (','.join(constraints))
-                                     )
-        return fitter
-
     # fit the data using the pdf
-    def fit(self, keepParameterValues = False, overrideRangeCmd = False):
+    def fit(self, keepParameterValues = False):
         print 'construct fit pdf ...'
         fitter = self.makeFitter()
 
@@ -311,10 +292,23 @@ class Wjj2DFitter:
 
         self.resetYields()
         # print constraints, self.pars.yieldConstraints
+        print '\nfit constraints'
+        constIter = constraintSet.createIterator()
+        constraint = constIter.Next()
+        constraints = []
+        while constraint:
+            constraint.Print()
+            constraints.append(constraint.GetName())
+            constraint = constIter.Next()
             
         constraintCmd = RooCmdArg.none()
         if constraintSet.getSize() > 0:
-            fitter = self.makeConstrainedFitter()
+            constraints.append(fitter.GetName())
+            fitter = self.ws.pdf('totalFit_const')
+            if not fitter:
+                fitter = self.ws.factory('PROD::totalFit_const(%s)' % \
+                                             (','.join(constraints))
+                                         )
             constraintCmd = RooFit.Constrained()
             # constraintCmd = RooFit.ExternalConstraints(self.ws.set('constraintSet'))
 
@@ -327,39 +321,29 @@ class Wjj2DFitter:
         # print
 
         rangeCmd = RooCmdArg.none()
-        if self.rangeString and self.pars.doExclude and not overrideRangeCmd:
+        if self.rangeString and self.pars.doExclude:
             rangeCmd = RooFit.Range(self.rangeString)
-
-        # print 'scanning parameter values...'
-        # fitter.fitTo(data, RooFit.Minos(False),
-        #              RooFit.PrintEvalErrors(-1),
-        #              RooFit.Warnings(False),
-        #              RooFit.Minimizer("Minuit2", "scan"),
-        #              RooFit.PrintLevel(0),
-        #              constraintCmd,
-        #              rangeCmd)
 
         print 'fitting ...'
         fr = fitter.fitTo(data, RooFit.Save(True),
-                          # RooFit.Extended(True),
+                          RooFit.Extended(True),
                           RooFit.Minos(False),
                           RooFit.PrintEvalErrors(-1),
                           RooFit.Warnings(False),
-                          RooFit.Minimizer("Minuit2", "minimize"),
                           constraintCmd,
-                          rangeCmd
-                          )
-        fr.Print('v')
+                          rangeCmd)
+        fr.Print()
+
+        
 
         return fr
 
     # determine the fitting model for each component and return them
-    def makeComponentPdf(self, component, files, models, useAlternateModels,
-                         convModels):
+    def makeComponentPdf(self, component, files, models, useAlternateModels, convModels):
         print 'making ComponentPdf %s' % component
-        # print 'models = %s' % models
-        # print 'files = %s' % files
-        if convModels and not (convModels[0] == -1):
+        #print 'models = %s' % models
+        #print 'files = %s' % files
+        if not (convModels[0] == -1):
             thePdf = self.makeConvolvedPdf(component, files, models, useAlternateModels, convModels)
         elif (models[0] == -1):
             thePdf = self.makeComponentHistPdf(component, files)
@@ -492,13 +476,6 @@ class Wjj2DFitter:
             return self.ws.pdf(component)
 
         pdfList = []
-        systMult = None
-        if ( hasattr(self.pars, '%sInterference' % component) and \
-             getattr(self.pars, '%sInterference' % component) and \
-             hasattr(self.pars, "%sdoSystMult" % component) and \
-             getattr(self.pars, "%sdoSystMult" % component) ):
-            systMult = getattr(self.pars, "%sSystMult" % component)
-
         for (idx,model) in enumerate(models):
             var = self.pars.var[idx]
             try:
@@ -517,7 +494,7 @@ class Wjj2DFitter:
             pdfList.append(self.utils.analyticPdf(self.ws, vName, model, 
                                                   '%s_%s'%(component,vName), 
                                                   '%s_%s'%(component,vName),
-                                                  auxModel, systMult
+                                                  auxModel
                                                   )
                            )
         
@@ -552,17 +529,9 @@ class Wjj2DFitter:
             pdfName = 'total'
 
         xvar = self.ws.var(var)
-        nbins = xvar.getBins()
-        # if hasattr(self.pars, 'plotRanges') and not xvar.hasRange('plotRange'):
-        #     xvar.setRange('plotRange', self.pars.plotRanges[var][1],
-        #                   self.pars.plotRanges[var][2])
-        #     xvar.setBins(self.pars.plotRanges[var][0], 'plotBins')
-        # elif not xvar.hasRange('plotRange'):
-        #     xvar.setRange('plotRange', xvar.getMin(), xvar.getMax())
-        #     xvar.setBins(nbins, 'plotBins')
+        xvar.setRange('plotRange', xvar.getMin(), xvar.getMax())
 
-        sframe = xvar.frame(RooFit.Range('plotRange'),
-                            RooFit.Bins(xvar.getBins('plotBins')))
+        sframe = xvar.frame()
         sframe.SetName("%s_stacked" % var)
         pdf = self.ws.pdf(pdfName)
 
@@ -584,8 +553,7 @@ class Wjj2DFitter:
         if self.pars.includeSignal:
             theComponents += self.pars.signals
         theComponents += self.pars.backgrounds
-        data.plotOn(sframe, RooFit.Invisible(),
-                    RooFit.Binning('plotBins'))
+        data.plotOn(sframe, RooFit.Invisible())
         # dataHist = RooAbsData.createHistogram(data,'dataHist_%s' % var, xvar,
         #                                       RooFit.Binning('%sBinning' % var))
         # #dataHist.Scale(1., 'width')
@@ -631,8 +599,7 @@ class Wjj2DFitter:
                     sframe.setInvisible(component, 
                                         plotCharacteristics['visible'])
 
-        data.plotOn(sframe, RooFit.Name('theData'),
-                    RooFit.Binning('plotBins'))
+        data.plotOn(sframe, RooFit.Name('theData'))
         sframe.getHist('theData').SetTitle('data')
         # theData = RooHist(dataHist, 1., 1, RooAbsData.SumW2, 1.0, True)
         # theData.SetName('theData')
@@ -672,15 +639,11 @@ class Wjj2DFitter:
                 print 'excluded',excluded,self.pars.exclude
                 print 'hiding data points'
             sframe.setInvisible('theData', True)
-        else:
-            sframe.setInvisible('theData', False)
 
         #sframe.GetYaxis().SetTitle('Events / GeV')
         # dataHist.IsA().Destructor(dataHist)
         if not Silent:
             print
-
-        xvar.setBins(nbins)
 
         return sframe
 
@@ -779,7 +742,7 @@ class Wjj2DFitter:
     
 
 
-    def legend4Plot(plot, left = False):
+    def legend4Plot(plot, left = False, chanDescription='data'):
         if left:
             theLeg = TLegend(0.2, 0.62, 0.55, 0.92, "", "NDC")
         else:
@@ -806,7 +769,11 @@ class Wjj2DFitter:
                 dopts = plot.getDrawOptions(objName).Data()
                 # print 'obj:',theObj,'title:',objTitle,'opts:',dopts,'type:',type(dopts)
                 if theObj.IsA().InheritsFrom('TNamed'):
-                    theLeg.AddEntry(theObj, objTitle, dopts)
+                    #print 'adding to the legend:'
+                    label = objTitle
+                    if objTitle=='data':
+                        label = chanDescription
+                    theLeg.AddEntry(theObj, label, dopts)
                     entryCnt += 1
         theLeg.SetY1NDC(0.9 - 0.05*entryCnt - 0.005)
         theLeg.SetY1(theLeg.GetY1NDC())
