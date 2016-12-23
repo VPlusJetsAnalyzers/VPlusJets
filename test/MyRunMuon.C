@@ -1,4 +1,4 @@
-void MyRunMuon(double myflag=201210313, bool isQCD=false, int runflag=0)
+void MyRunMuon(double myflag=20112250, bool isQCD=false, int runflag=0)
 {
   gSystem->Load("libFWCoreFWLite.so");
   gSystem->Load("libPhysicsToolsUtilities.so");
@@ -104,9 +104,6 @@ void MyRunMuon(double myflag=201210313, bool isQCD=false, int runflag=0)
   gROOT->ProcessLine(".L ClassifierOut/TMVAClassification_500_VBF_mu_Likelihood.class.C+");
   gROOT->ProcessLine(".L ClassifierOut/TMVAClassification_550_VBF_mu_Likelihood.class.C+");
   gROOT->ProcessLine(".L ClassifierOut/TMVAClassification_600_VBF_mu_Likelihood.class.C+");
-  gROOT->ProcessLine(".L ClassifierOut/TMVAClassification_126_VBF_mu_Likelihood.class.C+");
-  gROOT->ProcessLine(".L ClassifierOut/TMVAClassification_127_nJ2_mu_WJets_Likelihood.class.C+");
-  gROOT->ProcessLine(".L ClassifierOut/TMVAClassification_127_nJ2_mu_Top_Likelihood.class.C+");
   gROOT->ProcessLine(".L kanamuon.C+");
   gROOT->ProcessLine("kanamuon runover");
   //Set true/false for isQCD

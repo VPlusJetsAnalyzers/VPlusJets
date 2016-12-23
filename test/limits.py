@@ -1,6 +1,4 @@
-from ROOT import RooStats, Double, RooArgSet, RooFit, RooDataHist, TH1F, gPad, \
-     TMath
-from array import array
+from ROOT import RooStats, Double, RooArgSet, RooFit
 
 # profiled likelihood limit
 def plcLimit(obs_, poi_, model, ws, data, CL = 0.95, verbose = False):
@@ -58,11 +56,9 @@ def plcLimit(obs_, poi_, model, ws, data, CL = 0.95, verbose = False):
         print '%.0f%% CL limits' % (interval.ConfidenceLevel() * 100)
         print Limits
 
-    Limits['interval'] = interval
-    return Limits
+    return {'limits': Limits, 'interval': interval}
 
-def expectedPlcLimit(obs_, poi_, model, ws, ntoys = 30, CL = 0.95,
-                     binData = False):
+def expectedPlcLimit(obs_, poi_, model, ws, ntoys = 30, CL = 0.95):
     # obs : observable variable or RooArgSet of observables
     # poi : parameter of interest or RooArgSet of parameters
     # model : RooAbsPdf of model to consider including any constraints
@@ -85,68 +81,33 @@ def expectedPlcLimit(obs_, poi_, model, ws, ntoys = 30, CL = 0.95,
     genPars.Print("v")
 
     limits = []
-
-    upperLimits = []
-    lowerLimits = []
-    probs = array('d', [0.022, 0.16, 0.5, 0.84, 0.978])
-    upperQs = array('d', [0.]*len(probs))
-    lowerQs = array('d', [0.]*len(probs))
-    
+    sumUpper = 0.
+    sumUpper2 = 0.
+    sumLower = 0.
+    sumLower2 = 0.
+    nOK = 0
     for i in range(0,ntoys):
         print 'generate limit of toy %i of %i' % (i+1, ntoys)
-        mPars.assignFast(genPars)
+        mPars.assignValueOnly(genPars)
 
         toyData = model.generate(obs, RooFit.Extended())
-        if binData:
-            toyData = RooDataHist('data_obs_%i' % i, 'data_obs_%i' % i,
-                                  obs, toyData)
         toyData.SetName('data_obs_%i' % i)
-        toyData.Print()
 
         limits.append(plcLimit(obs_, poi_, model, ws, toyData, CL))
 
-        #print limits[-1]
-        if limits[-1][poi_.GetName()]['ok'] and \
-               ((poi_.getMax()-limits[-1][poi_.GetName()]['upper']) > 0.001*poi_.getMax()):
-            upperLimits.append(limits[-1][poi_.GetName()]['upper'])
-        if limits[-1][poi_.GetName()]['ok'] and \
-               ((limits[-1][poi_.GetName()]['lower']-poi_.getMin()) > 0.001*abs(poi_.getMin())):
-            lowerLimits.append(limits[-1][poi_.GetName()]['lower'])
+        if limits[-1]['limits'][poi_.GetName()]['ok']:
+            nOK += 1
+            sumUpper += limits[-1]['limits'][poi_.GetName()]['upper']
+            sumUpper2 += limits[-1]['limits'][poi_.GetName()]['upper']**2
+            sumLower += limits[-1]['limits'][poi_.GetName()]['lower']
+            sumLower2 += limits[-1]['limits'][poi_.GetName()]['lower']**2
 
         toyData.IsA().Destructor(toyData)
 
-    mPars.assignFast(genPars)
-
-    upperLimits.sort()
-    upperArray = array('d', upperLimits)
-    if len(upperLimits) > 4:
-        TMath.Quantiles(len(upperLimits), len(probs), upperArray, upperQs,
-                        probs)
-    # upperLimits.GetQuantiles(len(probs), upperQs, probs)
-    # upperLimits.Print()
-    print 'expected upper limit quantiles using %i toys: [' % len(upperLimits),
-    for q in upperQs:
-        print '%0.4f' % q,
-    print ']'
-
-    lowerLimits.sort()
-    lowerArray = array('d', lowerLimits)
-    if len(lowerLimits) > 4:
-        TMath.Quantiles(len(lowerLimits), len(probs), lowerArray, lowerQs, 
-                        probs)
-    # lowerLimits.GetQuantiles(len(probs), lowerQs, probs)
-    # lowerLimits.Print()
-    print 'expected lower limit quantiles using %i toys: [' % len(lowerLimits),
-    for q in lowerQs:
-        print '%0.4f' % q,
-    print ']'
-    expLimits = {'upper' : upperQs[2],
-                 'upperErr' : sqrt((upperQs[2]-upperQs[1])*(upperQs[3]-upperQs[2])),
-                 'lower' : lowerQs[2],
-                 'lowerErr' : sqrt((lowerQs[2]-lowerQs[1])*(lowerQs[3]-lowerQs[2])),
-                 'ntoys': len(limits),
-                 'upperQuantiles': upperQs,
-                 'lowerQuantiles': lowerQs,
-                 'quantiles': probs
+    expLimits = {'upper' : sumUpper/nOK,
+                 'upperErr' : sqrt(sumUpper2/(nOK-1)-sumUpper**2/nOK/(nOK-1)),
+                 'lower' : sumLower/nOK,
+                 'lowerErr' : sqrt(sumLower2/(nOK-1)-sumLower**2/nOK/(nOK-1)),
+                 'ntoys': nOK
                  }
     return (expLimits, limits)

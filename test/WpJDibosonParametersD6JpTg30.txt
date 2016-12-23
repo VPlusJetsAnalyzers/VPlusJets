@@ -1,0 +1,7 @@
+a1_WpJ_Mass2j_PFCor = -0.528059 +/- 0.0104154 L(-INF - +INF) 
+a2_WpJ_Mass2j_PFCor =  0.086886 +/- 0.0104328 L(-INF - +INF) 
+a3_WpJ_Mass2j_PFCor =  0.0092944 +/- 0.0099712 L(-INF - +INF) 
+a4_WpJ_Mass2j_PFCor = -0.0447891 +/- 0.0099046 L(-INF - +INF) 
+a5_WpJ_Mass2j_PFCor =  0.023209 +/- 0.008485 L(-INF - +INF) 
+a6_WpJ_Mass2j_PFCor = -0.00347891 +/- 0.0081562 L(-INF - +INF) 
+n_WpJ = 171248.2 +/- 413.8 C

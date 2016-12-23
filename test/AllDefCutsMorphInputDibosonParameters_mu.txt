@@ -1,0 +1,8 @@
+fMU_WpJ = 0.0 +/- 10. L(-1.0 - 1.0)
+fSU_WpJ = 0.0 +/- 10. L(-1.0 - 1.0)
+n_diboson = 3605.0 +/- 60.0 C
+n_top = 8254.6 +/- 90.9 C
+n_WpJ = 136634.8 +/- 369.6 C
+n_ZpJ = 8187.5 +/- 90.5 C
+mean_Global_conv_Mass2j_PFCor = 4.2783 +/- 0.496 C L(-INF - +INF)
+sigma_Global_conv_Mass2j_PFCor = 3.2297 +/- 0.488 C L(-INF - +INF)

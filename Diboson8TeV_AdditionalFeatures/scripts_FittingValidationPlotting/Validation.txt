@@ -1,0 +1,263 @@
+Run From:
+/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/execute
+/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/execute
+
+
+cp Diboson8TeVConfig.py topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersMSCorr_mu.txt DibosonStandardFitOutPars_mu.txt DibosonStandardWpJSherpaasDefFitOutPars_mu.txt QCDDibosonParameters_el.txt topDibosonParameters_el.txt dibosonDibosonParameters_el.txt WpJDibosonParametersMSCorr_el.txt DibosonStandardFitOutPars_el.txt DibosonStandardWpJSherpaasDefFitOutPars_el.txt topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParameters_mu.txt WHbbDibosonBtagParameters_mu.txt DibosonBtagFitOutPars_mu.txt DibosonBtagWpJSherpaasDefFitOutPars_mu.txt topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParameters_el.txt 
+WHbbDibosonBtagParameters_el.txt DibosonBtagFitOutPars_el.txt DibosonBtagWpJSherpaasDefFitOutPars_el.txt /uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/execute
+
+
+create & copy:
+cat topDibosonParameters_mu.txt dibosonDibosonParameters_mu.txt WpJDibosonParametersAlt_mu.txt > MCAntiBtagParametersWpJAlt_mu.txt
+cat topDibosonParameters_el.txt dibosonDibosonParameters_el.txt WpJDibosonParametersAlt_el.txt QCDDibosonParameters_el.txt > MCAntiBtagParametersWpJAlt_el.txt
+cat topDibosonBtagParameters_mu.txt dibosonDibosonBtagParameters_mu.txt WpJDibosonBtagParametersAlt_mu.txt WHbbDibosonBtagParameters_mu.txt > MCBtagParametersWpJAlt_mu.txt
+cat topDibosonBtagParameters_el.txt dibosonDibosonBtagParameters_el.txt WpJDibosonBtagParametersAlt_el.txt WHbbDibosonBtagParameters_el.txt > MCBtagParametersWpJAlt_el.txt 
+
+cp MCAntiBtagParametersWpJAlt_mu.txt MCAntiBtagParametersWpJAlt_el.txt MCBtagParametersWpJAlt_mu.txt MCBtagParametersWpJAlt_el.txt 
+
+
+edit (remove null fit) & copy:
+Fit_DibosonStandard_mu_log.txt
+Fit_DibosonStandard_el_log.txt
+Fit_DibosonBtag_mu_log.txt
+Fit_DibosonBtag_el_log.txt
+
+condor_submit CondorLauncher_ToyValidation_AntiBtagel_ShapeBased_VariableYield_GenWpJDataDefaultFitDefault
+condor_q -submitter ilyao
+condor_rm -name ilyao cmslpc34.fnal.gov 853837
+etc.
+
+
+EOS Storage:
+/eos/uscms/store/user/lnujj
+
+Load the macro to process logs:
+.L runToyMCFits.cc++
+
+Make Plots:
+.L BkgPlotTools.cc++
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+++++++++++Resolved Anti-Btagged++++++++++++++++
+*** Standard Fit: Gen with Data fit Param Shape, fit with the default configuration, Variable Yields:
+
+processLogs(1,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/AntiBtagFitMuon_ShapeBased_VariableYield_GenWpJDataDefaultFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenDataDefaultFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-3000,2500,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_DibosonYield_Standard_mu.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.6,2.9,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_DibosonPull_Standard_mu.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-2500,3000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_WJetsYield_Standard_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-2.75,3.25,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_WJetsPull_Standard_mu.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)",20,-1300,1300,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_topYield_Standard_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-4.0,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_topPull_Standard_mu.png",4,0,"NToys",10,true,false)
+
+
+
+processLogs(2,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/AntiBtagFitElectron_ShapeBased_VariableYield_GenWpJDataDefaultFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenDataDefaultFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-3000,3000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_DibosonYield_Standard_el.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_DibosonPull_Standard_el.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-10000,8000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_WJetsYield_Standard_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.5,3.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_WJetsPull_Standard_el.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)",20,-1100,1100,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_topYield_Standard_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.9,3.9,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_topPull_Standard_el.png",4,0,"NToys",10,true,false)
+
+
+
+
+*** Standard Fit: Gen with Alternate Parameterization W+Jets Shape, fit with the default configuration, Variable Yields:
+processLogs(1,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/AntiBtagFitMuon_ShapeBased_VariableYield_GenWpJAltMCFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-2500,3000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_DibosonYield_Standard_mu.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_DibosonPull_Standard_mu.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-3500,3000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_WJetsYield_Standard_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.5,3.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_WJetsPull_Standard_mu.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)",20,-1250,1250,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_topYield_Standard_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_topPull_Standard_mu.png",4,0,"NToys",10,true,false)
+
+
+processLogs(2,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/AntiBtagFitElectron_ShapeBased_VariableYield_GenWpJAltMCFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-2500,3000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_DibosonYield_Standard_el.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_DibosonPull_Standard_el.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-10000,8000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_WJetsYield_Standard_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-4.0,3.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_WJetsPull_Standard_el.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)",20,-1250,1250,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_topYield_Standard_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Alt WJets Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-4.1,4.1,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_topPull_Standard_el.png",4,0,"NToys",10,true,false)
+
+
+
+***Use Sherpa Data Fit Parameters to Generate***
+processLogs(1,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/AntiBtagFitMuon_ShapeBased_VariableYield_GenWpJDataSherpaFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenSherpaDataDefaultFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-3500,2300,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_DibosonYield_Standard_mu.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-4.1,2.6,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_DibosonPull_Standard_mu.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-2100,3600,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_WJetsYield_Standard_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-2.5,4.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_WJetsPull_Standard_mu.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)",20,-1250,1250,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_topYield_Standard_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-4.0,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitMuon_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_topPull_Standard_mu.png",4,0,"NToys",10,true,false)
+
+
+processLogs(2,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/AntiBtagFitElectron_ShapeBased_VariableYield_GenWpJDataSherpaFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenSherpaDataDefaultFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-2500,3000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_DibosonYield_Standard_el.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.0,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_DibosonPull_Standard_el.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-10000,9000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_WJetsYield_Standard_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.6,3.1,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_WJetsPull_Standard_el.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)",20,-950,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_topYield_Standard_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Sherpa Data Pars, Fit Default : Resolved Anti-Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-4.0,4.2,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/AntiBtagFitElectron_GenSherpaDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_topPull_Standard_el.png",4,0,"NToys",10,true,false)
+
+
+++++++++++Resolved Btagged++++++++++++++++
+*** Btagged Default Fit: Gen with Data fit Param Shape, fit with the default configuration, Variable Yields:
+
+processLogs(3,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/BtagFitMuon_ShapeBased_VariableYield_GenWpJDataDefaultFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenDataDefaultFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-480,480,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_DibosonYield_Btag_mu.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_DibosonPull_Btag_mu.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-820,820,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_WJetsYield_Btag_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_WJetsPull_Btag_mu.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)",20,-1000,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_topYield_Btag_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.1,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_topPull_Btag_mu.png",4,0,"NToys",10,true,false)
+
+
+processLogs(3,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/BtagFitElectron_ShapeBased_VariableYield_GenWpJDataDefaultFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenDataDefaultFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-400,400,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_DibosonYield_Btag_el.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_DibosonPull_Btag_el.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-800,800,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_WJetsYield_Btag_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_WJetsPull_Btag_el.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)",20,-800,800,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_topYield_Btag_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/Validation_topPull_Btag_el.png",4,0,"NToys",10,true,false)
+
+
+*** Btagged Fit: Gen with Alternate Parameterization W+Jets Shape, fit with the default configuration, Variable Yields:
+
+processLogs(3,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/BtagFitMuon_ShapeBased_VariableYield_GenWpJAltMCFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-525,525,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_DibosonYield_Btag_mu.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-4.0,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_DibosonPull_Btag_mu.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-810,810,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_WJetsYield_Btag_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_WJetsPull_Btag_mu.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)",20,-800,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_topYield_Btag_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.0,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_topPull_Btag_mu.png",4,0,"NToys",10,true,false)
+
+
+processLogs(3,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/BtagFitElectron_ShapeBased_VariableYield_GenWpJAltMCFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-400,450,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_DibosonYield_Btag_el.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.75,3.75,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_DibosonPull_Btag_el.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-800,800,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_WJetsYield_Btag_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_WJetsPull_Btag_el.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)",20,-800,800,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_topYield_Btag_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Alt WJets Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-4.0,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/ShapeBias_topPull_Btag_el.png",4,0,"NToys",10,true,false)
+
+
+
+***Btagged Fit: Gen with Param values from fit to the data with WpJets pars originating from Sherpa, fit with the default configuration, Variable Yields:
+
+processLogs(3,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/BtagFitMuon_ShapeBased_VariableYield_GenWpJDataSherpaFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenSherpaDataFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-510,610,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_DibosonYield_Btag_mu.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,4.3,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_DibosonPull_Btag_mu.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-900,900,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_WJetsYield_Btag_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_WJetsPull_Btag_mu.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)",20,-1000,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_topYield_Btag_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : #mu ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.6,3.6,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitMuon_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_topPull_Btag_mu.png",4,0,"NToys",10,true,false)
+
+
+processLogs(3,1000,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/logs/BtagFitElectron_ShapeBased_VariableYield_GenWpJDataSherpaFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenSherpaDataFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-425,475,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_DibosonYield_Btag_el.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_DibosonPull_Btag_el.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-850,850,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_WJetsYield_Btag_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.75,3.75,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_WJetsPull_Btag_el.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)",20,-750,750,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_topYield_Btag_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Sherpa Data Pars, Fit Default : Resolved Btagged Fit : el ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.25,3.25,"/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/BtagFitElectron_GenSherpaDataFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/ResolvedFitValidation/results/plots/MCChoiceBias_topPull_Btag_el.png",4,0,"NToys",10,true,false)
+
+
+
+
+++++++++++Boosted ++++++++++++++++
+*** Boosted Default Fit: Gen with Data fit Param Shape, fit with the default configuration, Variable Yields:
+
+processLogs(4,1000,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/logs/BoostedFitMuon_ShapeBased_VariableYield_GenWpJDataDefaultFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenDataDefaultFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Data Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-600,600,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_DibosonYield_Boosted_mu.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Data Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_DibosonPull_Boosted_mu.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Data Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-700,700,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_WJetsYield_Boosted_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Data Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_WJetsPull_Boosted_mu.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Data Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_top-GenYield_top)",20,-250,250,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_topYield_Boosted_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Data Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.7,3.7,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_topPull_Boosted_mu.png",4,0,"NToys",10,true,false)
+
+
+processLogs(4,1000,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/logs/BoostedFitElectron_ShapeBased_VariableYield_GenWpJDataDefaultFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenDataDefaultFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Data Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-600,600,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_DibosonYield_Boosted_el.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Data Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-4.0,4.5,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_DibosonPull_Boosted_el.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Data Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-500,500,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_WJetsYield_Boosted_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Data Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-4.5,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_WJetsPull_Boosted_el.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Data Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_top-GenYield_top)",20,-200,200,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_topYield_Boosted_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Data Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-3.5,3.5,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenDataDefaultFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/Validation_topPull_Boosted_el.png",4,0,"NToys",10,true,false)
+
+
+*** Boosted Fit: Gen with Alternate Parameterization W+Jets Shape, fit with the default configuration, Variable Yields:
+
+processLogs(4,1000,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/logs/BoostedFitMuon_ShapeBased_VariableYield_GenWpJAltMCFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenWpJAltMCFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-550,750,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_DibosonYield_Boosted_mu.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_DibosonPull_Boosted_mu.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-750,550,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_WJetsYield_Boosted_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-4.0,3.0,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_WJetsPull_Boosted_mu.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_top-GenYield_top)",20,-220,250,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_topYield_Boosted_mu.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : #mu ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-4.5,4.5,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitMuon_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_topPull_Boosted_mu.png",4,0,"NToys",10,true,false)
+
+
+processLogs(4,1000,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/logs/BoostedFitElectron_ShapeBased_VariableYield_GenWpJAltMCFitDefault_","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenWpJAltMCFitDefault_LogSummary.root")
+Plot_ABkg("Diboson_{Observed}-Diboson_{Expected} : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)",20,-500,600,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_DibosonYield_Boosted_el.png",2,0,"NToys",10,true,false)
+Plot_ABkg("Diboson Pull : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_diboson-GenYield_diboson)/FitErr_diboson",20,-3.5,4.0,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_DibosonPull_Boosted_el.png",2,0,"NToys",10,true,false)
+
+Plot_ABkg("Wjets_{Observed}-Wjets_{Expected} : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)",20,-625,525,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_WJetsYield_Boosted_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Wjets Pull : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_WpJ-GenYield_WpJ)/FitErr_WpJ",20,-4.0,3.0,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_WJetsPull_Boosted_el.png",4,0,"NToys",10,true,false)
+
+Plot_ABkg("Top_{Observed}-Top_{Expected} : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_top-GenYield_top)",20,-220,220,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_topYield_Boosted_el.png",4,0,"NToys",10,true,false)
+Plot_ABkg("Top Pull : Gen Alt WJets Pars, Fit Default : Merged-Jet Fit : el ","OutTree","(FitYield_top-GenYield_top)/FitErr_top",20,-4.25,4.25,"/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/BoostedFitElectron_GenWpJAltMCFitDefault_LogSummary.root","(Convergence==0)","/uscms_data/d3/ilyao/Diboson8TeV/BoostedFitValidation/results/plots/ShapeBias_topPull_Boosted_el.png",4,0,"NToys",10,true,false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

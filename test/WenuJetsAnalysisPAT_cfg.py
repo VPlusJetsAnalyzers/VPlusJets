@@ -30,9 +30,6 @@ process.load("RecoMuon.DetLayers.muonDetLayerGeometry_cfi")
 ##----- B-tags --------------
 process.load("RecoBTag.Configuration.RecoBTag_cff")
 
-#//.....QGL:....
-process.load('QuarkGluonTagger.EightTeV.QGTagger_RecoJets_cff')
-
 
 ##----- Global tag: conditions database ------------
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
@@ -51,7 +48,7 @@ else:
     process.GlobalTag.globaltag = 'START53_V7E::All'
 
 OutputFileName = "WenuJetAnalysisntuple.root"
-numEventsToRun = 100
+numEventsToRun = -1
 ############################################
 ########################################################################################
 ########################################################################################
@@ -77,8 +74,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) 
 #process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound')
 #)
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
-#       '/store/user/lnujj/PatTuples_8TeV_53X/ajkumar/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/SQWaT_PAT_53X_Summer12_v1/829f288d768dd564418efaaf3a8ab9aa/pat_53x_test_v03_1003_0_YFd.root',
-#    '/store/user/lnujj/PatTuples_8TeV_53X-v1/jdamgov/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/SQWaT_PAT_53X_Summer12_v1/829f288d768dd564418efaaf3a8ab9aa/pat_53x_test_v03_995_1_wBa.root'
+    #'/store/user/lnujj/PatTuples_8TeV_53X-v1/jdamgov/WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/SQWaT_PAT_53X_Summer12_v1/829f288d768dd564418efaaf3a8ab9aa/pat_53x_test_v03_995_1_wBa.root'
     '/store/user/lnujj/PatTuples_8TeV_53X-v1/jdamgov/SingleElectron/SQWaT_PAT_53X_Run2012A-recover-06Aug2012-v1/3e4086321697e2c39c90dad08848274b/pat_53x_test_v03_data_9_1_IaF.root'
 ) )
 
@@ -164,20 +160,6 @@ process.TFileService = cms.Service(
     closeFileFast = cms.untracked.bool(False)
 )
 
-#process.QGTagger.srcJets = cms.InputTag('ak5PFJets')
-process.QGTagger.srcJets = cms.InputTag('selectedPatJetsPFlow')
-process.QGTagger.isPatJet  = cms.untracked.bool(True)
-process.QGTagger.useCHS  = cms.untracked.bool(True)
-#process.QGTagger.useCHS  = cms.untracked.bool(False)
-#process.QGTagger.jec     = cms.untracked.string('ak5PFL1FastL2L3')
-process.QGTagger.srcRho     = cms.InputTag('kt6PFJetsPFlow','rho')
-process.QGTagger.srcRhoIso     = cms.InputTag('kt6PFJetsPFlow','rho')
-#process.QGTagger.srcRhoIso1 = process.QGTagger.srcRhoIso.clone()
-#process.QGTagger.srcRhoIso1 = process.QGTagger.srcRhoIso1(rParam = 0.6, doRhoFastjet = True )
-#process.QGTagger.srcRhoIso1 = process.QGTagger.srcRhoIso1.Rho_EtaMax = cms.double(2.5)
-#process.QGTagger.srcRhoIso     = cms.InputTag('kt6PFJetsPFlow','rho')
-
-
 ##
 ## MET shift correction on the fly
 ##
@@ -238,12 +220,14 @@ else:
     process.myseq.remove ( process.GenJetPath)
     process.myseq.remove ( process.TagJetPath)
 
-process.QuarkGluonTagger.remove( process.kt6PFJetsQG )
-process.QuarkGluonTagger.remove( process.kt6PFJetsIsoQG )
 
 ##---- if do not want to require >= 2 jets then disable that filter ---
 ##process.myseq.remove ( process.RequireTwoJets)  
 
 #process.outpath.remove(process.out)
-process.p = cms.Path( process.myseq * process.goodOfflinePrimaryVerticesQG * process.QuarkGluonTagger * process.VplusJets)
-#process.p = cms.Path( process.myseq  * process.VplusJets)
+process.p = cms.Path( process.myseq  * process.VplusJets)
+
+
+
+
+

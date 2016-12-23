@@ -1,0 +1,10 @@
+#! /bin/csh
+echo "Starting" 
+##CstrNoBtag="runToyMCFits_Diboson8TeV.cc+(0,999)"
+##echo "CstrNoBtag=$CstrNoBtag"
+eval "root -l -b -q 'runToyMCFits_Diboson8TeV.cc+(0,999)'"
+##echo "3jets:"
+##Cstr3j="runToyMCFits.cc+(3,${StartToy},${EndToy})"
+##echo "Cstr3j=$Cstr3j"
+##eval "root -l -b -q '$Cstr3j '"
+echo "Finished"

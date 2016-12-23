@@ -1,0 +1,293 @@
+Starting
+/storage/local/data1/condor/execute/dir_17680
+/uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/src/ElectroWeakAnalysis/VPlusJets/test
+/storage/local/data1/condor/execute/dir_17680
+/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/bin/root
+dibosonDibosonBoostedParameters_el.txt
+WpJDibosonBoostedParameters_el.txt
+topDibosonBoostedParameters_el_PartiallyFree.txt
+EffTable2012/
+EffTable2012/FullyEfficient.txt
+EffTable2012/FullyEfficient_Jet2NoJet1.txt
+EffTable2012/FullyEfficient_MHT.txt
+EffTable2012/efficiency-2012A-PromptReco-v1-PFMM-IsoToIsoMuHLT.txt
+EffTable2012/efficiency-2012A_PromptReco_v1-WP80ToHLTEle.txt
+EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+EffTable2012/efficiency-Run2012ABC-WP80ToHLTEle.txt
+EffTable2012/efficiency-Run2012ABCD-IsoToIsoMuHLT.txt
+EffTable2012/efficiency-Run2012ABCD-WP80ToHLTEle.txt
+EffTable2012/scaleFactor-2012A-PromptReco-v1-GsfElectronToId.txt
+EffTable2012/scaleFactor-2012A-PromptReco-v1-PFMM-RecoToIso.txt
+EffTable2012/scaleFactor-2012A-PromptReco-v1-SCToElectron.txt
+EffTable2012/scaleFactor-Run2012ABC-GsfElectronToId.txt
+EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+EffTable2012/scaleFactor-Run2012ABC-SCToElectron.txt
+EffTable2012/scaleFactor-Run2012ABCD-GsfElectronToId.txt
+EffTable2012/scaleFactor-Run2012ABCD-RecoToIso.txt
+EffTable2012/scaleFactor-Run2012ABCD-SCToElectron.txt
+pulls.pyc
+Limits/
+Limits/qqHtable8tev.txt
+HWWSignalShapes.py
+HWWSignalShapes.pyc
+EffLookupTable.pyc
+EffLookupTable.py
+RooTH1DPdf_cxx.so
+RooTH1DPdf_cxx.d
+RooErfPdf_cxx.so
+RooErfPdf_cxx.d
+RooErfExpPdf_cxx.so
+RooErfExpPdf_cxx.d
+RooPowerExpPdf_cxx.so
+RooPowerExpPdf_cxx.d
+RooTH1DPdf.cxx
+RooPowerExpPdf.cxx
+RooErfPdf.cxx
+RooErfExpPdf.cxx
+RooChebyshevPDF_cc.so
+RooChebyshevPDF_cc.d
+RooPowerLaw_cc.so
+RooPowerLaw_cc.d
+CPWeighter_cc.so
+CPWeighter_cc.d
+EffTableLoader_cc.so
+EffTableLoader_cc.d
+EffTableReader_cc.so
+EffTableReader_cc.d
+RooPowerLaw.cc
+RooChebyshevPDF.cc
+Resolution.cc
+EffTableReader.cc
+EffTableLoader.cc
+CPWeighter.cc
+RooTH1DPdf.h
+RooPowerLaw.h
+RooPowerExpPdf.h
+RooErfPdf.h
+RooErfExpPdf.h
+RooChebyshevPDF.h
+Resolution.h
+LOTable.h
+EffTableReader.h
+EffTableLoader.h
+RooWjj2DFitterUtils.pyc
+RooWjj2DFitter.pyc
+RooWjj2DFitterPars.pyc
+RooWjj2DFitterPars.py
+pyroot_logon.pyc
+WpJDibosonBoostedParameters.txt
+dibosonDibosonBoostedParameters.txt
+topDibosonBoostedParameters_PartiallyFree.txt
+pulls.py
+RooWjj2DFitterUtils.py
+RooWjj2DFitter.py
+pyroot_logon.py
+Process=41
+NToys=10
+StartToy=NToys*Process-1=410
+EndToy=NToys+StartToy-1=419
+muons, Boosted:
+initRand=33889
+CstrNoBtag=runToyMCFits_Diboson8TeV.cc+(410,419,false,"FitBoostedValInput_mu.log",33889)
+
+Processing runToyMCFits_Diboson8TeV.cc+(410,419,false,"FitBoostedValInput_mu.log",33889)...
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=0.335322
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=1.06668
+top: Nexpected=1288.72 Idx=5 fit_nrm=1.02353
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=133
+WpJ: Ngen=5128
+top: Ngen=1329
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 133 --extWpJ 5128 --exttop 1329 --seed 34798 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_410.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=0.532827
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=1.06548
+top: Nexpected=1288.72 Idx=5 fit_nrm=0.996689
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=172
+WpJ: Ngen=5123
+top: Ngen=1215
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 172 --extWpJ 5123 --exttop 1215 --seed 34800 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_411.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=0.740026
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=0.99624
+top: Nexpected=1288.72 Idx=5 fit_nrm=1.10492
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=264
+WpJ: Ngen=4707
+top: Ngen=1392
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 264 --extWpJ 4707 --exttop 1392 --seed 34802 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_412.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=1.62394
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=1.01461
+top: Nexpected=1288.72 Idx=5 fit_nrm=0.894607
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=553
+WpJ: Ngen=4902
+top: Ngen=1098
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 553 --extWpJ 4902 --exttop 1098 --seed 34804 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_413.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=0.255811
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=1.06067
+top: Nexpected=1288.72 Idx=5 fit_nrm=1.06169
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=75
+WpJ: Ngen=5063
+top: Ngen=1370
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 75 --extWpJ 5063 --exttop 1370 --seed 34806 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_414.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=0.197075
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=1.06164
+top: Nexpected=1288.72 Idx=5 fit_nrm=1.00577
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=67
+WpJ: Ngen=5157
+top: Ngen=1296
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 67 --extWpJ 5157 --exttop 1296 --seed 34808 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_415.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=0.750089
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=1.01855
+top: Nexpected=1288.72 Idx=5 fit_nrm=1.09108
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=260
+WpJ: Ngen=4887
+top: Ngen=1424
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 260 --extWpJ 4887 --exttop 1424 --seed 34810 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_416.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=1.27498
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=1.03478
+top: Nexpected=1288.72 Idx=5 fit_nrm=0.869738
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=449
+WpJ: Ngen=4841
+top: Ngen=1113
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 449 --extWpJ 4841 --exttop 1113 --seed 34812 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_417.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=0.695988
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=1.01778
+top: Nexpected=1288.72 Idx=5 fit_nrm=1.00278
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=230
+WpJ: Ngen=4805
+top: Ngen=1324
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 230 --extWpJ 4805 --exttop 1324 --seed 34814 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_418.log
+ HESSE_Convergence = STATUS=OK
+Covariance Matrix = 
+0.0007707 -2.985e-05 -2.272e-05 -0.006873 0.04173 -0.0003753 -0.00508 
+-2.985e-05 2.841e-05 -1.256e-05 0.0006046 -0.03402 -3.747e-05 -0.002904 
+-2.272e-05 -1.256e-05 4.68e-05 0.0003662 0.004782 -6.665e-06 -0.002626 
+-0.006873 0.0006046 0.0003662 0.1556 -0.7063 -0.01196 0.0979 
+0.04173 -0.03402 0.004782 -0.7063 47.83 0.02005 7.286 
+-0.0003753 -3.747e-05 -6.665e-06 -0.01196 0.02005 0.004757 -0.005215 
+-0.00508 -0.002904 -0.002626 0.0979 7.286 -0.005215 2.866 
+Expected Variable Values = 
+1.0343 -0.055073 -0.027509 0.73325 86.078 1.0056 37.818 
+diboson: Nexpected=348.1 Idx=3 fit_nrm=0.551887
+WpJ: Nexpected=4746.91 Idx=0 fit_nrm=0.999748
+top: Nexpected=1288.72 Idx=5 fit_nrm=1.07862
+QCD: Nexpected=-1 Idx=-1 fit_nrm=6.95314e-310
+diboson: Ngen=201
+WpJ: Ngen=4765
+top: Ngen=1340
+QCD: Ngen=-1
+Command=python -i runDibosonBoosted8TeVFit.py -j 2 -m DibosonBoosted8TeVConfig --runFullToySim --noNull --nosig --extdiboson 201 --extWpJ 4765 --exttop 1340 --seed 34816 topDibosonBoostedParameters_PartiallyFree.txt dibosonDibosonBoostedParameters.txt WpJDibosonBoostedParameters.txt > ./BoostedFit_Muon_419.log

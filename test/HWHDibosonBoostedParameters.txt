@@ -1,0 +1,6 @@
+f_HWH_GroomedJet_CA8_mass_pr_core =  0.42815 +/- 0.098463 C L(0 - 1) 
+mean_HWH_GroomedJet_CA8_mass_pr_core =  65.867 +/- 5.7684 C L(0 - 1000) 
+mean_HWH_GroomedJet_CA8_mass_pr_tail =  120.50 +/- 1.3410 C L(0 - 1000) 
+sigma_HWH_GroomedJet_CA8_mass_pr_core =  29.246 +/- 12.318 C L(0 - 500) 
+sigma_HWH_GroomedJet_CA8_mass_pr_tail =  11.712 +/- 1.7199 C L(0 - 500) 
+n_HWH = 0.7 +/- 0.8 C

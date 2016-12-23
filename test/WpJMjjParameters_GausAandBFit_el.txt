@@ -1,0 +1,11 @@
+alpha_WpJ_Mass2j_PFCor_CB = -0.908351 C L(-10 - 10)
+f_WpJ_Mass2j_PFCor_GausA = 0.0036456 +/- 0.0010921 L(-0.00727534 - 0.0145666)
+f_WpJ_Mass2j_PFCor_GausB = -0.00465429 +/- 0.0015350 L(-0.0200039 - 0.0106953)
+mean_WpJ_Mass2j_PFCor_CB = 90.744 C L(0 - 1000)
+mean_WpJ_Mass2j_PFCor_GausA = 114.65 +/- 0.74187 L(107.235 - 122.072)
+mean_WpJ_Mass2j_PFCor_GausB = 98.299 +/- 2.1833 L(76.466 - 120.132)
+npow_WpJ_Mass2j_PFCor_CB = 4.6748 C L(0.1 - 10)
+sigma_WpJ_Mass2j_PFCor_CB = 47.857 C L(0 - 500)
+sigma_WpJ_Mass2j_PFCor_GausA = 2.4973 +/- 0.92255 L(-6.72817 - 11.7228)
+sigma_WpJ_Mass2j_PFCor_GausB = 5.8710 +/- 1.7228 L(-11.3568 - 23.0988)
+n_WpJ = 175476.2 +/- 418.9 C

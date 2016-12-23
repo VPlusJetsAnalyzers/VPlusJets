@@ -1,0 +1,16 @@
+Table Listing bin (center) locations, along with corresponding values and errors
+\hline
+\hline
+V$_{had}$ \pt (GeV)  & Cross Section (pb)         \\
+\hline
+ 70-87               & $(3.56\pm5.76)\times10^{-1}$ \\
+ 87-104              & $(3.87\pm3.09)\times10^{-1}$ \\
+104-121              & $(3.59\pm1.59)\times10^{-1}$ \\
+121-138              & $(2.43\pm0.92)\times10^{-1}$ \\
+138-155              & $(1.12\pm0.63)\times10^{-1}$ \\
+155-172              & $(3.16\pm4.48)\times10^{-2}$ \\
+172-189              & $(3.04\pm3.14)\times10^{-2}$ \\
+189-206              & $(4.88\pm2.36)\times10^{-2}$ \\
+206-223              & $(5.21\pm2.25)\times10^{-2}$ \\
+223-240              & $(4.39\pm2.27)\times10^{-2}$ \\
+\hline

@@ -1,0 +1,271 @@
+adding RooFit ... done
+end of pyroot_logon
+lepton HLT : EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+lepton id : EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+full cuts: (((W_pt>200.)&&(GroomedJet_CA8_pt[0]>200)&&(abs(GroomedJet_CA8_eta[0])<2.4)&&(GroomedJet_CA8_pt[1]<80)&&(GroomedJet_CA8_mass_pr[0]>40)&&(GroomedJet_CA8_tau2tau1[0]<0.55)&&(ggdboostedWevt==1)&&(GroomedJet_CA8_deltaphi_METca8jet[0]>2.0)&&(GroomedJet_CA8_deltaR_lca8jet[0]>1.57)&&(numPFCorJetBTags<1)&&(vbf_event==0)&&(event_met_pfmet >50)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>30.))&&(GroomedJet_CA8_mass_pr[0]>40.000)&&(GroomedJet_CA8_mass_pr[0]<140.000))
+RooRealVar::GroomedJet_CA8_mass_pr = 90  L(40 - 140) B(10) // [GeV]
+loading data workspace w from file DibosonBoostedlnuJ_muon_output.root
+RooDataSet::data_obs[GroomedJet_CA8_mass_pr] = 4194 entries
+making ComponentPdf diboson
+making ComponentPdf top
+making ComponentPdf WpJ
+loading parameters from file topDibosonBoostedParameters_SidebandModified_mu.txt
+loading parameters from file dibosonDibosonBoostedParameters_SidebandModified_mu.txt
+loading parameters from file WpJDibosonBoostedParameters_mu.txt
+resetting yields...
+RooRealVar::n_diboson = 205.3 +/- 14.3283 C  L(0 - 1e+06) 
+RooRealVar::n_top = 706.4 +/- 56.512 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 2636.3 +/- 1318.15 C  L(0 - 1e+06) 
+startpars:
+  1) 0xddfbe70 RooRealVar::                                   WpJ_nrm = 1 +/- 0.5  L(-0.5 - 5)  "WpJ_nrm"
+  2) 0xdd76250 RooRealVar::              c_WpJ_GroomedJet_CA8_mass_pr = -0.050783 +/- 0.0011607  L(-0.2 - -0.01)  "c_WpJ_GroomedJet_CA8_mass_pr"
+  3) 0xdd62020 RooRealVar::          c_diboson_GroomedJet_CA8_mass_pr = -0.0424087 +/- 0.027961 C  L(-0.322015 - 0.237198)  "c_diboson_GroomedJet_CA8_mass_pr"
+  4) 0xd5e6b90 RooRealVar::              c_top_GroomedJet_CA8_mass_pr = -0.0449295 +/- 0.012459 C  L(-0.169521 - 0.0796617)  "c_top_GroomedJet_CA8_mass_pr"
+  5) 0xd5c8ca0 RooRealVar::                               diboson_nrm = 1  L(-0.5 - 5)  "diboson_nrm"
+  6) 0xdd66480 RooRealVar::        f_W_diboson_GroomedJet_CA8_mass_pr = 0.54409 +/- 0.069191 C  L(-0.147822 - 1.23601)  "f_W_diboson_GroomedJet_CA8_mass_pr"
+  7) 0xd5c0ce0 RooRealVar::        f_Z_diboson_GroomedJet_CA8_mass_pr = 0.19831 +/- 0.058567 C  L(-0.387357 - 0.783976)  "f_Z_diboson_GroomedJet_CA8_mass_pr"
+  8) 0xdd5d850 RooRealVar::         f_top_GroomedJet_CA8_mass_pr_core = 0.37575 +/- 0.042486 C  L(-0.0491124 - 0.800603)  "f_top_GroomedJet_CA8_mass_pr_core"
+  9) 0xd594430 RooRealVar::     mean_diboson_GroomedJet_CA8_mass_pr_W = 84.13 +/- 0.84434 C  L(74.587 - 91.4737)  "mean_diboson_GroomedJet_CA8_mass_pr_W"
+ 10) 0xd5dcc00 RooRealVar::      mean_top_GroomedJet_CA8_mass_pr_core = 84.738 +/- 0.53587 C  L(78.2792 - 88.9966)  "mean_top_GroomedJet_CA8_mass_pr_core"
+ 11) 0xd5e5bb0 RooRealVar::                                     n_WpJ = 2636.3 +/- 1318.15 C  L(0 - 1e+06)  "n_WpJ"
+ 12) 0xdd8d380 RooRealVar::                                 n_diboson = 205.3 +/- 14.3283 C  L(0 - 1e+06)  "n_diboson"
+ 13) 0xdde74a0 RooRealVar::                                     n_top = 706.4 +/- 56.512 C  L(0 - 1e+06)  "n_top"
+ 14) 0xd5c4980 RooRealVar::         offset_WpJ_GroomedJet_CA8_mass_pr = 73.115 +/- 1.2075  L(10 - 200)  "offset_WpJ_GroomedJet_CA8_mass_pr"
+ 15) 0xdd6d260 RooRealVar::     offset_diboson_GroomedJet_CA8_mass_pr = 74.203 +/- 37.887 C  L(-304.671 - 453.077)  "offset_diboson_GroomedJet_CA8_mass_pr"
+ 16) 0xd5d4ce0 RooRealVar::         offset_top_GroomedJet_CA8_mass_pr = 78.288 +/- 9.1456 C  L(-13.1678 - 169.744)  "offset_top_GroomedJet_CA8_mass_pr"
+ 17) 0xd5926c0 RooRealVar:: resolution_diboson_GroomedJet_CA8_mass_pr = 0.103567 +/- 0.0072112 C  L(0.0171695 - 0.161394)  "resolution_diboson_GroomedJet_CA8_mass_pr"
+ 18) 0xdd8baf0 RooRealVar::     sigma_top_GroomedJet_CA8_mass_pr_core = 8.0285 +/- 0.58326 C  L(1.08844 - 12.7537)  "sigma_top_GroomedJet_CA8_mass_pr_core"
+ 19) 0xd5c25d0 RooRealVar::                                   top_nrm = 1 +/- 0.08  L(-0.5 - 5)  "top_nrm"
+ 20) 0xdd73d30 RooRealVar::          wider_top_GroomedJet_CA8_mass_pr = 4.559 C  L(1 - 10)  "wider_top_GroomedJet_CA8_mass_pr"
+ 21) 0xdd8a020 RooRealVar::          width_WpJ_GroomedJet_CA8_mass_pr = 26.66 +/- 0.47594  L(10 - 50)  "width_WpJ_GroomedJet_CA8_mass_pr"
+ 22) 0xdd87bf0 RooRealVar::      width_diboson_GroomedJet_CA8_mass_pr = 31.528 +/- 11.431 C  L(-82.7868 - 145.842)  "width_diboson_GroomedJet_CA8_mass_pr"
+ 23) 0xdd7ca20 RooRealVar::          width_top_GroomedJet_CA8_mass_pr = 20.979 +/- 3.7749 C  L(-16.7707 - 58.7281)  "width_top_GroomedJet_CA8_mass_pr"
+RooDataSet::data_obs[GroomedJet_CA8_mass_pr] = 4194 entries
+resetting yields...
+RooRealVar::n_diboson = 205.3 +/- 14.3283 C  L(0 - 1e+06) 
+RooRealVar::n_top = 706.4 +/- 56.512 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 2636.3 +/- 1318.15 C  L(0 - 1e+06) 
+Time elapsed: 0.5 sec
+CPU time used: 0.4 sec
+starting fitting routine
+construct fit pdf ...
+load data ...
+resetting yields...
+RooRealVar::n_diboson = 205.3 +/- 14.3283 C  L(0 - 1e+06) 
+RooRealVar::n_top = 706.4 +/- 56.512 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 2636.3 +/- 1318.15 C  L(0 - 1e+06) 
+loading parameters from file topDibosonBoostedParameters_SidebandModified_mu.txt
+loading parameters from file dibosonDibosonBoostedParameters_SidebandModified_mu.txt
+loading parameters from file WpJDibosonBoostedParameters_mu.txt
+resetting yields...
+RooRealVar::n_diboson = 205.3 +/- 14.3283 C  L(0 - 1e+06) 
+RooRealVar::n_top = 706.4 +/- 56.512 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 2636.3 +/- 1318.15 C  L(0 - 1e+06) 
+
+fit constraints
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.08 ] = 1
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.5 ] = 1
+
+RooWorkspace(wjj2dfitter) wjj2dfitter contents
+
+variables
+---------
+(GroomedJet_CA8_mass_pr,WpJ_nrm,c_WpJ_GroomedJet_CA8_mass_pr,c_diboson_GroomedJet_CA8_mass_pr,c_top_GroomedJet_CA8_mass_pr,diboson_nrm,f_W_diboson_GroomedJet_CA8_mass_pr,f_Z_diboson_GroomedJet_CA8_mass_pr,f_top_GroomedJet_CA8_mass_pr_core,mean_diboson_GroomedJet_CA8_mass_pr_W,mean_top_GroomedJet_CA8_mass_pr_core,n_WpJ,n_diboson,n_top,offset_WpJ_GroomedJet_CA8_mass_pr,offset_diboson_GroomedJet_CA8_mass_pr,offset_top_GroomedJet_CA8_mass_pr,r_signal,resolution_diboson_GroomedJet_CA8_mass_pr,sigma_top_GroomedJet_CA8_mass_pr_core,top_nrm,wider_top_GroomedJet_CA8_mass_pr,width_WpJ_GroomedJet_CA8_mass_pr,width_diboson_GroomedJet_CA8_mass_pr,width_top_GroomedJet_CA8_mass_pr)
+
+p.d.f.s
+-------
+RooErfExpPdf::WpJ[ x=GroomedJet_CA8_mass_pr c=c_WpJ_GroomedJet_CA8_mass_pr offset=offset_WpJ_GroomedJet_CA8_mass_pr width=width_WpJ_GroomedJet_CA8_mass_pr ] = 0.00843559
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.5 ] = 1
+RooExtendPdf::WpJ_extended[ pdf=WpJ n=f_WpJ_norm ] = 0.00843559
+RooAddPdf::diboson[ f_W_diboson_GroomedJet_CA8_mass_pr * diboson_GroomedJet_CA8_mass_pr_W + f_Z_diboson_GroomedJet_CA8_mass_pr * diboson_GroomedJet_CA8_mass_pr_Z + [%] * diboson_GroomedJet_CA8_mass_pr_tail ] = 0.612795
+RooGaussian::diboson_GroomedJet_CA8_mass_pr_W[ x=GroomedJet_CA8_mass_pr mean=mean_diboson_GroomedJet_CA8_mass_pr_W sigma=sigma_diboson_GroomedJet_CA8_mass_pr_W ] = 0.796973
+RooGaussian::diboson_GroomedJet_CA8_mass_pr_Z[ x=GroomedJet_CA8_mass_pr mean=mean_diboson_GroomedJet_CA8_mass_pr_Z sigma=sigma_diboson_GroomedJet_CA8_mass_pr_Z ] = 0.881748
+RooErfExpPdf::diboson_GroomedJet_CA8_mass_pr_tail[ x=GroomedJet_CA8_mass_pr c=c_diboson_GroomedJet_CA8_mass_pr offset=offset_diboson_GroomedJet_CA8_mass_pr width=width_diboson_GroomedJet_CA8_mass_pr ] = 0.0167344
+RooExtendPdf::diboson_extended[ pdf=diboson n=f_diboson_norm ] = 0.612795
+RooAddPdf::top[ f_top_GroomedJet_CA8_mass_pr_core * top_GroomedJet_CA8_mass_pr_core + f_top_GroomedJet_CA8_mass_pr_wide * top_GroomedJet_CA8_mass_pr_wide + [%] * top_GroomedJet_CA8_mass_pr_tail ] = 0.597277
+RooGaussian::top_GroomedJet_CA8_mass_pr_core[ x=GroomedJet_CA8_mass_pr mean=mean_top_GroomedJet_CA8_mass_pr_core sigma=sigma_top_GroomedJet_CA8_mass_pr_core ] = 0.806715
+RooErfExpPdf::top_GroomedJet_CA8_mass_pr_tail[ x=GroomedJet_CA8_mass_pr c=c_top_GroomedJet_CA8_mass_pr offset=offset_top_GroomedJet_CA8_mass_pr width=width_top_GroomedJet_CA8_mass_pr ] = 0.0137653
+RooGaussian::top_GroomedJet_CA8_mass_pr_wide[ x=GroomedJet_CA8_mass_pr mean=mean_top_GroomedJet_CA8_mass_pr_core sigma=sigma_top_GroomedJet_CA8_mass_pr_wide ] = 0.989719
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.08 ] = 1
+RooExtendPdf::top_extended[ pdf=top n=f_top_norm ] = 0.597277
+RooAddPdf::total[ diboson_extended + top_extended + WpJ_extended ] = 0.160643
+RooProdPdf::totalFit_const[ top_const * WpJ_const * total ] = 0.160643
+
+functions
+--------
+RooProduct::f_WpJ_norm[ n_WpJ * WpJ_nrm ] = 2636.3
+RooProduct::f_diboson_norm[ n_diboson * diboson_nrm ] = 205.3
+RooProduct::f_top_GroomedJet_CA8_mass_pr_wide[ f_top_GroomedJet_CA8_mass_pr_core * 0.7787 ] = 0.292597
+RooProduct::f_top_norm[ n_top * top_nrm ] = 706.4
+RooAddition::mean_diboson_GroomedJet_CA8_mass_pr_Z[ mean_diboson_GroomedJet_CA8_mass_pr_W + 10.8026 ] = 94.9326
+RooProduct::sigma_diboson_GroomedJet_CA8_mass_pr_W[ mean_diboson_GroomedJet_CA8_mass_pr_W * resolution_diboson_GroomedJet_CA8_mass_pr ] = 8.71309
+RooProduct::sigma_diboson_GroomedJet_CA8_mass_pr_Z[ mean_diboson_GroomedJet_CA8_mass_pr_Z * resolution_diboson_GroomedJet_CA8_mass_pr ] = 9.83188
+RooProduct::sigma_top_GroomedJet_CA8_mass_pr_wide[ sigma_top_GroomedJet_CA8_mass_pr_core * wider_top_GroomedJet_CA8_mass_pr ] = 36.6019
+
+datasets
+--------
+RooDataSet::data_obs(GroomedJet_CA8_mass_pr)
+
+parameter snapshots
+-------------------
+initPars = (mean_diboson_GroomedJet_CA8_mass_pr_W=84.13 +/- 0.84434[C],resolution_diboson_GroomedJet_CA8_mass_pr=0.103567 +/- 0.0072112[C],c_diboson_GroomedJet_CA8_mass_pr=-0.0424087 +/- 0.027961[C],offset_diboson_GroomedJet_CA8_mass_pr=74.203 +/- 37.887[C],width_diboson_GroomedJet_CA8_mass_pr=31.528 +/- 11.431[C],f_W_diboson_GroomedJet_CA8_mass_pr=0.54409 +/- 0.069191[C],f_Z_diboson_GroomedJet_CA8_mass_pr=0.19831 +/- 0.058567[C],n_diboson=205.3 +/- 14.3283[C],diboson_nrm=1,mean_top_GroomedJet_CA8_mass_pr_core=84.738 +/- 0.53587[C],sigma_top_GroomedJet_CA8_mass_pr_core=8.0285 +/- 0.58326[C],wider_top_GroomedJet_CA8_mass_pr=4.559[C],c_top_GroomedJet_CA8_mass_pr=-0.0449295 +/- 0.012459[C],offset_top_GroomedJet_CA8_mass_pr=78.288 +/- 9.1456[C],width_top_GroomedJet_CA8_mass_pr=20.979 +/- 3.7749[C],f_top_GroomedJet_CA8_mass_pr_core=0.37575 +/- 0.042486[C],n_top=706.4 +/- 56.512[C],top_nrm=1 +/- 0.08,c_WpJ_GroomedJet_CA8_mass_pr=-0.050783 +/- 0.0011607,offset_WpJ_GroomedJet_CA8_mass_pr=73.115 +/- 1.2075,width_WpJ_GroomedJet_CA8_mass_pr=26.66 +/- 0.47594,n_WpJ=2636.3 +/- 1318.15[C],WpJ_nrm=1 +/- 0.5)
+
+named sets
+----------
+constrainedSet:(top_nrm,WpJ_nrm)
+constraintSet:(top_const,WpJ_const)
+obsSet:(GroomedJet_CA8_mass_pr)
+params:(WpJ_nrm,c_WpJ_GroomedJet_CA8_mass_pr,c_diboson_GroomedJet_CA8_mass_pr,c_top_GroomedJet_CA8_mass_pr,diboson_nrm,f_W_diboson_GroomedJet_CA8_mass_pr,f_Z_diboson_GroomedJet_CA8_mass_pr,f_top_GroomedJet_CA8_mass_pr_core,mean_diboson_GroomedJet_CA8_mass_pr_W,mean_top_GroomedJet_CA8_mass_pr_core,n_WpJ,n_diboson,n_top,offset_WpJ_GroomedJet_CA8_mass_pr,offset_diboson_GroomedJet_CA8_mass_pr,offset_top_GroomedJet_CA8_mass_pr,resolution_diboson_GroomedJet_CA8_mass_pr,sigma_top_GroomedJet_CA8_mass_pr_core,top_nrm,wider_top_GroomedJet_CA8_mass_pr,width_WpJ_GroomedJet_CA8_mass_pr,width_diboson_GroomedJet_CA8_mass_pr,width_top_GroomedJet_CA8_mass_pr)
+
+fitting ...
+ **********
+ **    9 **SET NOWARNINGS           0
+ **********
+ **********
+ **   12 **MIGRAD        3000           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=-12133.8 FROM MIGRAD    STATUS=INITIATE       20 CALLS          21 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.00000e+00   5.00000e-01   2.06774e-01  -1.18888e+03
+   2  c_WpJ_GroomedJet_CA8_mass_pr  -5.07830e-02   1.16070e-03   1.48803e-02  -1.21175e+01
+   3  diboson_nrm   1.00000e+00   5.50000e-01   2.28102e-01  -8.75080e+01
+   4  offset_WpJ_GroomedJet_CA8_mass_pr   7.31150e+01   1.20750e+00   1.34938e-02   8.45750e+01
+   5  top_nrm      1.00000e+00   8.00000e-02   3.26702e-02  -3.05992e+02
+   6  width_WpJ_GroomedJet_CA8_mass_pr   2.66600e+01   4.75940e-01   2.41385e-02  -7.37538e+01
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-12195.4 FROM MIGRAD    STATUS=CONVERGED     277 CALLS         278 TOTAL
+                     EDM=3.25972e-05    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.21866e+00   1.04466e-01   7.25652e-04  -1.70110e-01
+   2  c_WpJ_GroomedJet_CA8_mass_pr  -5.92307e-02   4.24507e-02   8.03203e-04  -3.68423e-01
+   3  diboson_nrm   1.34740e+00   1.34181e+00   7.85173e-03  -1.14844e-02
+   4  offset_WpJ_GroomedJet_CA8_mass_pr   8.84310e+01   4.91049e+01   5.95715e-04  -4.28862e-01
+   5  top_nrm      9.96549e-01   8.24468e-02   1.80002e-03  -1.26949e-01
+   6  width_WpJ_GroomedJet_CA8_mass_pr   3.33681e+01   8.62920e+00   1.73214e-03   9.16151e-02
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  48    NPAR=  6    ERR DEF=0.5
+  1.092e-02 -4.080e-03 -1.404e-01  4.700e+00  1.374e-03  7.665e-01 
+ -4.080e-03  1.984e-03  5.675e-02 -2.300e+00 -1.003e-03 -3.910e-01 
+ -1.404e-01  5.675e-02  1.988e+00 -6.534e+01 -4.137e-02 -1.069e+01 
+  4.700e+00 -2.300e+00 -6.534e+01  2.673e+03  1.147e+00  4.570e+02 
+  1.374e-03 -1.003e-03 -4.137e-02  1.147e+00  6.800e-03  1.946e-01 
+  7.665e-01 -3.910e-01 -1.069e+01  4.570e+02  1.946e-01  7.977e+01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5      6
+        1  0.97268   1.000 -0.877 -0.953  0.870  0.159  0.821
+        2  0.99981  -0.877  1.000  0.903 -0.999 -0.273 -0.983
+        3  0.98186  -0.953  0.903  1.000 -0.896 -0.356 -0.849
+        4  0.99990   0.870 -0.999 -0.896  1.000  0.269  0.990
+        5  0.71368   0.159 -0.273 -0.356  0.269  1.000  0.264
+        6  0.99875   0.821 -0.983 -0.849  0.990  0.264  1.000
+ **********
+ **   15 **HESSE        3000
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-12195.4 FROM HESSE     STATUS=OK             40 CALLS         318 TOTAL
+                     EDM=3.25355e-05    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  WpJ_nrm      1.21866e+00   6.15999e-02   1.45130e-04  -3.84433e-01
+   2  c_WpJ_GroomedJet_CA8_mass_pr  -5.92307e-02   1.65897e-02   1.60641e-04   5.02687e-01
+   3  diboson_nrm   1.34740e+00   7.68731e-01   3.14069e-04  -3.34416e-01
+   4  offset_WpJ_GroomedJet_CA8_mass_pr   8.84310e+01   1.92767e+01   1.19143e-04  -1.75308e-01
+   5  top_nrm      9.96549e-01   7.98286e-02   3.60004e-04  -4.73271e-01
+   6  width_WpJ_GroomedJet_CA8_mass_pr   3.33681e+01   3.60333e+00   3.46429e-04   1.69212e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  48    NPAR=  6    ERR DEF=0.5
+  3.795e-03 -5.926e-04 -4.129e-02  6.537e-01 -3.860e-04  7.674e-02 
+ -5.926e-04  2.789e-04  8.226e-03 -3.217e-01 -1.429e-04 -5.381e-02 
+ -4.129e-02  8.226e-03  6.091e-01 -9.040e+00 -1.693e-02 -1.090e+00 
+  6.537e-01 -3.217e-01 -9.040e+00  3.770e+02  1.493e-01  6.583e+01 
+ -3.860e-04 -1.429e-04 -1.693e-02  1.493e-01  6.375e-03  2.430e-02 
+  7.674e-02 -5.381e-02 -1.090e+00  6.583e+01  2.430e-02  1.313e+01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5      6
+        1  0.91921   1.000 -0.576 -0.859  0.546 -0.078  0.344
+        2  0.99862  -0.576  1.000  0.631 -0.992 -0.107 -0.889
+        3  0.93950  -0.859  0.631  1.000 -0.597 -0.272 -0.385
+        4  0.99929   0.546 -0.992 -0.597  1.000  0.096  0.936
+        5  0.69037  -0.078 -0.107 -0.272  0.096  1.000  0.084
+        6  0.99237   0.344 -0.889 -0.385  0.936  0.084  1.000
+
+  RooFitResult: minimized FCN value: -12195.4, estimated distance to minimum: 3.25355e-05
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Floating Parameter    FinalValue +/-  Error   
+  --------------------  --------------------------
+               WpJ_nrm    1.2187e+00 +/-  6.16e-02
+  c_WpJ_GroomedJet_CA8_mass_pr   -5.9231e-02 +/-  1.66e-02
+           diboson_nrm    1.3474e+00 +/-  7.69e-01
+  offset_WpJ_GroomedJet_CA8_mass_pr    8.8431e+01 +/-  1.93e+01
+               top_nrm    9.9655e-01 +/-  7.98e-02
+  width_WpJ_GroomedJet_CA8_mass_pr    3.3368e+01 +/-  3.60e+00
+
+total expected: 4193
+data events: 4194
+plotting diboson ... events 276.621396145
+plotting top ... events 703.962507037
+plotting WpJ ... events 3212.74857379
+
+19 fb^{-1} (8 TeV)
+Contributions in the diboson signal region of 70.0 - 100.0 GeV :
+diboson integral in signal region: 0.737898065037
+diboson yield in the signal region: 204.118392963  +/-  116.455352775
+top integral in signal region: 0.639406188269
+top yield in the signal region: 450.117983309  +/-  36.0567046084
+WpJ integral in signal region: 0.410390590683
+WpJ yield in the signal region: 1318.48178491  +/-  66.6457513819
+19 fb^{-1} (8 TeV)
+
+  RooFitResult: minimized FCN value: -12195.4, estimated distance to minimum: 3.25355e-05
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Constant Parameter    Value     
+  --------------------  ------------
+  c_diboson_GroomedJet_CA8_mass_pr   -4.2409e-02
+  c_top_GroomedJet_CA8_mass_pr   -4.4929e-02
+  f_W_diboson_GroomedJet_CA8_mass_pr    5.4409e-01
+  f_Z_diboson_GroomedJet_CA8_mass_pr    1.9831e-01
+  f_top_GroomedJet_CA8_mass_pr_core    3.7575e-01
+  mean_diboson_GroomedJet_CA8_mass_pr_W    8.4130e+01
+  mean_top_GroomedJet_CA8_mass_pr_core    8.4738e+01
+                 n_WpJ    2.6363e+03
+             n_diboson    2.0530e+02
+                 n_top    7.0640e+02
+  offset_diboson_GroomedJet_CA8_mass_pr    7.4203e+01
+  offset_top_GroomedJet_CA8_mass_pr    7.8288e+01
+  resolution_diboson_GroomedJet_CA8_mass_pr    1.0357e-01
+  sigma_top_GroomedJet_CA8_mass_pr_core    8.0285e+00
+  wider_top_GroomedJet_CA8_mass_pr    4.5590e+00
+  width_diboson_GroomedJet_CA8_mass_pr    3.1528e+01
+  width_top_GroomedJet_CA8_mass_pr    2.0979e+01
+
+    Floating Parameter  InitialValue    FinalValue +/-  Error     GblCorr.
+  --------------------  ------------  --------------------------  --------
+               WpJ_nrm    1.0000e+00    1.2187e+00 +/-  6.16e-02  <none>
+  c_WpJ_GroomedJet_CA8_mass_pr   -5.0783e-02   -5.9231e-02 +/-  1.66e-02  <none>
+           diboson_nrm    1.0000e+00    1.3474e+00 +/-  7.69e-01  <none>
+  offset_WpJ_GroomedJet_CA8_mass_pr    7.3115e+01    8.8431e+01 +/-  1.93e+01  <none>
+               top_nrm    1.0000e+00    9.9655e-01 +/-  7.98e-02  <none>
+  width_WpJ_GroomedJet_CA8_mass_pr    2.6660e+01    3.3368e+01 +/-  3.60e+00  <none>
+
+4 free parameters in the fit
+19 fb^{-1} (8 TeV)
+Time elapsed: 13.6 sec
+CPU time used: 2.9 sec
+6 degrees of freedom
+chi2: 2.31 / 6 = 0.39
+chi2 probability: 0.8889
+2*nll_null - 2*nll: -24387.6359 - -24390.8934 = 3.2575
+p-value: 0.0711
+Gaussian significance: 1.47

@@ -1,0 +1,9 @@
+f_WpJ_Mass2j_PFCor_GausA = 0.0000 C L(0 - 0.1)
+mean_WpJ_Mass2j_PFCor_GausA = 116.00 C L(110 - 120)
+offset_WpJ_Mass2j_PFCor_tail = -86813639 +/- 1.00000 L(-8.68136e+07 - -8.68136e+07)
+power2_WpJ_Mass2j_PFCor_tail = 1.2094 +/- 0.0014775 L(1.1946 - 1.22415)
+power3_WpJ_Mass2j_PFCor_tail = 11.000 +/- 0.0000073938 L(10.9999 - 11.0001)
+power_WpJ_Mass2j_PFCor_tail = 1.0000 +/- 0.0000031695 L(0.999968 - 1.00003)
+sigma_WpJ_Mass2j_PFCor_GausA = 5.0000 C L(0 - 100)
+width_WpJ_Mass2j_PFCor_tail = 54912739 +/- 1.00000 L(5.49127e+07 - 5.49127e+07)
+n_WpJ = 209256.3 +/- 457.4 C

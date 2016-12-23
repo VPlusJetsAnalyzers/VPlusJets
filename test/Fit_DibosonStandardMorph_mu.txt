@@ -1,0 +1,671 @@
+[ilyao@cmslpc23 test]$ python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --nosig AllDefCutsMorphInputDibosonParameters.txt
+Error in <TUnixSystem::DynamicPathName>: $CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so does not exist in /uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw/CMSSW_5_3_2/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib64:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib:/opt/lam/gnu/lib:.:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/lib::/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/cint/cint/stl
+adding RooFit ... done
+importing RooFit PDF classes
+Error in <PyROOT::TPyROOTApplication::ProcessLine>: macro alphaFunction.cxx not found in path .:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/macros:
+end of pyroot_logon
+link found for qqHtable8tev.txt
+lepton HLT : EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+lepton id : EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+full cuts: (((sqrt(JetPFCor_Pt[0]**2+JetPFCor_Pt[1]**2+2*JetPFCor_Pt[0]*JetPFCor_Pt[1]*cos(JetPFCor_Phi[0]-JetPFCor_Phi[1]))>70.)&&(abs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5)&&(abs(JetPFCor_dphiMET[0])>0.4)&&(W_mt>30.)&&(JetPFCor_Pt[1]>35.)&&(JetPFCor_Pt[0]>40.)&&((abs(JetPFCor_Eta[0])>2.4)||(JetPFCor_Pt[0]<30.)||(JetPFCor_bDiscriminatorCSV[0]<0.244))&&((abs(JetPFCor_Eta[1])>2.4)||(JetPFCor_Pt[1]<30.)||(JetPFCor_bDiscriminatorCSV[1]<0.244))&&((abs(JetPFCor_Eta[2])>2.4)||(JetPFCor_Pt[2]<30.)||(JetPFCor_bDiscriminatorCSV[2]<0.244))&&((abs(JetPFCor_Eta[3])>2.4)||(JetPFCor_Pt[3]<30.)||(JetPFCor_bDiscriminatorCSV[3]<0.244))&&((abs(JetPFCor_Eta[4])>2.4)||(JetPFCor_Pt[4]<30.)||(JetPFCor_bDiscriminatorCSV[4]<0.244))&&((abs(JetPFCor_Eta[5])>2.4)||(JetPFCor_Pt[5]<30.)||(JetPFCor_bDiscriminatorCSV[5]<0.244))&&(W_pt<200.)&&(vbf_event==0)&&(event_met_pfmet>25)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>25.))&&(Mass2j_PFCor>48.000)&&(Mass2j_PFCor<160.000))
+RooRealVar::Mass2j_PFCor = 104  L(48 - 160) B(14) // [GeV]
+making ComponentPdf diboson
+making ComponentPdf top
+making ComponentPdf WpJ
+polynomial of order 5
+making ComponentPdf ZpJ
+loading parameters from file AllDefCutsMorphInputDibosonParameters.txt
+startpars:
+  1) 0x1724bda0 RooRealVar::                         WpJ_nrm = 1  L(-0.5 - 5)  "WpJ_nrm"
+  2) 0x173c9a50 RooRealVar::                         ZpJ_nrm = 1  L(-0.5 - 5)  "ZpJ_nrm"
+  3) 0x17257de0 RooRealVar::             a1_WpJ_Mass2j_PFCor = 0  L(-INF - +INF)  "a1_WpJ_Mass2j_PFCor"
+  4) 0x172aa090 RooRealVar::             a2_WpJ_Mass2j_PFCor = 0  L(-INF - +INF)  "a2_WpJ_Mass2j_PFCor"
+  5) 0x172ae8a0 RooRealVar::             a3_WpJ_Mass2j_PFCor = 0  L(-INF - +INF)  "a3_WpJ_Mass2j_PFCor"
+  6) 0x172af6a0 RooRealVar::             a4_WpJ_Mass2j_PFCor = 0  L(-INF - +INF)  "a4_WpJ_Mass2j_PFCor"
+  7) 0x17289990 RooRealVar::             a5_WpJ_Mass2j_PFCor = 0  L(-INF - +INF)  "a5_WpJ_Mass2j_PFCor"
+  8) 0x1715c100 RooRealVar::          c_diboson_Mass2j_PFCor = -0.015  L(-10 - 10)  "c_diboson_Mass2j_PFCor"
+  9) 0x1726dcf0 RooRealVar::              c_top_Mass2j_PFCor = -0.015  L(-10 - 10)  "c_top_Mass2j_PFCor"
+ 10) 0x17314270 RooRealVar::                     diboson_nrm = 1  L(-0.5 - 5)  "diboson_nrm"
+ 11) 0x1731e440 RooRealVar::        f_W_diboson_Mass2j_PFCor = 0.4  L(0 - 1)  "f_W_diboson_Mass2j_PFCor"
+ 12) 0x1731f360 RooRealVar::        f_Z_diboson_Mass2j_PFCor = 0.1  L(0 - 1)  "f_Z_diboson_Mass2j_PFCor"
+ 13) 0x17260690 RooRealVar::         f_top_Mass2j_PFCor_core = 0.5  L(0 - 1)  "f_top_Mass2j_PFCor_core"
+ 14) 0x170f8e90 RooRealVar::     mean_diboson_Mass2j_PFCor_W = 80.3  L(50 - 100)  "mean_diboson_Mass2j_PFCor_W"
+ 15) 0x17269db0 RooRealVar::      mean_top_Mass2j_PFCor_core = 84 +/- 12.6  L(-1000 - 1000)  "mean_top_Mass2j_PFCor_core"
+ 16) 0x172a01e0 RooRealVar::                           n_WpJ = 136635 +/- 369.6 C  L(0 - 1e+06)  "n_WpJ"
+ 17) 0x173ce670 RooRealVar::                           n_ZpJ = 8187.5 +/- 90.5 C  L(0 - 1e+06)  "n_ZpJ"
+ 18) 0x173542e0 RooRealVar::                       n_diboson = 3605 +/- 60 C  L(0 - 1e+06)  "n_diboson"
+ 19) 0x17258d90 RooRealVar::                           n_top = 8254.6 +/- 90.9 C  L(0 - 1e+06)  "n_top"
+ 20) 0x172b4040 RooRealVar::         offset_ZpJ_Mass2j_PFCor = 48 +/- 9.6  L(-100 - 1000)  "offset_ZpJ_Mass2j_PFCor"
+ 21) 0x1713e6e0 RooRealVar::     offset_diboson_Mass2j_PFCor = 48 +/- 9.6  L(-100 - 1000)  "offset_diboson_Mass2j_PFCor"
+ 22) 0x1725f380 RooRealVar::         offset_top_Mass2j_PFCor = 48 +/- 9.6  L(-100 - 1000)  "offset_top_Mass2j_PFCor"
+ 23) 0x1731c900 RooRealVar::          power_ZpJ_Mass2j_PFCor = -2  L(-30 - 30)  "power_ZpJ_Mass2j_PFCor"
+ 24) 0x171c66c0 RooRealVar:: resolution_diboson_Mass2j_PFCor = 0.1  L(0 - 5)  "resolution_diboson_Mass2j_PFCor"
+ 25) 0x1726ad70 RooRealVar::     sigma_top_Mass2j_PFCor_core = 12.6 +/- 2.52  L(0 - 5000)  "sigma_top_Mass2j_PFCor_core"
+ 26) 0x17288590 RooRealVar::                         top_nrm = 1  L(-0.5 - 5)  "top_nrm"
+ 27) 0x1726c430 RooRealVar::          width_ZpJ_Mass2j_PFCor = 9.6 +/- 1.92  L(0 - 1000)  "width_ZpJ_Mass2j_PFCor"
+ 28) 0x1716b670 RooRealVar::      width_diboson_Mass2j_PFCor = 9.6 +/- 1.92  L(0 - 1000)  "width_diboson_Mass2j_PFCor"
+ 29) 0x17271de0 RooRealVar::          width_top_Mass2j_PFCor = 9.6 +/- 1.92  L(0 - 1000)  "width_top_Mass2j_PFCor"
+130403 17:08:47 001 Xrd: GoToAnotherServer: Going to: cmseos5.fnal.gov:1095
+
+Suspended
+[ilyao@cmslpc23 test]$ kill %
+[ilyao@cmslpc23 test]$ 
+[1]    Terminated                    python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --nosig  ...
+[ilyao@cmslpc23 test]$ 
+[ilyao@cmslpc23 test]$ python -i runDiboson8TevFit.py -j 2 -m Diboson8TeVConfig --nosig AllDefCutsMorphInputDibosonParameters.txt
+Error in <TUnixSystem::DynamicPathName>: $CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so does not exist in /uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscms/home/ilyao/EWKVPLUSJETS/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw-patch/CMSSW_5_3_2_patch4/external/slc5_amd64_gcc462/lib:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/cms/cmssw/CMSSW_5_3_2/lib/slc5_amd64_gcc462:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib64:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/external/gcc/4.6.2/lib:/opt/lam/gnu/lib:.:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/lib::/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/cint/cint/stl
+adding RooFit ... done
+importing RooFit PDF classes
+Error in <PyROOT::TPyROOTApplication::ProcessLine>: macro alphaFunction.cxx not found in path .:/uscmst1/prod/sw/cms/slc5_amd64_gcc462/lcg/root/5.32.00-cms9/macros:
+end of pyroot_logon
+link found for qqHtable8tev.txt
+lepton HLT : EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+lepton id : EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+full cuts: (((sqrt(JetPFCor_Pt[0]**2+JetPFCor_Pt[1]**2+2*JetPFCor_Pt[0]*JetPFCor_Pt[1]*cos(JetPFCor_Phi[0]-JetPFCor_Phi[1]))>70.)&&(abs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5)&&(abs(JetPFCor_dphiMET[0])>0.4)&&(W_mt>30.)&&(JetPFCor_Pt[1]>35.)&&(JetPFCor_Pt[0]>40.)&&((abs(JetPFCor_Eta[0])>2.4)||(JetPFCor_Pt[0]<30.)||(JetPFCor_bDiscriminatorCSV[0]<0.244))&&((abs(JetPFCor_Eta[1])>2.4)||(JetPFCor_Pt[1]<30.)||(JetPFCor_bDiscriminatorCSV[1]<0.244))&&((abs(JetPFCor_Eta[2])>2.4)||(JetPFCor_Pt[2]<30.)||(JetPFCor_bDiscriminatorCSV[2]<0.244))&&((abs(JetPFCor_Eta[3])>2.4)||(JetPFCor_Pt[3]<30.)||(JetPFCor_bDiscriminatorCSV[3]<0.244))&&((abs(JetPFCor_Eta[4])>2.4)||(JetPFCor_Pt[4]<30.)||(JetPFCor_bDiscriminatorCSV[4]<0.244))&&((abs(JetPFCor_Eta[5])>2.4)||(JetPFCor_Pt[5]<30.)||(JetPFCor_bDiscriminatorCSV[5]<0.244))&&(W_pt<200.)&&(vbf_event==0)&&(event_met_pfmet>25)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>25.))&&(Mass2j_PFCor>48.000)&&(Mass2j_PFCor<160.000))
+RooRealVar::Mass2j_PFCor = 104  L(48 - 160) B(14) // [GeV]
+making ComponentPdf diboson
+histCmd= TH1D("histdiboson","histdiboson",14,48.000000,160.000000)
+histCmd= TH1D("histdiboson_0","histdiboson_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WW_CMSSW532.root
+130403 17:09:48 001 Xrd: GoToAnotherServer: Going to: cmseos2.fnal.gov:1095
+selected events: 27192
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WW_CMSSW532.root acc x eff: 0.0025
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WW_CMSSW532.root N_expected: 2751.1
+histCmd= TH1D("histdiboson_1","histdiboson_1",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WZ_CMSSW532.root
+130403 17:11:07 001 Xrd: GoToAnotherServer: Going to: cmseos1.fnal.gov:1095
+selected events: 15921
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WZ_CMSSW532.root acc x eff: 0.00137
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WZ_CMSSW532.root N_expected: 853.9
+diboson acc x eff: 0.00209
+Number of expected diboson events: 3605.0
+making ComponentPdf top
+histCmd= TH1D("histtop","histtop",14,48.000000,160.000000)
+histCmd= TH1D("histtop_0","histtop_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root
+130403 17:11:56 001 Xrd: GoToAnotherServer: Going to: cmseos6.fnal.gov:1095
+selected events: 11841
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root acc x eff: 0.00151
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_TTbar_CMSSW532.root N_expected: 6566.0
+histCmd= TH1D("histtop_1","histtop_1",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root
+130403 17:13:56 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 46
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root acc x eff: 0.000287
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_Tbar_CMSSW532.root N_expected: 9.7
+histCmd= TH1D("histtop_2","histtop_2",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root
+130403 17:13:57 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 81
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root acc x eff: 0.000265
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopS_T_CMSSW532.root N_expected: 19.9
+histCmd= TH1D("histtop_3","histtop_3",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root
+130403 17:14:00 001 Xrd: GoToAnotherServer: Going to: cmseos1.fnal.gov:1095
+selected events: 570
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root acc x eff: 0.000252
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_Tbar_CMSSW532.root N_expected: 146.1
+histCmd= TH1D("histtop_4","histtop_4",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root
+130403 17:14:12 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 1049
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root acc x eff: 0.000243
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopT_T_CMSSW532.root N_expected: 260.5
+histCmd= TH1D("histtop_5","histtop_5",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root
+130403 17:14:32 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 1656
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root acc x eff: 0.00298
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_Tbar_CMSSW532.root N_expected: 642.1
+histCmd= TH1D("histtop_6","histtop_6",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root
+130403 17:14:41 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 1598
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root acc x eff: 0.00283
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_STopTW_T_CMSSW532.root N_expected: 610.2
+top acc x eff: 0.00126
+Number of expected top events: 8254.6
+making ComponentPdf WpJ
+making ComponentPdf WpJ_Nom
+histCmd= TH1D("histWpJ_Nom","histWpJ_Nom",14,48.000000,160.000000)
+histCmd= TH1D("histWpJ_Nom_0","histWpJ_Nom_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W2Jets_CMSSW532.root
+130403 17:14:48 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 63266
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W2Jets_CMSSW532.root acc x eff: 0.00165
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W2Jets_CMSSW532.root N_expected: 64668.8
+histCmd= TH1D("histWpJ_Nom_1","histWpJ_Nom_1",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W3Jets_CMSSW532.root
+130403 17:20:36 001 Xrd: GoToAnotherServer: Going to: cmseos3.fnal.gov:1095
+selected events: 68114
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W3Jets_CMSSW532.root acc x eff: 0.00391
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W3Jets_CMSSW532.root N_expected: 45432.0
+histCmd= TH1D("histWpJ_Nom_2","histWpJ_Nom_2",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W4Jets_CMSSW532.root
+130403 17:25:19 001 Xrd: GoToAnotherServer: Going to: cmseos5.fnal.gov:1095
+selected events: 82552
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W4Jets_CMSSW532.root acc x eff: 0.00554
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_W4Jets_CMSSW532.root N_expected: 26534.0
+WpJ_Nom acc x eff: 0.00246
+Number of expected WpJ_Nom events: 136634.8
+making ComponentPdf WpJ_MU
+histCmd= TH1D("histWpJ_MU","histWpJ_MU",14,48.000000,160.000000)
+histCmd= TH1D("histWpJ_MU_0","histWpJ_MU_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJmatchingup_CMSSW532_UserGen.root
+130403 17:30:49 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 4519
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJmatchingup_CMSSW532_UserGen.root acc x eff: 3.95e+03
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJmatchingup_CMSSW532_UserGen.root N_expected: 2763065229226.1
+WpJ_MU acc x eff: 3.95e+03
+Number of expected WpJ_MU events: 2763065229226.1
+making ComponentPdf WpJ_MD
+histCmd= TH1D("histWpJ_MD","histWpJ_MD",14,48.000000,160.000000)
+histCmd= TH1D("histWpJ_MD_0","histWpJ_MD_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJmatchingdown_CMSSW532_UserGen.root
+130403 17:30:59 001 Xrd: GoToAnotherServer: Going to: cmseos5.fnal.gov:1095
+selected events: 4125
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJmatchingdown_CMSSW532_UserGen.root acc x eff: 3.57e+03
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJmatchingdown_CMSSW532_UserGen.root N_expected: 2499575103070.9
+WpJ_MD acc x eff: 3.57e+03
+Number of expected WpJ_MD events: 2499575103070.9
+making ComponentPdf WpJ_SU
+histCmd= TH1D("histWpJ_SU","histWpJ_SU",14,48.000000,160.000000)
+histCmd= TH1D("histWpJ_SU_0","histWpJ_SU_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJscaleup_CMSSW532_UserGen.root
+130403 17:31:09 001 Xrd: GoToAnotherServer: Going to: cmseos6.fnal.gov:1095
+selected events: 4146
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJscaleup_CMSSW532_UserGen.root acc x eff: 3.63e+03
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJscaleup_CMSSW532_UserGen.root N_expected: 2539727876051.4
+WpJ_SU acc x eff: 3.63e+03
+Number of expected WpJ_SU events: 2539727876051.4
+making ComponentPdf WpJ_SD
+histCmd= TH1D("histWpJ_SD","histWpJ_SD",14,48.000000,160.000000)
+histCmd= TH1D("histWpJ_SD_0","histWpJ_SD_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJscaledown_CMSSW532_UserGen.root
+130403 17:31:19 001 Xrd: GoToAnotherServer: Going to: cmseos6.fnal.gov:1095
+selected events: 3845
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJscaledown_CMSSW532_UserGen.root acc x eff: 3.35e+03
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_WpJscaledown_CMSSW532_UserGen.root N_expected: 2340821197952.2
+WpJ_SD acc x eff: 3.35e+03
+Number of expected WpJ_SD events: 2340821197952.2
+making ComponentPdf ZpJ
+histCmd= TH1D("histZpJ","histZpJ",14,48.000000,160.000000)
+histCmd= TH1D("histZpJ_0","histZpJ_0",14,48.000000,160.000000)
+filename: root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_ZpJ_CMSSW532.root
+130403 17:31:28 001 Xrd: GoToAnotherServer: Going to: cmseos4.fnal.gov:1095
+selected events: 4806
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_ZpJ_CMSSW532.root acc x eff: 0.000121
+root://cmseos:1094//eos/uscms/store/user/lnujj/DibosonFitPostMoriond2013/RD_mu_ZpJ_CMSSW532.root N_expected: 8187.5
+ZpJ acc x eff: 0.000121
+Number of expected ZpJ events: 8187.5
+loading parameters from file AllDefCutsMorphInputDibosonParameters.txt
+startpars:
+  1) 0x2aaaf17a60a0 RooRealVar::     WpJ_nrm = 1  L(-0.5 - 5)  "WpJ_nrm"
+  2) 0x2aaaffa6f3c0 RooRealVar::     ZpJ_nrm = 1  L(-0.5 - 5)  "ZpJ_nrm"
+  3) 0x1e2bca10 RooRealVar:: diboson_nrm = 1  L(-0.5 - 5)  "diboson_nrm"
+  4) 0x2aaaeeac0590 RooRealVar::     fMU_WpJ = 0 +/- 10  L(-1 - 1)  "fMU_WpJ"
+  5) 0x2aaaf17a7b50 RooRealVar::     fSU_WpJ = 0 +/- 10  L(-1 - 1)  "fSU_WpJ"
+  6) 0x2aaaeeade550 RooRealVar::       n_WpJ = 136635 +/- 369.6 C  L(0 - 1e+06)  "n_WpJ"
+  7) 0x2aaaf2f5cf80 RooRealVar::       n_ZpJ = 8187.5 +/- 90.5 C  L(0 - 1e+06)  "n_ZpJ"
+  8) 0x1b2be980 RooRealVar::   n_diboson = 3605 +/- 60 C  L(0 - 1e+06)  "n_diboson"
+  9) 0x328f9a10 RooRealVar::       n_top = 8254.6 +/- 90.9 C  L(0 - 1e+06)  "n_top"
+ 10) 0x328b5a10 RooRealVar::     top_nrm = 1  L(-0.5 - 5)  "top_nrm"
+130403 17:31:55 001 Xrd: GoToAnotherServer: Going to: cmseos5.fnal.gov:1095
+selected events: 158863
+RooDataSet::data_obs[Mass2j_PFCor] = 158863 entries
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+Time elapsed: 2555.4 sec
+CPU time used: 1346.8 sec
+starting fitting routine
+construct fit pdf ...
+load data ...
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+loading parameters from file AllDefCutsMorphInputDibosonParameters.txt
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+
+fit constraints
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.07 ] = 1
+RooGaussian::ZpJ_const[ x=ZpJ_nrm mean=1 sigma=0.05 ] = 1
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.05 ] = 1
+RooGaussian::fMU_WpJ_const[ x=fMU_WpJ mean=0 sigma=10 ] = 1
+RooGaussian::fSU_WpJ_const[ x=fSU_WpJ mean=0 sigma=10 ] = 1
+
+RooWorkspace(wjj2dfitter) wjj2dfitter contents
+
+variables
+---------
+(Mass2j_PFCor,WpJ_nrm,ZpJ_nrm,diboson_nrm,fMU_WpJ,fSU_WpJ,n_WpJ,n_ZpJ,n_diboson,n_top,r_signal,top_nrm)
+
+p.d.f.s
+-------
+RooAddPdf::WpJ[ f_fMU_WpJ * WpJ_MU + f_fMD_WpJ * WpJ_MD + f_fSU_WpJ * WpJ_SU + f_fSD_WpJ * WpJ_SD + f_fNom_WpJ * WpJ_Nom ] = 1653.59
+RooHistPdf::WpJ_MD[ pdfObs=(Mass2j_PFCor) ] = 2.43768e+10
+RooHistPdf::WpJ_MU[ pdfObs=(Mass2j_PFCor) ] = 3.31376e+10
+RooHistPdf::WpJ_Nom[ pdfObs=(Mass2j_PFCor) ] = 1653.59
+RooHistPdf::WpJ_SD[ pdfObs=(Mass2j_PFCor) ] = 2.59073e+10
+RooHistPdf::WpJ_SU[ pdfObs=(Mass2j_PFCor) ] = 2.57475e+10
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.05 ] = 1
+RooExtendPdf::WpJ_extended[ pdf=WpJ n=f_WpJ_norm ] = 1653.59
+RooHistPdf::ZpJ[ pdfObs=(Mass2j_PFCor) ] = 113.349
+RooGaussian::ZpJ_const[ x=ZpJ_nrm mean=1 sigma=0.05 ] = 1
+RooExtendPdf::ZpJ_extended[ pdf=ZpJ n=f_ZpJ_norm ] = 113.349
+RooHistPdf::diboson[ pdfObs=(Mass2j_PFCor) ] = 37.2697
+RooExtendPdf::diboson_extended[ pdf=diboson n=f_diboson_norm ] = 37.2697
+RooGaussian::fMU_WpJ_const[ x=fMU_WpJ mean=0 sigma=10 ] = 1
+RooGaussian::fSU_WpJ_const[ x=fSU_WpJ mean=0 sigma=10 ] = 1
+RooHistPdf::top[ pdfObs=(Mass2j_PFCor) ] = 66.0583
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.07 ] = 1
+RooExtendPdf::top_extended[ pdf=top n=f_top_norm ] = 66.0583
+RooAddPdf::total[ diboson_extended + top_extended + WpJ_extended + ZpJ_extended ] = 1452.28
+RooProdPdf::totalFit_const[ top_const * ZpJ_const * WpJ_const * fMU_WpJ_const * fSU_WpJ_const * total ] = 1452.28
+
+functions
+--------
+RooProduct::f_WpJ_norm[ n_WpJ * WpJ_nrm ] = 136635
+RooProduct::f_ZpJ_norm[ n_ZpJ * ZpJ_nrm ] = 8187.5
+RooProduct::f_diboson_norm[ n_diboson * diboson_nrm ] = 3605
+RooFormulaVar::f_fMD_WpJ[ actualVars=(fMU_WpJ) formula="-1.0*@0*(@0 < 0.)" ] = -0
+RooFormulaVar::f_fMU_WpJ[ actualVars=(fMU_WpJ) formula="1.0*@0*(@0 >= 0.)" ] = 0
+RooFormulaVar::f_fNom_WpJ[ actualVars=(fMU_WpJ,fSU_WpJ) formula="(1.-abs(@0)-abs(@1))" ] = 1
+RooFormulaVar::f_fSD_WpJ[ actualVars=(fSU_WpJ) formula="@0*(-1)*(@0 < 0.)" ] = -0
+RooFormulaVar::f_fSU_WpJ[ actualVars=(fSU_WpJ) formula="@0*(@0 >= 0.)" ] = 0
+RooProduct::f_top_norm[ n_top * top_nrm ] = 8254.6
+
+datasets
+--------
+RooDataHist::diboson_hist(Mass2j_PFCor)
+RooDataHist::top_hist(Mass2j_PFCor)
+RooDataHist::WpJ_Nom_hist(Mass2j_PFCor)
+RooDataHist::WpJ_MU_hist(Mass2j_PFCor)
+RooDataHist::WpJ_MD_hist(Mass2j_PFCor)
+RooDataHist::WpJ_SU_hist(Mass2j_PFCor)
+RooDataHist::WpJ_SD_hist(Mass2j_PFCor)
+RooDataHist::ZpJ_hist(Mass2j_PFCor)
+RooDataSet::data_obs(Mass2j_PFCor)
+
+parameter snapshots
+-------------------
+initPars = (n_diboson=3605 +/- 60[C],diboson_nrm=1,n_top=8254.6 +/- 90.9[C],top_nrm=1,fMU_WpJ=0 +/- 10,fSU_WpJ=0 +/- 10,n_WpJ=136635 +/- 369.6[C],WpJ_nrm=1,n_ZpJ=8187.5 +/- 90.5[C],ZpJ_nrm=1)
+
+named sets
+----------
+constrainedSet:(top_nrm,ZpJ_nrm,WpJ_nrm,fMU_WpJ,fSU_WpJ)
+constraintSet:(top_const,ZpJ_const,WpJ_const,fMU_WpJ_const,fSU_WpJ_const)
+obsSet:(Mass2j_PFCor)
+params:(WpJ_nrm,ZpJ_nrm,diboson_nrm,fMU_WpJ,fSU_WpJ,n_WpJ,n_ZpJ,n_diboson,n_top,top_nrm)
+
+fitting ...
+ **********
+ **    9 **SET NOWARNINGS           0
+ **********
+ **********
+ **   12 **MIGRAD        3000           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=-1.00004e+06 FROM MIGRAD    STATUS=INITIATE       28 CALLS          29 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.00000e+00   5.00000e-02   2.04149e-02  -4.57196e+03
+   2  ZpJ_nrm      1.00000e+00   5.00000e-02   2.04149e-02  -2.92308e+02
+   3  diboson_nrm   1.00000e+00   5.50000e-01   2.28102e-01  -1.80428e+02
+   4  fMU_WpJ      0.00000e+00   1.00000e+01   1.56884e+00  -2.47343e+01
+   5  fSU_WpJ      0.00000e+00   1.00000e+01   1.56884e+00   1.09182e+01
+   6  top_nrm      1.00000e+00   7.00000e-02   2.85843e-02  -2.98166e+02
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ FCN=-1.00007e+06 FROM MIGRAD    STATUS=CONVERGED     214 CALLS         215 TOTAL
+                     EDM=3.30214e-05    STRATEGY= 1  ERROR MATRIX UNCERTAINTY   3.9 per cent
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.00053e+00   6.13327e-03  -8.01598e-05  -7.80263e-01
+   2  ZpJ_nrm      1.01370e+00   4.92551e-02   2.69261e-04  -4.32107e-01
+   3  diboson_nrm   1.73378e+00   1.79974e-01   5.60816e-04  -1.16763e-01
+   4  fMU_WpJ      1.36304e-03   2.84115e-04  -2.28966e-06   5.66603e-01
+   5  fSU_WpJ     -2.28611e-04   5.30068e-04  -5.36932e-06   1.13965e+00
+   6  top_nrm      9.22442e-01   6.44116e-02   5.39053e-04  -2.11031e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  6    ERR DEF=0.5
+  3.762e-05 -1.428e-04 -4.954e-04  4.621e-07  1.010e-06 -1.372e-04 
+ -1.428e-04  2.426e-03 -6.221e-04 -3.978e-06 -7.277e-06  1.805e-04 
+ -4.954e-04 -6.221e-04  3.244e-02 -4.902e-06 -8.925e-06 -4.806e-03 
+  4.621e-07 -3.978e-06 -4.902e-06  8.072e-08  1.391e-07 -1.070e-06 
+  1.010e-06 -7.277e-06 -8.925e-06  1.391e-07  2.810e-07 -4.533e-06 
+ -1.372e-04  1.805e-04 -4.806e-03 -1.070e-06 -4.533e-06  4.150e-03 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5      6
+        1  0.88461   1.000 -0.473 -0.448  0.265  0.311 -0.347
+        2  0.73457  -0.473  1.000 -0.070 -0.284 -0.279  0.057
+        3  0.85666  -0.448 -0.070  1.000 -0.096 -0.093 -0.414
+        4  0.92679   0.265 -0.284 -0.096  1.000  0.924 -0.058
+        5  0.92844   0.311 -0.279 -0.093  0.924  1.000 -0.133
+        6  0.82097  -0.347  0.057 -0.414 -0.058 -0.133  1.000
+ **********
+ **   15 **HESSE        3000
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-1.00007e+06 FROM HESSE     STATUS=OK             52 CALLS         267 TOTAL
+                     EDM=0.225848    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  WpJ_nrm      1.00053e+00   6.12304e-03   8.20064e-04  -4.71647e-01
+   2  ZpJ_nrm      1.01370e+00   4.96536e-02   9.77253e-03  -4.66278e-01
+   3  diboson_nrm   1.73378e+00   1.76524e-01   2.37677e-02  -1.88836e-01
+   4  fMU_WpJ      1.36304e-03   6.33513e-03   4.37607e-03   1.36304e-03
+   5  fSU_WpJ     -2.28611e-04   3.80221e-03   2.62237e-03  -2.28612e-04
+   6  top_nrm      9.22442e-01   6.55465e-02   1.08655e-02  -5.03790e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  6    ERR DEF=0.5
+  3.749e-05 -1.451e-04 -4.892e-04  9.041e-07  1.186e-07 -1.337e-04 
+ -1.451e-04  2.466e-03 -2.678e-04  3.740e-06  2.469e-06  7.915e-05 
+ -4.892e-04 -2.678e-04  3.121e-02 -9.241e-07  1.733e-05 -4.902e-03 
+  9.041e-07  3.740e-06 -9.241e-07  4.013e-05 -2.629e-07 -1.812e-05 
+  1.186e-07  2.469e-06  1.733e-05 -2.629e-07  1.446e-05 -1.185e-05 
+ -1.337e-04  7.915e-05 -4.902e-03 -1.812e-05 -1.185e-05  4.297e-03 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5      6
+        1  0.87992   1.000 -0.477 -0.452  0.023  0.005 -0.333
+        2  0.71419  -0.477  1.000 -0.031  0.012  0.013  0.024
+        3  0.85034  -0.452 -0.031  1.000 -0.001  0.026 -0.423
+        4  0.05184   0.023  0.012 -0.001  1.000 -0.011 -0.044
+        5  0.05175   0.005  0.013  0.026 -0.011  1.000 -0.048
+        6  0.81613  -0.333  0.024 -0.423 -0.044 -0.048  1.000
+
+  RooFitResult: minimized FCN value: -1.00007e+06, estimated distance to minimum: 0.225848
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Floating Parameter    FinalValue +/-  Error   
+  --------------------  --------------------------
+               WpJ_nrm    1.0005e+00 +/-  6.12e-03
+               ZpJ_nrm    1.0137e+00 +/-  4.97e-02
+           diboson_nrm    1.7338e+00 +/-  1.77e-01
+               fMU_WpJ    1.3630e-03 +/-  6.34e-03
+               fSU_WpJ   -2.2861e-04 +/-  3.80e-03
+               top_nrm    9.2244e-01 +/-  6.55e-02
+
+total expected: 158871
+data events: 158863
+plotting diboson ... events 6250.27990541
+plotting top ... events 7614.38982832
+plotting WpJ ... events 136706.859156
+plotting ZpJ ... events 8299.63467128
+
+
+  RooFitResult: minimized FCN value: -1.00007e+06, estimated distance to minimum: 0.225848
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Constant Parameter    Value     
+  --------------------  ------------
+                 n_WpJ    1.3663e+05
+                 n_ZpJ    8.1875e+03
+             n_diboson    3.6050e+03
+                 n_top    8.2546e+03
+
+    Floating Parameter  InitialValue    FinalValue +/-  Error     GblCorr.
+  --------------------  ------------  --------------------------  --------
+               WpJ_nrm    1.0000e+00    1.0005e+00 +/-  6.12e-03  <none>
+               ZpJ_nrm    1.0000e+00    1.0137e+00 +/-  4.97e-02  <none>
+           diboson_nrm    1.0000e+00    1.7338e+00 +/-  1.77e-01  <none>
+               fMU_WpJ    0.0000e+00    1.3630e-03 +/-  6.34e-03  <none>
+               fSU_WpJ    0.0000e+00   -2.2861e-04 +/-  3.80e-03  <none>
+               top_nrm    1.0000e+00    9.2244e-01 +/-  6.55e-02  <none>
+
+1 free parameters in the fit
+[#0] ERROR:InputArguments -- RooArgSet::writeToFile(Snapshot of parameters) error opening file 
+doing fit under null hypothesis
+lepton HLT : EffTable2012/efficiency-Run2012ABC-IsoToIsoMuHLT.txt
+lepton id : EffTable2012/scaleFactor-Run2012ABC-RecoToIso.txt
+full cuts: (((sqrt(JetPFCor_Pt[0]**2+JetPFCor_Pt[1]**2+2*JetPFCor_Pt[0]*JetPFCor_Pt[1]*cos(JetPFCor_Phi[0]-JetPFCor_Phi[1]))>70.)&&(abs(JetPFCor_Eta[0]-JetPFCor_Eta[1])<1.5)&&(abs(JetPFCor_dphiMET[0])>0.4)&&(W_mt>30.)&&(JetPFCor_Pt[1]>35.)&&(JetPFCor_Pt[0]>40.)&&((abs(JetPFCor_Eta[0])>2.4)||(JetPFCor_Pt[0]<30.)||(JetPFCor_bDiscriminatorCSV[0]<0.244))&&((abs(JetPFCor_Eta[1])>2.4)||(JetPFCor_Pt[1]<30.)||(JetPFCor_bDiscriminatorCSV[1]<0.244))&&((abs(JetPFCor_Eta[2])>2.4)||(JetPFCor_Pt[2]<30.)||(JetPFCor_bDiscriminatorCSV[2]<0.244))&&((abs(JetPFCor_Eta[3])>2.4)||(JetPFCor_Pt[3]<30.)||(JetPFCor_bDiscriminatorCSV[3]<0.244))&&((abs(JetPFCor_Eta[4])>2.4)||(JetPFCor_Pt[4]<30.)||(JetPFCor_bDiscriminatorCSV[4]<0.244))&&((abs(JetPFCor_Eta[5])>2.4)||(JetPFCor_Pt[5]<30.)||(JetPFCor_bDiscriminatorCSV[5]<0.244))&&(W_pt<200.)&&(vbf_event==0)&&(event_met_pfmet>25)&&(abs(W_muon_eta)<2.1)&&(W_muon_pt>25.))&&(Mass2j_PFCor>48.000)&&(Mass2j_PFCor<160.000))
+RooRealVar::Mass2j_PFCor = 104  L(48 - 160) B(14) // [GeV]
+importing diboson from old workspace
+importing top from old workspace
+importing WpJ_Nom from old workspace
+importing WpJ_MU from old workspace
+importing WpJ_MD from old workspace
+importing WpJ_SU from old workspace
+importing WpJ_SD from old workspace
+importing ZpJ from old workspace
+making ComponentPdf diboson
+making ComponentPdf top
+making ComponentPdf WpJ
+making ComponentPdf WpJ_Nom
+making ComponentPdf WpJ_MU
+making ComponentPdf WpJ_MD
+making ComponentPdf WpJ_SU
+making ComponentPdf WpJ_SD
+making ComponentPdf ZpJ
+loading parameters from file AllDefCutsMorphInputDibosonParameters.txt
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+RooDataSet::data_obs[Mass2j_PFCor] = 158863 entries
+construct fit pdf ...
+load data ...
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+loading parameters from file AllDefCutsMorphInputDibosonParameters.txt
+resetting yields...
+RooRealVar::n_diboson = 3605 +/- 60.0417 C  L(0 - 1e+06) 
+RooRealVar::n_top = 8254.6 +/- 577.822 C  L(0 - 1e+06) 
+RooRealVar::n_WpJ = 136635 +/- 6831.74 C  L(0 - 1e+06) 
+RooRealVar::n_ZpJ = 8187.5 +/- 409.375 C  L(0 - 1e+06) 
+
+fit constraints
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.07 ] = 1
+RooGaussian::ZpJ_const[ x=ZpJ_nrm mean=1 sigma=0.05 ] = 1
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.05 ] = 1
+RooGaussian::fMU_WpJ_const[ x=fMU_WpJ mean=0 sigma=10 ] = 1
+RooGaussian::fSU_WpJ_const[ x=fSU_WpJ mean=0 sigma=10 ] = 1
+
+RooWorkspace(wjj2dfitter) wjj2dfitter contents
+
+variables
+---------
+(Mass2j_PFCor,WpJ_nrm,ZpJ_nrm,diboson_nrm,fMU_WpJ,fSU_WpJ,n_WpJ,n_ZpJ,n_diboson,n_top,r_signal,top_nrm)
+
+p.d.f.s
+-------
+RooAddPdf::WpJ[ f_fMU_WpJ * WpJ_MU + f_fMD_WpJ * WpJ_MD + f_fSU_WpJ * WpJ_SU + f_fSD_WpJ * WpJ_SD + f_fNom_WpJ * WpJ_Nom ] = 1093.75
+RooHistPdf::WpJ_MD[ pdfObs=(Mass2j_PFCor) ] = 1.97357e+10
+RooHistPdf::WpJ_MU[ pdfObs=(Mass2j_PFCor) ] = 2.35224e+10
+RooHistPdf::WpJ_Nom[ pdfObs=(Mass2j_PFCor) ] = 1093.75
+RooHistPdf::WpJ_SD[ pdfObs=(Mass2j_PFCor) ] = 2.02998e+10
+RooHistPdf::WpJ_SU[ pdfObs=(Mass2j_PFCor) ] = 2.2577e+10
+RooGaussian::WpJ_const[ x=WpJ_nrm mean=1 sigma=0.05 ] = 1
+RooExtendPdf::WpJ_extended[ pdf=WpJ n=f_WpJ_norm ] = 1093.75
+RooHistPdf::ZpJ[ pdfObs=(Mass2j_PFCor) ] = 57.7731
+RooGaussian::ZpJ_const[ x=ZpJ_nrm mean=1 sigma=0.05 ] = 1
+RooExtendPdf::ZpJ_extended[ pdf=ZpJ n=f_ZpJ_norm ] = 57.7731
+RooHistPdf::diboson[ pdfObs=(Mass2j_PFCor) ] = 23.3267
+RooExtendPdf::diboson_extended[ pdf=diboson n=f_diboson_norm ] = 23.3267
+RooGaussian::fMU_WpJ_const[ x=fMU_WpJ mean=0 sigma=10 ] = 1
+RooGaussian::fSU_WpJ_const[ x=fSU_WpJ mean=0 sigma=10 ] = 1
+RooHistPdf::top[ pdfObs=(Mass2j_PFCor) ] = 71.5488
+RooGaussian::top_const[ x=top_nrm mean=1 sigma=0.07 ] = 1
+RooExtendPdf::top_extended[ pdf=top n=f_top_norm ] = 71.5488
+RooAddPdf::total[ diboson_extended + top_extended + WpJ_extended + ZpJ_extended ] = 983.218
+RooProdPdf::totalFit_const[ top_const * ZpJ_const * WpJ_const * fMU_WpJ_const * fSU_WpJ_const * total ] = 983.218
+
+functions
+--------
+RooProduct::f_WpJ_norm[ n_WpJ * WpJ_nrm ] = 136635
+RooProduct::f_ZpJ_norm[ n_ZpJ * ZpJ_nrm ] = 8187.5
+RooProduct::f_diboson_norm[ n_diboson * diboson_nrm ] = 0
+RooFormulaVar::f_fMD_WpJ[ actualVars=(fMU_WpJ) formula="-1.0*@0*(@0 < 0.)" ] = -0
+RooFormulaVar::f_fMU_WpJ[ actualVars=(fMU_WpJ) formula="1.0*@0*(@0 >= 0.)" ] = 0
+RooFormulaVar::f_fNom_WpJ[ actualVars=(fMU_WpJ,fSU_WpJ) formula="(1.-abs(@0)-abs(@1))" ] = 1
+RooFormulaVar::f_fSD_WpJ[ actualVars=(fSU_WpJ) formula="@0*(-1)*(@0 < 0.)" ] = -0
+RooFormulaVar::f_fSU_WpJ[ actualVars=(fSU_WpJ) formula="@0*(@0 >= 0.)" ] = 0
+RooProduct::f_top_norm[ n_top * top_nrm ] = 8254.6
+
+datasets
+--------
+RooDataHist::diboson_hist(Mass2j_PFCor)
+RooDataHist::top_hist(Mass2j_PFCor)
+RooDataHist::WpJ_Nom_hist(Mass2j_PFCor)
+RooDataHist::WpJ_MU_hist(Mass2j_PFCor)
+RooDataHist::WpJ_MD_hist(Mass2j_PFCor)
+RooDataHist::WpJ_SU_hist(Mass2j_PFCor)
+RooDataHist::WpJ_SD_hist(Mass2j_PFCor)
+RooDataHist::ZpJ_hist(Mass2j_PFCor)
+RooDataSet::data_obs(Mass2j_PFCor)
+
+named sets
+----------
+constrainedSet:(top_nrm,ZpJ_nrm,WpJ_nrm,fMU_WpJ,fSU_WpJ)
+constraintSet:(top_const,ZpJ_const,WpJ_const,fMU_WpJ_const,fSU_WpJ_const)
+obsSet:(Mass2j_PFCor)
+
+fitting ...
+ **********
+ **    9 **SET NOWARNINGS           0
+ **********
+ **********
+ **   12 **MIGRAD        2500           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=-999906 FROM MIGRAD    STATUS=INITIATE       24 CALLS          25 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.00000e+00   5.00000e-02   2.04149e-02  -1.25101e+04
+   2  ZpJ_nrm      1.00000e+00   5.00000e-02   2.04149e-02  -7.72836e+02
+   3  fMU_WpJ      0.00000e+00   1.00000e+01   1.56884e+00  -1.97932e+01
+   4  fSU_WpJ      0.00000e+00   1.00000e+01   1.56884e+00   2.01279e+00
+   5  top_nrm      1.00000e+00   7.00000e-02   2.85843e-02  -8.90471e+02
+                               ERR DEF= 0.5
+ MIGRAD FAILS TO FIND IMPROVEMENT
+ MACHINE ACCURACY LIMITS FURTHER IMPROVEMENT.
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-1.00002e+06 FROM HESSE     STATUS=OK             35 CALLS         160 TOTAL
+                     EDM=0.0449803    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.02803e+00   5.47535e-03   8.15870e-04  -2.57008e+01
+   2  ZpJ_nrm      1.02311e+00   4.96565e-02   9.75457e-03  -6.19075e+00
+   3  fMU_WpJ      6.60589e-04   5.20358e-03   3.47321e-03   5.20517e+01
+   4  fSU_WpJ     -4.97411e-06   2.05278e-03   1.50789e-03   7.14001e+00
+   5  top_nrm      1.20398e+00   5.89806e-02   1.01886e-02   2.65141e+00
+                               ERR DEF= 0.5
+ MIGRAD FAILS TO FIND IMPROVEMENT
+ MACHINE ACCURACY LIMITS FURTHER IMPROVEMENT.
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ FCN=-1.00002e+06 FROM MIGRAD    STATUS=CONVERGED     184 CALLS         185 TOTAL
+                     EDM=0.0094953    STRATEGY= 1  ERROR MATRIX UNCERTAINTY   1.4 per cent
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  WpJ_nrm      1.02808e+00   5.48020e-03   0.00000e+00  -1.65303e+01
+   2  ZpJ_nrm      1.02474e+00   5.01765e-02   0.00000e+00  -3.82128e+00
+   3  fMU_WpJ      1.54724e-04   2.67027e-03   0.00000e+00  -1.95564e+01
+   4  fSU_WpJ     -1.22292e-05   2.05278e-03  -0.00000e+00   8.73622e+00
+   5  top_nrm      1.20213e+00   5.96413e-02  -0.00000e+00   1.76157e+00
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  5    ERR DEF=0.5
+  3.003e-05 -1.477e-04 -1.378e-08  1.196e-07 -2.122e-04 
+ -1.477e-04  2.518e-03  3.512e-06  4.734e-07 -3.011e-05 
+ -1.378e-08  3.512e-06  7.130e-06  2.203e-07 -2.996e-06 
+  1.196e-07  4.734e-07  2.203e-07  4.214e-06 -2.544e-06 
+ -2.122e-04 -3.011e-05 -2.996e-06 -2.544e-06  3.558e-03 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5
+        1  0.84691   1.000 -0.537 -0.001  0.011 -0.649
+        2  0.71514  -0.537  1.000  0.026  0.005 -0.010
+        3  0.05108  -0.001  0.026  1.000  0.040 -0.019
+        4  0.04503   0.011  0.005  0.040  1.000 -0.021
+        5  0.77634  -0.649 -0.010 -0.019 -0.021  1.000
+ **********
+ **   15 **HESSE        2500
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=-1.00002e+06 FROM HESSE     STATUS=OK             35 CALLS         220 TOTAL
+                     EDM=0.0501339    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  WpJ_nrm      1.02808e+00   5.47474e-03   8.15874e-04  -4.60433e-01
+   2  ZpJ_nrm      1.02474e+00   4.96435e-02   9.75205e-03  -4.61786e-01
+   3  fMU_WpJ      1.54724e-04   3.90744e-03   2.20031e-03   1.54724e-04
+   4  fSU_WpJ     -1.22292e-05   1.99993e-03   1.41699e-03  -1.22292e-05
+   5  top_nrm      1.20213e+00   5.89653e-02   1.01912e-02  -3.90925e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  5    ERR DEF=0.5
+  2.997e-05 -1.496e-04  3.404e-07  1.212e-07 -2.100e-04 
+ -1.496e-04  2.465e-03  1.433e-06  8.865e-07  3.615e-05 
+  3.404e-07  1.433e-06  1.527e-05 -3.471e-08 -6.911e-06 
+  1.212e-07  8.865e-07 -3.471e-08  4.000e-06 -2.841e-06 
+ -2.100e-04  3.615e-05 -6.911e-06 -2.841e-06  3.478e-03 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4      5
+        1  0.84695   1.000 -0.550  0.016  0.011 -0.651
+        2  0.71412  -0.550  1.000  0.007  0.009  0.012
+        3  0.03144   0.016  0.007  1.000 -0.004 -0.030
+        4  0.02633   0.011  0.009 -0.004  1.000 -0.024
+        5  0.77126  -0.651  0.012 -0.030 -0.024  1.000
+
+  RooFitResult: minimized FCN value: -1.00002e+06, estimated distance to minimum: 0.0501339
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Floating Parameter    FinalValue +/-  Error   
+  --------------------  --------------------------
+               WpJ_nrm    1.0281e+00 +/-  5.47e-03
+               ZpJ_nrm    1.0247e+00 +/-  4.96e-02
+               fMU_WpJ    1.5472e-04 +/-  3.91e-03
+               fSU_WpJ   -1.2229e-05 +/-  2.00e-03
+               top_nrm    1.2021e+00 +/-  5.90e-02
+
+
+  RooFitResult: minimized FCN value: -1.00002e+06, estimated distance to minimum: 0.0501339
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MIGRAD=0 HESSE=0 
+
+    Constant Parameter    Value     
+  --------------------  ------------
+           diboson_nrm    0.0000e+00
+                 n_WpJ    1.3663e+05
+                 n_ZpJ    8.1875e+03
+             n_diboson    3.6050e+03
+                 n_top    8.2546e+03
+
+    Floating Parameter  InitialValue    FinalValue +/-  Error     GblCorr.
+  --------------------  ------------  --------------------------  --------
+               WpJ_nrm    1.0000e+00    1.0281e+00 +/-  5.47e-03  <none>
+               ZpJ_nrm    1.0000e+00    1.0247e+00 +/-  4.96e-02  <none>
+               fMU_WpJ    0.0000e+00    1.5472e-04 +/-  3.91e-03  <none>
+               fSU_WpJ    0.0000e+00   -1.2229e-05 +/-  2.00e-03  <none>
+               top_nrm    1.0000e+00    1.2021e+00 +/-  5.90e-02  <none>
+
+Info in <TCanvas::Print>: file Dibosonlnujj_muon_Stacked.png has been created
+Info in <TCanvas::Print>: file Dibosonlnujj_muon_Subtracted.png has been created
+Info in <TCanvas::Print>: file Dibosonlnujj_muon_Pull.png has been created
+Time elapsed: 2626.9 sec
+CPU time used: 1402.4 sec
+13 degrees of freedom
+chi2: 20.65 / 13 = 1.59
+chi2 probability: 0.08025
+2*nll_null - 2*nll: -2000034.4344 - -2000131.7446 = 97.3102
+p-value: 5.927e-23
+Gaussian significance: 9.79
+>>> 

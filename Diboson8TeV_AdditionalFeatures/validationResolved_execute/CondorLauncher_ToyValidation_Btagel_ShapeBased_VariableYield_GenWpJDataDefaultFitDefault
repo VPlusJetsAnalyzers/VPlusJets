@@ -1,0 +1,13 @@
+universe = vanilla
+Executable = CondorScript_ToyValidation_Btagel_ShapeBased_VariableYield_GenWpJDataDefaultFitDefault.sh
+Requirements = Memory >= 199 &&OpSys == "LINUX"&& (Arch != "DUMMY" )&& Disk > 1000000
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = FullRelease5_3_15.tar.gz, runToyMCFits.cc, runToyMCFits_cc.d, runToyMCFits_cc.so, rootlogon.C, Diboson8TeVConfig.py, runDiboson8TevFit.py, DibosonBtagFitOutPars_el.txt, Fit_DibosonBtag_el_log.txt, topDibosonBtagParameters_el.txt, dibosonDibosonBtagParameters_el.txt, WpJDibosonBtagParameters_el.txt, WHbbDibosonBtagParameters_el.txt
+Output = log/Validation_Btagel_VariableYield_GenWpJDataDefaultFitDefault_$(Process).stdout
+Error = log/Validation_Btagel_VariableYield_GenWpJDataDefaultFitDefault_$(Process).stderr
+Log = log/Validation_Btagel_VariableYield_GenWpJDataDefaultFitDefault_$(Process).log
+##x509userproxy = /tmp/x509up_u44389
+notify_user = none
+Arguments = $(Process) 40
+Queue 25

@@ -1,0 +1,6 @@
+a1_WpJ_Mass2j_PFCor = -0.491793 +/- 0.0017453 C L(-INF - +INF) 
+a2_WpJ_Mass2j_PFCor =  0.048554 +/- 0.0019277 C L(-INF - +INF) 
+a3_WpJ_Mass2j_PFCor =  0.019435 +/- 0.0013080 C L(-INF - +INF) 
+offset_WpJ_Mass2j_PFCor =  44.899 +/- 0.16439 C L(-100 - 1000) 
+width_WpJ_Mass2j_PFCor =  0.10158 +/- 0.78190 C L(0 - 1000) 
+n_WpJ = 171248.2 +/- 413.8 C
