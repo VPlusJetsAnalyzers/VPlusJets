@@ -1,0 +1,5 @@
+alpha_WpJ_GroomedJet_CA8_mass_pr = -0.947185 +/- 0.22789 L(-3.22604 - 1.33166)
+mean_WpJ_GroomedJet_CA8_mass_pr = 75.868 +/- 2.8169 L(47.699 - 104.036)
+npow_WpJ_GroomedJet_CA8_mass_pr = 18.556 +/- 10.507 L(-86.5122 - 123.624)
+sigma_WpJ_GroomedJet_CA8_mass_pr = 18.724 +/- 3.7865 L(-19.1413 - 56.5884)
+n_WpJ = 2094.7 +/- 45.8 C
